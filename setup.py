@@ -22,11 +22,10 @@ except (IOError, ImportError):
     with open(path.join(here, 'README.md'), encoding='utf-8') as f:
         long_description = f.read()
 
-import icon_font_to_png
-
 from distutils.command.install import install as _install
 
 def _post_install(dir):
+    import icon_font_to_png
     directory = dir + '/pandoc_latex_tip-data'
     if not path.exists(directory):
         makedirs(directory)
