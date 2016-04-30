@@ -45,6 +45,11 @@ To upgrade the Font-Awesome icons collection add the `--force` flag
     apt-get update
     apt-get install python-pip
 
+On Ubuntu you also have to install some libraries
+
+	apt-get build-dep python-imaging
+	apt-get install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
+
 [python]: https://www.python.org/pandoc-latex-tip
 [on Windows]: https://www.python.org/downloads/windows/
 [PyPI]: https://pypi.python.org/pypi
