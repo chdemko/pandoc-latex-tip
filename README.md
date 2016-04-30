@@ -45,7 +45,7 @@ To upgrade the Font-Awesome icons collection add the `--force` flag
     apt-get update
     apt-get install python-pip
 
-On Ubuntu you also have to install some libraries
+On linux you also have to install some extra libraries. On a Debian-based system (including Ubuntu), you can install it as root using
 
 	apt-get build-dep python-imaging
 	apt-get install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
