@@ -95,7 +95,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='pandoc, filters, latex, tip',
+    keywords='pandoc, filters, latex, tip, Font-Awesome, icon',
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
