@@ -6,7 +6,7 @@
 [![Python version](https://img.shields.io/pypi/pyversions/pandoc-latex-tip.svg)](https://pypi.python.org/pypi/pandoc-latex-tip/)
 [![Development Status](https://img.shields.io/pypi/status/pandoc-latex-tip.svg)](https://pypi.python.org/pypi/pandoc-latex-tip/)
 
-*pandoc-latex-tip* is a [pandoc] filter for adding icon tooltips in the margin using the [Font-Awesome icons collection](https://fontawesome.github.io).
+*pandoc-latex-tip* is a [pandoc] filter for adding icon tooltips in the margin using the [Font-Awesome icons collection](http://fontawesome.io/).
 It uses the *icon_font_to_png* package to generate on-fly images.
 
 [pandoc]: http://pandoc.org/
@@ -45,7 +45,7 @@ To upgrade the Font-Awesome icons collection add the `--force` flag
     apt-get update
     apt-get install python-pip
 
-On linux you also have to install some extra libraries. On a Debian-based system (including Ubuntu), you can install it as root using
+Make sure you have required packages for [Pillow installation](https://pillow.readthedocs.org/en/3.1.x/installation.html). On linux you have to install some extra libraries **before** *pandoc-latex-tip*. On a Debian-based system (including Ubuntu), you can install it as root using
 
 	apt-get build-dep python-imaging
 	apt-get install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
