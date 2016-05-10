@@ -1,4 +1,6 @@
 # pandoc-latex-tip
+[![Build Status](https://img.shields.io/travis/chdemko/pandoc-latex-tip.svg)](http://travis-ci.org/chdemko/pandoc-latex-tip)
+[![Coveralls](https://img.shields.io/coveralls/chdemko/pandoc-latex-tip.svg)](https://coveralls.io/github/chdemko/pandoc-latex-tip)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/chdemko/pandoc-latex-tip.svg)](https://scrutinizer-ci.com/g/chdemko/pandoc-latex-tip/)
 [![PyPI version](https://img.shields.io/pypi/v/pandoc-latex-tip.svg)](https://pypi.python.org/pypi/pandoc-latex-tip/)
 [![License](https://img.shields.io/pypi/l/pandoc-latex-tip.svg)](http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html)

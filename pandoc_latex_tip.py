@@ -4,7 +4,7 @@
 Pandoc filter for adding tip in LaTeX
 """
 
-from pandocfilters import RawBlock, Div, stringify
+from pandocfilters import RawInline, Span, stringify
 
 import io
 import os
@@ -72,13 +72,13 @@ def walk(x, action, format, meta):
         return x
 
 def tip(key, value, format, meta):
-    # Is it a div and the right format?
-    if key == 'Div' and format == 'latex':
+    # Is it a Span and the right format?
+    if key == 'Span' and format == 'latex':
 
         # Get the attributes
         [[id, classes, properties], content] = value
 
-        # Use the div classes as a set
+        # Use the Span classes as a set
         currentClasses = set(classes)
 
         # Loop on all tip definition
@@ -88,7 +88,7 @@ def tip(key, value, format, meta):
             if currentClasses >= elt['classes']:
 
                 # Prepend a tex block for inserting images
-                return [RawBlock('tex', elt['latex'])] + [Div([id, classes, properties], walk(content, tip, format, meta))]
+                return [Span([id, classes, properties], content), RawInline('tex', elt['latex'])]
 
 def getIconFont():
     if not hasattr(getIconFont, 'value'):
@@ -105,8 +105,8 @@ def getDefined(meta):
         getDefined.value = []
 
         # Get the meta data
-        if 'latex-tip' in meta and meta['latex-tip']['t'] == 'MetaList':
-            tipMeta = meta['latex-tip']['c']
+        if 'pandoc-latex-tip' in meta and meta['pandoc-latex-tip']['t'] == 'MetaList':
+            tipMeta = meta['pandoc-latex-tip']['c']
 
             # Loop on all definitions
             for definition in tipMeta:
@@ -148,8 +148,11 @@ def getDefined(meta):
                                 lowerColor = 'black'
 
                             # Is the icon correct?
-                            if name in getIconFont().css_icons:
-                                icons.append({'name': name, 'color': lowerColor})
+                            try:
+                                if name in getIconFont().css_icons:
+                                    icons.append({'name': name, 'color': lowerColor})
+                            except FileNotFoundError:
+                                pass
 
                     # Add a definition if correct
                     if bool(classes) and bool(icons):
@@ -178,18 +181,21 @@ def getDefined(meta):
                             image = dirs.user_cache_dir + '/' + icon['color'] + '/' + icon['name'] + '.png'
 
                             # Create the image if not existing in the cache
-                            if not os.path.isfile(image):
+                            try:
+                                if not os.path.isfile(image):
 
-                                # Create the image in the cache
-                                getIconFont().export_icon(
-                                    icon['name'],
-                                    size = 512,
-                                    color = icon['color'],
-                                    export_dir = dirs.user_cache_dir + '/' + icon['color']
-                                )
+                                    # Create the image in the cache
+                                    getIconFont().export_icon(
+                                        icon['name'],
+                                        size = 512,
+                                        color = icon['color'],
+                                        export_dir = dirs.user_cache_dir + '/' + icon['color']
+                                    )
 
-                            # Add the LaTeX image
-                            images.append('\\includegraphics[width=' + size + 'pt]{' + image + '}')
+                                # Add the LaTeX image
+                                images.append('\\includegraphics[width=' + size + 'pt]{' + image + '}')
+                            except FileNotFoundError:
+                                pass
 
                         # Get the prefix
                         prefix = '\\reversemarginpar'
@@ -209,8 +215,8 @@ def getDefined(meta):
                             prefix,
                             '\\marginnote{'
                         ] + images + [
-                            '}[\\baselineskip]'
-                            '}'
+                            '}[0pt]',
+                            '}',
                         ]
 
                         getDefined.value.append({'classes' : set(classes), 'latex': '\n'.join(latex)})

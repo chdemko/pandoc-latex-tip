@@ -43,7 +43,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.1.0',
+    version='1.0.0',
 
     # The project's description
     description='A pandoc filter for adding tip in LaTeX',
@@ -72,7 +72,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
 
         # Specify the OS
         'Operating System :: OS Independent',
@@ -121,11 +121,14 @@ setup(
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
-    # extras_require={
-    #     'dev': ['check-manifest'],
-    #     'test': ['coverage'],
-    # },
+    extras_require={
+        'dev': ['check-manifest'],
+        'test': ['coverage'],
+    },
 
     # packages=find_packages(),
     # include_package_data = True,
+
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest', 'coverage'],
 )
