@@ -28,7 +28,7 @@ To apply the filter, use the following option with pandoc:
 Installation
 ------------
 
-*pandoc-latex-tip* requires [python], a programming language that comes pre-installed on linux and Mac OS X, and which is easily installed [on Windows]. Either python 2.7 or 3.x will do.
+*pandoc-latex-tip* requires [python], a programming language that comes pre-installed on linux and Mac OS X, and which is easily installed [on Windows]. python 3.x will do.
 
 Install *pandoc-latex-tip* as root using the bash command
 

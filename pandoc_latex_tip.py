@@ -13,12 +13,6 @@ import codecs
 import json
 import re
 
-try:
-    FileNotFoundError
-except NameError:
-    #py2
-    FileNotFoundError = IOError
-
 def toJSONFilters(actions):
     """Converts a list of actions into a filter that reads a JSON-formatted
     pandoc document from stdin, transforms it by walking the tree
