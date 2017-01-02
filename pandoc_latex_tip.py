@@ -59,7 +59,7 @@ def walk(x, action, format, meta):
         array = []
         for item in x:
             if isinstance(item, dict) and 't' in item:
-                res = action(item['t'], item['c'], format, meta)
+                res = action(item['t'], item['c'] if 'c' in item else None, format, meta)
                 if res is None:
                     array.append(walk(item, action, format, meta))
                 elif isinstance(res, list):
