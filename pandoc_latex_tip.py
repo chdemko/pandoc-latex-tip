@@ -47,8 +47,16 @@ def toJSONFilters(actions):
         format = sys.argv[1]
     else:
         format = ""
+
+    if 'meta' in doc:
+        meta = doc['meta']
+    elif doc[0]:  # old API
+        meta = doc[0]['unMeta']
+    else:
+        meta = {}
+
     from functools import reduce
-    altered = reduce(lambda x, action: walk(x, action, format, doc[0]['unMeta']), actions, doc)
+    altered = reduce(lambda x, action: walk(x, action, format, meta), actions, doc)
     json.dump(altered, sys.stdout)
 
 def walk(x, action, format, meta):
