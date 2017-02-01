@@ -52,8 +52,8 @@ Make sure you have required packages for [Pillow installation](https://pillow.re
 	apt-get build-dep python-imaging
 	apt-get install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
 
-[python]: https://www.python.org/pandoc-latex-tip
-[on Windows]: https://www.python.org/downloads/windows/
+[python]: https://www.python.org
+[on Windows]: https://www.python.org/downloads/windows
 [PyPI]: https://pypi.python.org/pypi
 
 
