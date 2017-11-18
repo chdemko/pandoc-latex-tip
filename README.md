@@ -2,11 +2,11 @@
 [![Build Status](https://img.shields.io/travis/chdemko/pandoc-latex-tip.svg)](http://travis-ci.org/chdemko/pandoc-latex-tip)
 [![Coveralls](https://img.shields.io/coveralls/chdemko/pandoc-latex-tip.svg)](https://coveralls.io/github/chdemko/pandoc-latex-tip)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/chdemko/pandoc-latex-tip.svg)](https://scrutinizer-ci.com/g/chdemko/pandoc-latex-tip/)
-[![PyPI version](https://img.shields.io/pypi/v/pandoc-latex-tip.svg)](https://pypi.python.org/pypi/pandoc-latex-tip/)
+[![PyPI version](https://img.shields.io/pypi/v/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 [![License](https://img.shields.io/pypi/l/pandoc-latex-tip.svg)](http://www.cecill.info/licences/Licence_CeCILL-B_V1-en.html)
-[![Downloads](https://img.shields.io/pypi/dm/pandoc-latex-tip.svg)](https://pypi.python.org/pypi/pandoc-latex-tip/)
-[![Python version](https://img.shields.io/pypi/pyversions/pandoc-latex-tip.svg)](https://pypi.python.org/pypi/pandoc-latex-tip/)
-[![Development Status](https://img.shields.io/pypi/status/pandoc-latex-tip.svg)](https://pypi.python.org/pypi/pandoc-latex-tip/)
+[![Downloads](https://img.shields.io/pypi/dm/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
+[![Python version](https://img.shields.io/pypi/pyversions/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
+[![Development Status](https://img.shields.io/pypi/status/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 
 *pandoc-latex-tip* is a [pandoc] filter for adding icon tooltips in the margin using the [Font-Awesome icons collection](http://fontawesome.io/).
 It uses the *icon_font_to_png* package to generate on-fly images.
