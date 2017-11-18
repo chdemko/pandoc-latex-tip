@@ -102,7 +102,7 @@ def tip(key, value, format, meta):
             if currentClasses >= elt['classes']:
 
                 # Prepend a tex block for inserting images
-                return [Span([id, classes, properties], content), RawInline('tex', elt['latex'])]
+                return Span([id, classes, properties], content + [RawInline('tex', elt['latex'])])
 
 def getIconFont():
     if not hasattr(getIconFont, 'value'):
