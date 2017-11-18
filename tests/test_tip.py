@@ -45,7 +45,5 @@ def test_tip():
 
 
     dest = pandoc_latex_tip.tip(src['t'], src['c'], 'latex', meta)
-    assert isinstance(dest, list)
-    assert len(dest) == 2
-    assert dest[1]['t'] == 'RawInline'
+    assert dest['c'][1][0]['c'][0] == 'tex'
 
