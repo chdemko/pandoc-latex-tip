@@ -102,7 +102,7 @@ def tip(key, value, format, meta):
             if currentClasses >= elt['classes']:
 
                 # Prepend a tex block for inserting images
-                return Span([id, classes, properties], content + [RawInline('tex', elt['latex'])])
+                return [RawInline('tex', elt['latex']), Span([id, classes, properties], content)]
 
 def getIconFont():
     if not hasattr(getIconFont, 'value'):
@@ -233,7 +233,7 @@ def getDefined(meta):
                             '}',
                         ]
 
-                        getDefined.value.append({'classes' : set(classes), 'latex': '\n'.join(latex)})
+                        getDefined.value.append({'classes' : set(classes), 'latex': ''.join(latex)})
 
         if 'header-includes' not in meta:
             meta['header-includes'] = {u'c': [], u't': u'MetaList'}
