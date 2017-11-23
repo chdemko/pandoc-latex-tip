@@ -4,7 +4,7 @@
 Pandoc filter for adding tip in LaTeX
 """
 
-from pandocfilters import RawInline, Span, stringify
+from pandocfilters import RawInline, RawBlock, Span, Div, stringify
 
 import io
 import os
@@ -87,7 +87,7 @@ def walk(x, action, format, meta):
 
 def tip(key, value, format, meta):
     # Is it a Span and the right format?
-    if key == 'Span' and format == 'latex':
+    if key in ['Span', 'Div'] and format == 'latex':
 
         # Get the attributes
         [[id, classes, properties], content] = value
@@ -102,7 +102,10 @@ def tip(key, value, format, meta):
             if currentClasses >= elt['classes']:
 
                 # Prepend a tex block for inserting images
-                return [RawInline('tex', elt['latex']), Span([id, classes, properties], content)]
+                if key == 'Span':
+                    return [RawInline('tex', elt['latex']), Span([id, classes, properties], content)]
+                elif key == 'Div':
+                    return [RawBlock('tex', elt['latex']), Div([id, classes, properties], content)]
 
 def getIconFont():
     if not hasattr(getIconFont, 'value'):
