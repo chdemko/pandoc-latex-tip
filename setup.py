@@ -64,7 +64,7 @@ setup(
     maintainer_email='chdemko@gmail.com',
 
     # Choose your license
-    license='CeCILL-B',
+    license='BSD-3-Clause',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -93,7 +93,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='pandoc, filters, latex, tip, Font-Awesome, icon',
+    keywords='pandoc filters latex tip Font-Awesome icon',
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
@@ -114,7 +114,7 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        'pandocfilters>=1.4',
+        'panflute>=1.10',
         'icon_font_to_png>=0.4',
         'pillow>=4.3.0',
         'appdirs>=1.4.0',

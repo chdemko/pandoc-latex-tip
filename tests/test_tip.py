@@ -1,53 +1,35 @@
 # This Python file uses the following encoding: utf-8
 from unittest import TestCase
-from pandocfilters import Para, Str, Space, Span, Div, Strong, RawInline, RawBlock, Emph, Header
+from panflute import *
 
 import pandoc_latex_tip
 
-def test_span():
-    do_test(Span(['', ['class1', 'class2'], []], []))
-
-def test_div():
-    do_test(Div(['', ['class1', 'class2'], []], []))
-
-def do_test(src):
-    meta = {
-        'pandoc-latex-tip': {
-            't': 'MetaList',
-            'c': [
-                {
-                    't': 'MetaMap',
-                    'c': {
-                        'classes': {
-                            't': 'MetaList',
-                            'c': [
-                                {
-                                    't': 'MetaInlines',
-                                    'c': [
-                                        {
-                                            't': 'Str',
-                                            'c': 'class1'
-                                        }
-                                    ]
-                                },
-                                {
-                                    't': 'MetaInlines',
-                                    'c': [
-                                        {
-                                            't': 'Str',
-                                            'c': 'class2'
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                    }
-                }
-            ]
-        }
+def metadata():
+    return {
+        'pandoc-latex-tip': MetaList(
+            MetaMap(
+                classes=MetaList(MetaString('class1'), MetaString('class2'))
+            )
+        )
     }
 
+def test_span():
+    doc = Doc(Para(Span(classes = ['class1', 'class2'])), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    pandoc_latex_tip.main(doc)
+    assert doc.content[0].content[0].format == 'tex'
 
-    dest = pandoc_latex_tip.tip(src['t'], src['c'], 'latex', meta)
-    assert dest[0]['c'][0] == 'tex'
+def test_div():
+    doc = Doc(Div(classes = ['class1', 'class2']), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    pandoc_latex_tip.main(doc)
+    assert doc.content[0].format == 'tex'
+
+def test_code():
+    doc = Doc(Para(Code('', classes = ['class1', 'class2'])), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    pandoc_latex_tip.main(doc)
+    assert doc.content[0].content[0].format == 'tex'
+
+def test_codeblock():
+    doc = Doc(CodeBlock('', classes = ['class1', 'class2']), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    pandoc_latex_tip.main(doc)
+    assert doc.content[0].format == 'tex'
 

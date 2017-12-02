@@ -4,14 +4,8 @@
 Pandoc filter for adding tip in LaTeX
 """
 
-from pandocfilters import RawInline, RawBlock, Span, Div, stringify
-
-import io
+from panflute import *
 import os
-import sys
-import codecs
-import json
-import re
 
 try:
     FileNotFoundError
@@ -19,245 +13,198 @@ except NameError:
     #py2
     FileNotFoundError = IOError
 
-def toJSONFilters(actions):
-    """Converts a list of actions into a filter that reads a JSON-formatted
-    pandoc document from stdin, transforms it by walking the tree
-    with the actions, and returns a new JSON-formatted pandoc document
-    to stdout.  The argument is a list of functions action(key, value, format, meta),
-    where key is the type of the pandoc object (e.g. 'Str', 'Para'),
-    value is the contents of the object (e.g. a string for 'Str',
-    a list of inline elements for 'Para'), format is the target
-    output format (which will be taken for the first command line
-    argument if present), and meta is the document's metadata.
-    If the function returns None, the object to which it applies
-    will remain unchanged.  If it returns an object, the object will
-    be replaced.    If it returns a list, the list will be spliced in to
-    the list to which the target object belongs.    (So, returning an
-    empty list deletes the object.)
-    """
-    try:
-        input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
-    except AttributeError:
-        # Python 2 does not have sys.stdin.buffer.
-        # REF: http://stackoverflow.com/questions/2467928/python-unicodeencodeerror-when-reading-from-stdin
-        input_stream = codecs.getreader("utf-8")(sys.stdin)
+def add_latex(elem, latex):
+    # Is it a Span or a Code?
+    if isinstance(elem, Span) or isinstance(elem, Code):
+        return [RawInline(latex, 'tex'), elem]
 
-    doc = json.loads(input_stream.read())
-    if len(sys.argv) > 1:
-        format = sys.argv[1]
+    # It is a Div or a CodeBlock
     else:
-        format = ""
+        return [RawBlock(latex, 'tex'), elem]
 
-    if 'meta' in doc:
-        meta = doc['meta']
-    elif doc[0]:  # old API
-        meta = doc[0]['unMeta']
-    else:
-        meta = {}
+def tip(elem, doc):
+    # Is it in the right format and is it a Span, Div?
+    if doc.format == 'latex' and elem.tag in ['Span', 'Div', 'Code', 'CodeBlock']:
 
-    from functools import reduce
-    altered = reduce(lambda x, action: walk(x, action, format, meta), actions, doc)
-    json.dump(altered, sys.stdout)
+        # Is there a latex-tip-icon attribute?
+        if 'latex-tip-icon' in elem.attributes:
+            return add_latex(elem, latex_code(elem.attributes))
+        else:
+            # Get the classes
+            classes = set(elem.classes)
 
-def walk(x, action, format, meta):
-    """Walk a tree, applying an action to every object.
-    Returns a modified tree.
-    """
-    if isinstance(x, list):
-        array = []
-        for item in x:
-            if isinstance(item, dict) and 't' in item:
-                res = action(item['t'], item['c'] if 'c' in item else None, format, meta)
-                if res is None:
-                    array.append(walk(item, action, format, meta))
-                elif isinstance(res, list):
-                    for z in res:
-                        array.append(walk(z, action, format, meta))
-                else:
-                    array.append(walk(res, action, format, meta))
+            # Loop on all fontsize definition
+            for definition in doc.defined:
+
+                # Are the classes correct?
+                if classes >= definition['classes']:
+                    return add_latex(elem, definition['latex'])
+
+def prepare(doc):
+    # Add getIconFont library to doc
+    import icon_font_to_png
+    dir = os.path.dirname(os.path.realpath(__file__))
+    doc.getIconFont = icon_font_to_png.IconFont(
+        dir + '/pandoc_latex_tip-data/font-awesome.css',
+        dir + '/pandoc_latex_tip-data/fontawesome-webfont.ttf'
+    )
+
+    # Prepare the definitions
+    doc.defined = []
+
+    # Get the meta data
+    meta = doc.get_metadata('pandoc-latex-tip')
+
+    if isinstance(meta, list):
+
+        # Loop on all definitions
+        for definition in meta:
+
+            # Verify the definition
+            if isinstance(definition, dict) and 'classes' in definition and isinstance(definition['classes'], list):
+                add_definition(doc, definition)
+
+def finalize(doc):
+    if 'header-includes' not in doc.metadata:
+        doc.metadata['header-includes'] = []
+    doc.metadata['header-includes'].append(MetaInlines(RawInline('\\usepackage{graphicx,grffile}', 'tex')))
+    doc.metadata['header-includes'].append(MetaInlines(RawInline('\\usepackage{marginnote}', 'tex')))
+    doc.metadata['header-includes'].append(MetaInlines(RawInline('\\usepackage{etoolbox}', 'tex')))
+
+def latex_code(prefix, images):
+    latex = [
+        '{',
+        '\\makeatletter',
+        '\\patchcmd{\\@mn@margintest}{\\@tempswafalse}{\\@tempswatrue}{}{}',
+        '\\patchcmd{\\@mn@margintest}{\\@tempswafalse}{\\@tempswatrue}{}{}',
+        '\\makeatother',
+        prefix,
+        '\\marginnote{'
+    ] + images + [
+        '}[0pt]',
+        '\\vspace{0cm}',
+        '}',
+    ]
+    return ''.join(latex)
+
+def get_icons(doc, definition):
+    icons = [{'name': 'exclamation-circle', 'color': 'black'}]
+
+    # Test the icons definition
+    if 'icons' in definition and isinstance(definition['icons'], list):
+        icons = []
+        for icon in definition['icons']:
+            if isinstance(icon, str) or isinstance(icon, unicode):
+                # Simple icon
+                color = 'black'
+                name = icon
+            elif isinstance(icon, dict) and 'color' in icon and 'name' in icon:
+                # Complex icon with name and color
+                color = str(icon['color'])
+                name = str(icon['name'])
             else:
-                array.append(walk(item, action, format, meta))
-        return array
-    elif isinstance(x, dict):
-        for k in x:
-            x[k] = walk(x[k], action, format, meta)
-        return x
-    else:
-        return x
+                # Bad formed icon
+                debug('[WARNING] pandoc-latex-tip: Bad formed icon')
+                break
 
-def tip(key, value, format, meta):
-    # Is it a Span and the right format?
-    if key in ['Span', 'Div'] and format == 'latex':
+            # Lower the color
+            lowerColor = color.lower()
 
-        # Get the attributes
-        [[id, classes, properties], content] = value
+            # Convert the color to black if unexisting
+            from PIL import ImageColor
+            if lowerColor not in ImageColor.colormap:
+                debug('[WARNING] pandoc-latex-tip: ' + lowerColor + ' is not a correct color name; using black')
+                lowerColor = 'black'
 
-        # Use the Span classes as a set
-        currentClasses = set(classes)
+            # Is the icon correct?
+            try:
+                if name in doc.getIconFont.css_icons:
+                    icons.append({'name': name, 'color': lowerColor})
+                else:
+                    debug('[WARNING] pandoc-latex-tip: ' + name + ' is not a correct icon name')
+            except FileNotFoundError:
+                debug('[WARNING] pandoc-latex-tip: error in accessing to icons definition')
 
-        # Loop on all tip definition
-        for elt in getDefined(meta):
+    return icons
 
-            # Is the classes correct?
-            if currentClasses >= elt['classes']:
+def get_prefix(definition):
+    if 'position' in definition:
+        if definition['position'] == 'right':
+            return '\\normalmarginpar'
+        elif definition['position'] == 'left':
+            return '\\reversemarginpar'
+        else:
+            debug('[WARNING] pandoc-latex-tip: ' + position + ' is not a correct position; using left')
+            return '\\reversemarginpar'
+    return '\\reversemarginpar'
 
-                # Prepend a tex block for inserting images
-                if key == 'Span':
-                    return [RawInline('tex', elt['latex']), Span([id, classes, properties], content)]
-                elif key == 'Div':
-                    return [RawBlock('tex', elt['latex']), Div([id, classes, properties], content)]
+def get_size(definition):
+   # Get the size
+    size = '18'
+    if 'size' in definition:
+        try:
+            intValue = int(definition['size'])
+            if intValue > 0:
+                size = str(intValue)
+            else:
+                debug('[WARNING] pandoc-latex-tip: size must be greater than 0; using ' + size)
+        except ValueError:
+            debug('[WARNING] pandoc-latex-tip: size must be a number; using ' + size)
+    return size
 
-def getIconFont():
-    if not hasattr(getIconFont, 'value'):
-        import icon_font_to_png
-        getIconFont.value = icon_font_to_png.IconFont(
-            os.path.dirname(os.path.realpath(__file__)) + '/pandoc_latex_tip-data/font-awesome.css',
-            os.path.dirname(os.path.realpath(__file__)) + '/pandoc_latex_tip-data/fontawesome-webfont.ttf'
-        )
-    return getIconFont.value
+def get_images(icons, size):
+    # Generate the LaTeX image code
+    images = []
 
-def getDefined(meta):
-    if not hasattr(getDefined, 'value'):
-        # Prepare the values
-        getDefined.value = []
+    for icon in icons:
 
-        # Get the meta data
-        if 'pandoc-latex-tip' in meta and meta['pandoc-latex-tip']['t'] == 'MetaList':
-            tipMeta = meta['pandoc-latex-tip']['c']
+        # Get the apps dirs
+        from pkg_resources import get_distribution
+        from appdirs import AppDirs
+        dirs = AppDirs('pandoc_latex_tip', version = get_distribution('pandoc_latex_tip').version)
 
-            # Loop on all definitions
-            for definition in tipMeta:
+        # Get the image from the App cache folder
+        image = dirs.user_cache_dir + '/' + icon['color'] + '/' + icon['name'] + '.png'
 
-                # Verify the definition type
-                if definition['t'] == 'MetaMap':
+        # Create the image if not existing in the cache
+        try:
+            if not os.path.isfile(image):
 
-                     # Get the classes
-                    classes = []
-                    if 'classes' in definition['c'] and definition['c']['classes']['t'] == 'MetaList':
-                        for klass in definition['c']['classes']['c']:
-                            classes.append(stringify(klass))
+                # Create the image in the cache
+                doc.getIconFont.export_icon(
+                    icon['name'],
+                    size = 512,
+                    color = icon['color'],
+                    export_dir = dirs.user_cache_dir + '/' + icon['color']
+                )
 
-                    # Get the icons
-                    icons = [{'name': 'exclamation-circle', 'color': 'black'}]
+            # Add the LaTeX image
+            images.append('\\includegraphics[width=' + size + 'pt]{' + image + '}')
+        except FileNotFoundError:
+            debug('[WARNING] pandoc-latex-tip: error in generating image')
 
-                    # Test the icons definition
-                    if 'icons' in definition['c'] and definition['c']['icons']['t'] == 'MetaList':
-                        icons = []
-                        for icon in definition['c']['icons']['c']:
-                            if icon['t'] == 'MetaInlines':
-                                # Simple icon
-                                color = 'black'
-                                name = stringify(icon['c'])
-                            elif icon['t'] == 'MetaMap' and 'color' in icon['c'] and 'name' in icon['c']:
-                                # Complex icon with name and color
-                                color = stringify(icon['c']['color'])
-                                name = stringify(icon['c']['name'])
-                            else:
-                                # Bad formed icon
-                                break
+    return images
 
-                            # Lower the color
-                            lowerColor = color.lower()
+def add_definition(doc, definition):
+    # Get the classes
+    classes = definition['classes']
 
-                            # Convert the color to black if unexisting
-                            from PIL import ImageColor
-                            if lowerColor not in ImageColor.colormap:
-                                lowerColor = 'black'
+    # Get the icons
+    icons = get_icons(doc, definition)
 
-                            # Is the icon correct?
-                            try:
-                                if name in getIconFont().css_icons:
-                                    icons.append({'name': name, 'color': lowerColor})
-                            except FileNotFoundError:
-                                pass
+    # Add a definition if correct
+    if bool(classes) and bool(icons):
 
-                    # Add a definition if correct
-                    if bool(classes) and bool(icons):
+        # Get the images
+        images = get_images(icons, get_size(definition))
 
-                        # Generate the LaTeX image code
-                        images = []
+        # Get the prefix
+        prefix = get_prefix(definition)
 
-                       # Get the size
-                        size = '18'
-                        if 'size' in definition['c'] and definition['c']['size']['t'] == 'MetaString':
-                            try:
-                                intValue = int(definition['c']['size']['c'])
-                                if intValue > 0:
-                                    size = str(intValue)
-                            except ValueError:
-                                pass
+        doc.defined.append({'classes' : set(classes), 'latex': latex_code(prefix, images)})
 
-                        for icon in icons:
-
-                            # Get the apps dirs
-                            from pkg_resources import get_distribution
-                            from appdirs import AppDirs
-                            dirs = AppDirs('pandoc_latex_tip', version = get_distribution('pandoc_latex_tip').version)
-
-                            # Get the image from the App cache folder
-                            image = dirs.user_cache_dir + '/' + icon['color'] + '/' + icon['name'] + '.png'
-
-                            # Create the image if not existing in the cache
-                            try:
-                                if not os.path.isfile(image):
-
-                                    # Create the image in the cache
-                                    getIconFont().export_icon(
-                                        icon['name'],
-                                        size = 512,
-                                        color = icon['color'],
-                                        export_dir = dirs.user_cache_dir + '/' + icon['color']
-                                    )
-
-                                # Add the LaTeX image
-                                images.append('\\includegraphics[width=' + size + 'pt]{' + image + '}')
-                            except FileNotFoundError:
-                                pass
-
-                        # Get the prefix
-                        prefix = '\\reversemarginpar'
-
-                        if 'position' in definition['c'] and\
-                            definition['c']['position']['t'] == 'MetaInlines' and\
-                            stringify(definition['c']['position']['c']) == 'right':
-
-                            prefix = '\\normalmarginpar'
-
-                        latex = [
-                            '{',
-                            '\\makeatletter',
-                            '\\patchcmd{\\@mn@margintest}{\\@tempswafalse}{\\@tempswatrue}{}{}',
-                            '\\patchcmd{\\@mn@margintest}{\\@tempswafalse}{\\@tempswatrue}{}{}',
-                            '\\makeatother',
-                            prefix,
-                            '\\marginnote{'
-                        ] + images + [
-                            '}[0pt]',
-                            '}',
-                        ]
-
-                        getDefined.value.append({'classes' : set(classes), 'latex': ''.join(latex)})
-
-        if 'header-includes' not in meta:
-            meta['header-includes'] = {u'c': [], u't': u'MetaList'}
-
-        meta['header-includes']['c'].append({
-            'c': [{'t': 'RawInline', 'c': ['tex', '\\usepackage{graphicx,grffile}']}],
-            't': 'MetaInlines'
-        })
-        meta['header-includes']['c'].append({
-            'c': [{'t': 'RawInline', 'c': ['tex', '\\usepackage{marginnote}']}],
-            't': 'MetaInlines'
-        })
-        meta['header-includes']['c'].append({
-            'c': [{'t': 'RawInline', 'c': ['tex', '\\usepackage{etoolbox}']}],
-            't': 'MetaInlines'
-        })
-
-    return getDefined.value
-
-def main():
-    toJSONFilters([tip])
+def main(doc = None):
+    run_filter(tip, prepare = prepare, finalize = finalize, doc = doc)
 
 if __name__ == '__main__':
     main()
