@@ -8,28 +8,38 @@ def metadata():
     return {
         'pandoc-latex-tip': MetaList(
             MetaMap(
-                classes=MetaList(MetaString('class1'), MetaString('class2'))
+                classes = MetaList(MetaString('tip'), MetaString('listing')),
+                icons = MetaList(MetaMap(name = MetaString('file-text'), color=MetaString('darksalmon'))),
+                size = MetaString('36'),
+                position = MetaString('right')
+            ),
+            MetaMap(
+                classes = MetaList(MetaString('tip'))
             )
         )
     }
 
 def test_span():
-    doc = Doc(Para(Span(classes = ['class1', 'class2'])), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    doc = Doc(Para(Span(classes = ['tip', 'listing']), Span(classes = ['tip'])), metadata=metadata(), format='latex', api_version=(1, 17, 2))
     pandoc_latex_tip.main(doc)
     assert doc.content[0].content[0].format == 'tex'
+    assert doc.content[0].content[2].format == 'tex'
 
 def test_div():
-    doc = Doc(Div(classes = ['class1', 'class2']), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    doc = Doc(Div(classes = ['tip', 'listing']), Div(classes = ['tip']), metadata=metadata(), format='latex', api_version=(1, 17, 2))
     pandoc_latex_tip.main(doc)
     assert doc.content[0].format == 'tex'
+    assert doc.content[2].format == 'tex'
 
 def test_code():
-    doc = Doc(Para(Code('', classes = ['class1', 'class2'])), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    doc = Doc(Para(Code('', classes = ['tip', 'listing']), Code('', classes = ['tip'])), metadata=metadata(), format='latex', api_version=(1, 17, 2))
     pandoc_latex_tip.main(doc)
     assert doc.content[0].content[0].format == 'tex'
+    assert doc.content[0].content[2].format == 'tex'
 
 def test_codeblock():
-    doc = Doc(CodeBlock('', classes = ['class1', 'class2']), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    doc = Doc(CodeBlock('', classes = ['tip', 'listing']), CodeBlock('', classes = ['tip']), metadata=metadata(), format='latex', api_version=(1, 17, 2))
     pandoc_latex_tip.main(doc)
     assert doc.content[0].format == 'tex'
+    assert doc.content[2].format == 'tex'
 

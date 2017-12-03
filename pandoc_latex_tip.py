@@ -96,11 +96,11 @@ def get_icons(doc, definition):
     if 'icons' in definition and isinstance(definition['icons'], list):
         icons = []
         for icon in definition['icons']:
-            add_icon(doc, icons, icon)
+            check_icon(doc, icons, icon)
 
     return icons
 
-def add_icon(doc, icons, icon):
+def check_icon(doc, icons, icon):
     if isinstance(icon, str) or isinstance(icon, unicode):
         # Simple icon
         color = 'black'
@@ -114,6 +114,9 @@ def add_icon(doc, icons, icon):
         debug('[WARNING] pandoc-latex-tip: Bad formed icon')
         return
 
+    add_icon(doc, icons, color, name)
+
+def add_icon(doc, icons, color, name):
     # Lower the color
     lowerColor = color.lower()
 
