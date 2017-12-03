@@ -9,37 +9,85 @@ def metadata():
         'pandoc-latex-tip': MetaList(
             MetaMap(
                 classes = MetaList(MetaString('tip'), MetaString('listing')),
-                icons = MetaList(MetaMap(name = MetaString('file-text'), color=MetaString('darksalmon'))),
+                icons = MetaList(MetaMap(name = MetaString('file-text'), color=MetaString('darksalmon')), MetaString('comments')),
                 size = MetaString('36'),
                 position = MetaString('right')
             ),
             MetaMap(
-                classes = MetaList(MetaString('tip'))
+                classes = MetaList(MetaString('warning')),
+                icons  = MetaString('comments')
+            ),
+            MetaMap(
+                classes = MetaList(MetaString('tip')),
+                position  = MetaString('left')
             )
         )
     }
 
 def test_span():
-    doc = Doc(Para(Span(classes = ['tip', 'listing']), Span(classes = ['tip'])), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    doc = Doc(
+        Para(
+            Span(classes = ['tip', 'listing']),
+            Span(classes = ['tip']),
+            Span(classes = ['warning']),
+            Span(attributes = {'latex-tip-icon': 'warning', 'latex-tip-position': 'right', 'latex-tip-size': 24})
+        ),
+        metadata=metadata(),
+        format='latex',
+        api_version=(1, 17, 2)
+    )
     pandoc_latex_tip.main(doc)
     assert doc.content[0].content[0].format == 'tex'
     assert doc.content[0].content[2].format == 'tex'
+    assert doc.content[0].content[4].format == 'tex'
+    assert doc.content[0].content[6].format == 'tex'
 
 def test_div():
-    doc = Doc(Div(classes = ['tip', 'listing']), Div(classes = ['tip']), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    doc = Doc(
+        Div(classes = ['tip', 'listing']),
+        Div(classes = ['tip']),
+        Div(classes = ['warning']),
+        Div(attributes = {'latex-tip-icon': 'warning', 'latex-tip-position': 'right', 'latex-tip-size': 24}),
+        metadata=metadata(),
+        format='latex',
+        api_version=(1, 17, 2)
+    )
     pandoc_latex_tip.main(doc)
     assert doc.content[0].format == 'tex'
     assert doc.content[2].format == 'tex'
+    assert doc.content[4].format == 'tex'
+    assert doc.content[6].format == 'tex'
 
 def test_code():
-    doc = Doc(Para(Code('', classes = ['tip', 'listing']), Code('', classes = ['tip'])), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    doc = Doc(
+        Para(
+            Code('', classes = ['tip', 'listing']),
+            Code('', classes = ['tip']),
+            Code('', classes = ['warning']),
+            Code('', attributes = {'latex-tip-icon': 'warning', 'latex-tip-position': 'right', 'latex-tip-size': 24}),
+        ),
+        metadata=metadata(),
+        format='latex',
+        api_version=(1, 17, 2)
+    )
     pandoc_latex_tip.main(doc)
     assert doc.content[0].content[0].format == 'tex'
     assert doc.content[0].content[2].format == 'tex'
+    assert doc.content[0].content[4].format == 'tex'
+    assert doc.content[0].content[6].format == 'tex'
 
 def test_codeblock():
-    doc = Doc(CodeBlock('', classes = ['tip', 'listing']), CodeBlock('', classes = ['tip']), metadata=metadata(), format='latex', api_version=(1, 17, 2))
+    doc = Doc(
+        CodeBlock('', classes = ['tip', 'listing']),
+        CodeBlock('', classes = ['tip']),
+        CodeBlock('', classes = ['warning']),
+        CodeBlock('', attributes = {'latex-tip-icon': 'warning', 'latex-tip-position': 'right', 'latex-tip-size': 24}),
+        metadata=metadata(), format='latex',
+        api_version=(1, 17, 2)
+    )
     pandoc_latex_tip.main(doc)
     assert doc.content[0].format == 'tex'
     assert doc.content[2].format == 'tex'
+    assert doc.content[4].format == 'tex'
+    assert doc.content[6].format == 'tex'
 
