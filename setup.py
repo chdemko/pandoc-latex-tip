@@ -143,7 +143,6 @@ setup(
     # include_package_data = True,
 
     setup_requires=[
-        'coveralls',
         'pytest-runner',
         'icon_font_to_png>=0.4',
         'appdirs>=1.4.0'
