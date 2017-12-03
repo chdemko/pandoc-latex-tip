@@ -100,6 +100,12 @@ def get_icons(doc, definition):
 
     return icons
 
+# Fix unicode for python3
+try:
+    unicode = unicode
+except (NameError):
+    unicode = str
+
 def check_icon(doc, icons, icon):
     if isinstance(icon, str) or isinstance(icon, unicode):
         # Simple icon
