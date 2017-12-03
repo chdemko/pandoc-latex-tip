@@ -9,6 +9,7 @@ before_install:
   - pandoc -v
 install:
   - pip install coveralls
+  - pip install icon_font_to_png
 script:
   - python setup.py build_ext -i
   - python -m compileall -f .
