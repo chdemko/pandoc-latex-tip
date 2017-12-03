@@ -22,22 +22,31 @@ except (IOError, ImportError):
     with open(path.join(here, 'README.md'), encoding='utf-8') as f:
         long_description = f.read()
 
-from distutils.command.install import install as _install
+from distutils.command.build_py import build_py as _build_py
+from distutils.command.build_ext import build_ext as _build_ext
 
-def _post_install(dir):
+def _post():
     import icon_font_to_png
-    directory = dir + '/pandoc_latex_tip-data'
+    from pkg_resources import get_distribution
+    from appdirs import AppDirs
+    dirs = AppDirs('pandoc_latex_tip', version = get_distribution('pandoc_latex_tip').version)
+    directory = dirs.user_data_dir
     if not path.exists(directory):
         makedirs(directory)
     icon_font_to_png.FontAwesomeDownloader(directory).download_files()
 
-class install(_install):
+class build_py(_build_py):
     def run(self):
-        _install.run(self)
-        self.execute(_post_install, (self.install_lib,), msg="Running post install task")
+        _build_py.run(self)
+        self.execute(_post, (), msg="Running post build task")
+
+class build_ext(_build_ext):
+    def run(self):
+        _build_ext.run(self)
+        self.execute(_post, (), msg="Running post build task")
 
 setup(
-    cmdclass={'install': install},
+    cmdclass={'build_py': build_py, 'build_ext': build_ext},
     name='pandoc-latex-tip',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing

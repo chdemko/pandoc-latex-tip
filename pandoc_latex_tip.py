@@ -43,10 +43,12 @@ def tip(elem, doc):
 def prepare(doc):
     # Add getIconFont library to doc
     import icon_font_to_png
-    dir = os.path.dirname(os.path.realpath(__file__))
+    from pkg_resources import get_distribution
+    from appdirs import AppDirs
+    dirs = AppDirs('pandoc_latex_tip', version = get_distribution('pandoc_latex_tip').version)
     doc.getIconFont = icon_font_to_png.IconFont(
-        dir + '/pandoc_latex_tip-data/font-awesome.css',
-        dir + '/pandoc_latex_tip-data/fontawesome-webfont.ttf'
+        dirs.user_data_dir + '/font-awesome.css',
+        dirs.user_data_dir + '/fontawesome-webfont.ttf'
     )
 
     # Prepare the definitions
@@ -94,38 +96,41 @@ def get_icons(doc, definition):
     if 'icons' in definition and isinstance(definition['icons'], list):
         icons = []
         for icon in definition['icons']:
-            if isinstance(icon, str) or isinstance(icon, unicode):
-                # Simple icon
-                color = 'black'
-                name = icon
-            elif isinstance(icon, dict) and 'color' in icon and 'name' in icon:
-                # Complex icon with name and color
-                color = str(icon['color'])
-                name = str(icon['name'])
-            else:
-                # Bad formed icon
-                debug('[WARNING] pandoc-latex-tip: Bad formed icon')
-                break
-
-            # Lower the color
-            lowerColor = color.lower()
-
-            # Convert the color to black if unexisting
-            from PIL import ImageColor
-            if lowerColor not in ImageColor.colormap:
-                debug('[WARNING] pandoc-latex-tip: ' + lowerColor + ' is not a correct color name; using black')
-                lowerColor = 'black'
-
-            # Is the icon correct?
-            try:
-                if name in doc.getIconFont.css_icons:
-                    icons.append({'name': name, 'color': lowerColor})
-                else:
-                    debug('[WARNING] pandoc-latex-tip: ' + name + ' is not a correct icon name')
-            except FileNotFoundError:
-                debug('[WARNING] pandoc-latex-tip: error in accessing to icons definition')
+        	add_icon(doc, icons, icon)
 
     return icons
+
+def add_icon(doc, icons, icon):
+    if isinstance(icon, str) or isinstance(icon, unicode):
+        # Simple icon
+        color = 'black'
+        name = icon
+    elif isinstance(icon, dict) and 'color' in icon and 'name' in icon:
+        # Complex icon with name and color
+        color = str(icon['color'])
+        name = str(icon['name'])
+    else:
+        # Bad formed icon
+        debug('[WARNING] pandoc-latex-tip: Bad formed icon')
+        return
+
+    # Lower the color
+    lowerColor = color.lower()
+
+    # Convert the color to black if unexisting
+    from PIL import ImageColor
+    if lowerColor not in ImageColor.colormap:
+        debug('[WARNING] pandoc-latex-tip: ' + lowerColor + ' is not a correct color name; using black')
+        lowerColor = 'black'
+
+    # Is the icon correct?
+    try:
+        if name in doc.getIconFont.css_icons:
+            icons.append({'name': name, 'color': lowerColor})
+        else:
+            debug('[WARNING] pandoc-latex-tip: ' + name + ' is not a correct icon name')
+    except FileNotFoundError:
+        debug('[WARNING] pandoc-latex-tip: error in accessing to icons definition')
 
 def get_prefix(definition):
     if 'position' in definition:
