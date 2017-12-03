@@ -96,7 +96,7 @@ def get_icons(doc, definition):
     if 'icons' in definition and isinstance(definition['icons'], list):
         icons = []
         for icon in definition['icons']:
-        	add_icon(doc, icons, icon)
+            add_icon(doc, icons, icon)
 
     return icons
 
@@ -157,7 +157,7 @@ def get_size(definition):
             debug('[WARNING] pandoc-latex-tip: size must be a number; using ' + size)
     return size
 
-def get_images(icons, size):
+def get_images(doc, icons, size):
     # Generate the LaTeX image code
     images = []
 
@@ -201,7 +201,7 @@ def add_definition(doc, definition):
     if bool(classes) and bool(icons):
 
         # Get the images
-        images = get_images(icons, get_size(definition))
+        images = get_images(doc, icons, get_size(definition))
 
         # Get the prefix
         prefix = get_prefix(definition)
