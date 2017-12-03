@@ -33,7 +33,7 @@ def _post():
     directory = dirs.user_data_dir
     if not path.exists(directory):
         makedirs(directory)
-    icon_font_to_png.FontAwesomeDownloader(directory).download_files()
+        icon_font_to_png.FontAwesomeDownloader(directory).download_files()
 
 class build_py(_build_py):
     def run(self):
