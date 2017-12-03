@@ -62,7 +62,7 @@ setup(
     url='https://github.com/chdemko/pandoc-latex-tip',
 
     # The project's download page
-    download_url = 'https://github.com/chdemko/pandoc-latex-tip/archive/1.2.0.zip',
+    download_url = 'https://github.com/chdemko/pandoc-latex-tip/archive/master.zip',
 
     # Author details
     author='Christophe Demko',
