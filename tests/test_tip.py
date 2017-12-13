@@ -88,6 +88,6 @@ def test_codeblock():
     pandoc_latex_tip.main(doc)
     assert doc.content[0].format == 'tex'
     assert doc.content[2].format == 'tex'
-    assert doc.content[4].format == 'tex'
-    assert doc.content[6].format == 'tex'
+    assert doc.content[5].format == 'tex'
+    assert doc.content[8].format == 'tex'
 

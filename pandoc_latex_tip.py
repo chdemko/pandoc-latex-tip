@@ -47,9 +47,19 @@ def add_latex(elem, latex):
         if isinstance(elem, Span) or isinstance(elem, Code):
             return [RawInline(latex, 'tex'), elem]
 
-        # It is a Div or a CodeBlock
+        # It is a CodeBlock: create a minipage to ensure the tip to be on the same page as the codeblock
+        elif isinstance(elem, CodeBlock):
+            return [RawBlock('\\begin{minipage}{\\textwidth}' + latex, 'tex'), elem, RawBlock('\\end{minipage}', 'tex')]
+        # It is a Div: try to insert an inline raw before the first inline element
         else:
-            return [RawBlock(latex, 'tex'), elem]
+            inserted = [False]
+            def insert(elem, doc):
+                if not inserted[0] and isinstance(elem, Inline) and not isinstance(elem.parent, Inline):
+                    inserted[0] = True
+                    return [RawInline(latex, 'tex'), elem]
+            elem.walk(insert)
+            if not inserted[0]:
+                return [RawBlock(latex, 'tex'), elem]
 
 def latex_code(doc, definition, key_icon, key_position, key_size, key_color):
     # Get the default color
