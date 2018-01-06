@@ -261,7 +261,7 @@ def finalize(doc):
     doc.metadata['header-includes'].append(MetaInlines(RawInline('\\usepackage{etoolbox}', 'tex')))
 
 def main(doc = None):
-    run_filter(tip, prepare = prepare, finalize = finalize, doc = doc)
+    return run_filter(tip, prepare = prepare, finalize = finalize, doc = doc)
 
 if __name__ == '__main__':
     main()
