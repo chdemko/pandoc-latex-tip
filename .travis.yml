@@ -12,7 +12,10 @@ before_install:
   - sudo apt install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
 install:
   - pip install coveralls
+  - pip install tox-travis
 script:
+  - tox
   - coverage run --source=pandoc_latex_tip setup.py test
+  - coverage report -m
 after_success:
   - coveralls
