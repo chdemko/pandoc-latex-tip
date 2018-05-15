@@ -33,7 +33,10 @@ def _post():
     directory = dirs.user_data_dir
     if not path.exists(directory):
         makedirs(directory)
-        icon_font_to_png.FontAwesomeDownloader(directory).download_files()
+        downloader = icon_font_to_png.FontAwesomeDownloader(directory)
+        downloader.css_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/css/font-awesome.css'
+        downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/fonts/fontawesome-webfont.ttf'
+        downloader.download_files()
 
 class build_py(_build_py):
     def run(self):

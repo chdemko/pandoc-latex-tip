@@ -9,7 +9,7 @@
 [![Python version](https://img.shields.io/pypi/pyversions/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 [![Development Status](https://img.shields.io/pypi/status/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 
-*pandoc-latex-tip* is a [pandoc] filter for adding icon tooltips in the margin using the [Font-Awesome icons collection (Font Awesome by Dave Gandy - http://fontawesome.io)](http://fontawesome.io/).
+*pandoc-latex-tip* is a [pandoc] filter for adding icon tooltips in the margin using the [Font-Awesome icons collection 4.7.0 (Font Awesome by Dave Gandy - https://fontawesome.com/v4.7.0/)](https://fontawesome.com/v4.7.0/).
 It uses the *icon_font_to_png* package to generate on-fly images.
 
 [pandoc]: http://pandoc.org/
