@@ -254,8 +254,13 @@ def prepare(doc):
                 add_definition(doc, definition)
 
 def finalize(doc):
+    # Add header-includes if necessary
     if 'header-includes' not in doc.metadata:
-        doc.metadata['header-includes'] = []
+        doc.metadata['header-includes'] = MetaList()
+    # Convert header-includes to MetaList if necessary
+    elif not isinstance(doc.metadata['header-includes'], MetaList):
+        doc.metadata['header-includes'] = MetaList(doc.metadata['header-includes'])
+
     doc.metadata['header-includes'].append(MetaInlines(RawInline('\\usepackage{graphicx,grffile}', 'tex')))
     doc.metadata['header-includes'].append(MetaInlines(RawInline('\\usepackage{marginnote}', 'tex')))
     doc.metadata['header-includes'].append(MetaInlines(RawInline('\\usepackage{etoolbox}', 'tex')))
