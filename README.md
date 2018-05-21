@@ -43,6 +43,10 @@ To upgrade the Font-Awesome icons collection add the `--force` flag
 
     pip install --upgrade --force pandoc-latex-tip
 
+To upgrade to the current code, use
+
+    pip install --upgrade --force git+https://github.com/chdemko/pandoc-latex-tip
+
 `pip` is a script that downloads and installs modules from the Python Package Index, [PyPI].  It should come installed with your python distribution. If you are running linux, `pip` may be bundled separately. On a Debian-based system (including Ubuntu), you can install it as root using
 
     apt-get update
