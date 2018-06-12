@@ -15,7 +15,7 @@ except NameError:
 
 def tip(elem, doc):
     # Is it in the right format and is it a Span, Div?
-    if doc.format == 'latex' and elem.tag in ['Span', 'Div', 'Code', 'CodeBlock']:
+    if doc.format in ['latex', 'beamer'] and elem.tag in ['Span', 'Div', 'Code', 'CodeBlock']:
 
         # Is there a latex-tip-icon attribute?
         if 'latex-tip-icon' in elem.attributes:
