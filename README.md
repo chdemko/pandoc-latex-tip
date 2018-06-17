@@ -5,7 +5,6 @@
 [![PyPI version](https://img.shields.io/pypi/v/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 [![PyPI format](https://img.shields.io/pypi/format/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 [![License](https://img.shields.io/pypi/l/pandoc-latex-tip.svg)](https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/master/LICENSE)
-[![Downloads](https://img.shields.io/pypi/dm/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 [![Python version](https://img.shields.io/pypi/pyversions/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 [![Development Status](https://img.shields.io/pypi/status/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 
