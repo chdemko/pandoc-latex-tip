@@ -1,10 +1,10 @@
 # pandoc-latex-tip
-[![Build Status](https://img.shields.io/travis/chdemko/pandoc-latex-tip/1.3.3.svg)](https://travis-ci.org/chdemko/pandoc-latex-tip/branches)
-[![Coveralls](https://img.shields.io/coveralls/github/chdemko/pandoc-latex-tip/1.3.3.svg)](https://coveralls.io/github/chdemko/pandoc-latex-tip?branch=1.3.3)
+[![Build Status](https://img.shields.io/travis/chdemko/pandoc-latex-tip/master.svg)](https://travis-ci.org/chdemko/pandoc-latex-tip/branches)
+[![Coveralls](https://img.shields.io/coveralls/github/chdemko/pandoc-latex-tip/master.svg)](https://coveralls.io/github/chdemko/pandoc-latex-tip?branch=master)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/chdemko/pandoc-latex-tip.svg)](https://scrutinizer-ci.com/g/chdemko/pandoc-latex-tip/)
 [![PyPI version](https://img.shields.io/pypi/v/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
-[![PyPI format](https://img.shields.io/pypi/format/pandoc-latex-tip/1.3.3.svg)](https://pypi.org/project/pandoc-latex-tip/1.3.3/)
-[![License](https://img.shields.io/pypi/l/pandoc-latex-tip/1.3.3.svg)](https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/1.3.3/LICENSE)
+[![PyPI format](https://img.shields.io/pypi/format/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
+[![License](https://img.shields.io/pypi/l/pandoc-latex-tip.svg)](https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/master/LICENSE)
 [![Python version](https://img.shields.io/pypi/pyversions/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 [![Development Status](https://img.shields.io/pypi/status/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 
