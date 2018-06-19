@@ -100,7 +100,12 @@ def latex_code(doc, definition, key_icon, key_position, key_size, key_color):
 
 
 def get_icons(doc, definition, key_icons, color):
-    icons = [{'name': 'exclamation-circle', 'color': color}]
+    icons = [{
+        'name': 'exclamation-circle',
+        'color': color,
+        'version': '4.7',
+        'variant': 'regular'
+    }]
 
     # Test the icons definition
     if key_icons in definition:
@@ -120,6 +125,8 @@ except (NameError):
     unicode = str
 
 def check_icon(doc, icons, icon, color):
+    version = '4.7'
+    variant = 'regular'
     if isinstance(icon, str) or isinstance(icon, unicode):
         # Simple icon
         name = icon
@@ -127,14 +134,19 @@ def check_icon(doc, icons, icon, color):
         # Complex icon with name and color
         color = str(icon['color'])
         name = str(icon['name'])
+        version
+        if 'version' in icon:
+            version = str(icon['version'])
+        if 'variant' in icon:
+            variant = str(icon['variant'])
     else:
         # Bad formed icon
         debug('[WARNING] pandoc-latex-tip: Bad formed icon')
         return
 
-    add_icon(doc, icons, color, name)
+    add_icon(doc, icons, color, name, version, variant)
 
-def add_icon(doc, icons, color, name):
+def add_icon(doc, icons, color, name, version, variant):
     # Lower the color
     lowerColor = color.lower()
 
@@ -146,10 +158,14 @@ def add_icon(doc, icons, color, name):
 
     # Is the icon correct?
     try:
-        if name in doc.getIconFont.css_icons:
-            icons.append({'name': name, 'color': lowerColor})
+        category = version + '-' + variant
+        if category in doc.get_icon_font:
+            if name in doc.get_icon_font[category].css_icons:
+                icons.append({'name': name, 'color': lowerColor, 'version': version, 'variant': variant})
+            else:
+                debug('[WARNING] pandoc-latex-tip: ' + name + ' is not a correct icon name')
         else:
-            debug('[WARNING] pandoc-latex-tip: ' + name + ' is not a correct icon name')
+            debug('[WARNING] pandoc-latex-tip: ' + variant + ' does not exist in version ' + version)
     except FileNotFoundError:
         debug('[WARNING] pandoc-latex-tip: error in accessing to icons definition')
 
@@ -196,22 +212,24 @@ def create_images(doc, icons, size):
         dirs = AppDirs('pandoc_latex_tip', version = get_distribution('pandoc_latex_tip').version)
 
         # Get the image from the App cache folder
-        image = dirs.user_cache_dir + '/' + icon['color'] + '/' + icon['name'] + '.png'
+        image_dir = os.path.join(dirs.user_cache_dir, icon['version'], icon['variant'], icon['color'])
+        image = os.path.join(image_dir, icon['name'] + '.png')
 
         # Create the image if not existing in the cache
         try:
             if not os.path.isfile(image):
-
                 # Create the image in the cache
-                doc.getIconFont.export_icon(
+                doc.get_icon_font[icon['version'] + '-' + icon['variant']].export_icon(
                     icon['name'],
-                    size = 512,
+                    512,
                     color = icon['color'],
-                    export_dir = dirs.user_cache_dir + '/' + icon['color']
+                    export_dir = image_dir
                 )
 
             # Add the LaTeX image
             images.append('\\includegraphics[width=' + size + 'pt]{' + image + '}')
+        except TypeError:
+            debug('[WARNING] pandoc-latex-tip: icon name ' + icon['name'] + ' does not exist in variant ' + icon['variant'])
         except FileNotFoundError:
             debug('[WARNING] pandoc-latex-tip: error in generating image')
 
@@ -233,10 +251,24 @@ def prepare(doc):
     from pkg_resources import get_distribution
     from appdirs import AppDirs
     dirs = AppDirs('pandoc_latex_tip', version = get_distribution('pandoc_latex_tip').version)
-    doc.getIconFont = icon_font_to_png.IconFont(
-        dirs.user_data_dir + '/font-awesome.css',
-        dirs.user_data_dir + '/fontawesome-webfont.ttf'
-    )
+    doc.get_icon_font = {
+        '4.7-regular': icon_font_to_png.IconFont(
+            os.path.join(dirs.user_data_dir, '4.7', 'font-awesome.css'),
+            os.path.join(dirs.user_data_dir, '4.7', 'fontawesome-webfont.ttf')
+        ),
+        '5.0-brands': icon_font_to_png.IconFont(
+            os.path.join(dirs.user_data_dir, '5.0', 'fontawesome.css'),
+            os.path.join(dirs.user_data_dir, '5.0', 'fa-brands-400.ttf')
+        ),
+        '5.0-regular': icon_font_to_png.IconFont(
+            os.path.join(dirs.user_data_dir, '5.0', 'fontawesome.css'),
+            os.path.join(dirs.user_data_dir, '5.0', 'fa-regular-400.ttf')
+        ),
+        '5.0-solid': icon_font_to_png.IconFont(
+            os.path.join(dirs.user_data_dir, '5.0', 'fontawesome.css'),
+            os.path.join(dirs.user_data_dir, '5.0', 'fa-solid-900.ttf')
+        )
+    }
 
     # Prepare the definitions
     doc.defined = []

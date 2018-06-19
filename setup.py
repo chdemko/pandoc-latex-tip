@@ -29,7 +29,16 @@ def _post():
     import icon_font_to_png
     from pkg_resources import get_distribution
     from appdirs import AppDirs
-    dirs = AppDirs('pandoc_latex_tip', version = get_distribution('pandoc_latex_tip').version)
+    import os
+
+    # fontawesome 4.7
+    dirs = AppDirs(
+        os.path.join(
+            'pandoc_latex_tip',
+            get_distribution('pandoc_latex_tip').version,
+            '4.7'
+        )
+    )
     directory = dirs.user_data_dir
     if not path.exists(directory):
         makedirs(directory)
@@ -37,6 +46,46 @@ def _post():
         downloader.css_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/css/font-awesome.css'
         downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/fonts/fontawesome-webfont.ttf'
         downloader.download_files()
+
+    # fontawesome 5.0
+    dirs = AppDirs(
+        os.path.join(
+            'pandoc_latex_tip',
+            get_distribution('pandoc_latex_tip').version,
+            '5.0'
+        )
+    )
+    directory = dirs.user_data_dir
+    if not path.exists(directory):
+        makedirs(directory)
+
+        import requests
+        import re
+        from distutils.version import StrictVersion
+        try:
+            versions = requests.get('https://api.github.com/repos/FortAwesome/Font-Awesome/tags').json()
+        except ValueError:
+            import sys
+            sys.stderr.write('Unable to get the last version number of the Font-Awesome package on github\n')
+            sys.exit(1)
+
+        latest = '5.0'
+        for version in versions:
+            if re.match('^5.0', version['name']) and StrictVersion(version['name']) > StrictVersion(latest):
+                latest = version['name']
+
+        downloader = icon_font_to_png.FontAwesomeDownloader(directory)
+        downloader.css_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/css/fontawesome.css'
+        # brands
+        downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-brands-400.ttf'
+        downloader.download_files()
+        # regular
+        downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-regular-400.ttf'
+        downloader.download_files()
+        # solid
+        downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-solid-900.ttf'
+        downloader.download_files()
+
 
 class build_py(_build_py):
     def run(self):
@@ -55,7 +104,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.3.3',
+    version='1.4.0',
 
     # The project's description
     description='A pandoc filter for adding tip in LaTeX',
@@ -88,7 +137,7 @@ setup(
 
         # Specify the OS
         'Operating System :: OS Independent',
-        
+
         # Indicate who your project is intended for
         'Environment :: Console',
         'Intended Audience :: End Users/Desktop',
@@ -119,8 +168,7 @@ setup(
             'pandoc-latex-tip = pandoc_latex_tip:main',
         ],
     },
-    
-    
+
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
@@ -128,8 +176,8 @@ setup(
     install_requires=[
         'panflute>=1.10',
         'icon_font_to_png>=0.4',
-        'pillow>=4.3.0',
-        'appdirs>=1.4.0',
+        'pillow>=5.1',
+        'appdirs>=1.4',
         'pypandoc>=1.4'
     ],
 
@@ -148,7 +196,7 @@ setup(
     setup_requires=[
         'pytest-runner',
         'icon_font_to_png>=0.4',
-        'appdirs>=1.4.0'
+        'appdirs>=1.4'
     ],
     tests_require=['pytest', 'coverage'],
 )

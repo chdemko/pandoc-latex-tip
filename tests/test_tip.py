@@ -20,6 +20,15 @@ def metadata():
             MetaMap(
                 classes = MetaList(MetaString('tip')),
                 position  = MetaString('left')
+            ),
+            MetaMap(
+                classes = MetaList(MetaString('v5.0')),
+                icons = MetaList(MetaMap(
+                    name=MetaString('balance-scale'),
+                    version=MetaString('5.0'),
+                    variant=MetaString('solid'),
+                    color=MetaString('orange')
+                ))
             )
         )
     }
@@ -30,6 +39,7 @@ def test_span():
             Span(classes = ['tip', 'listing']),
             Span(classes = ['tip']),
             Span(classes = ['warning']),
+            Span(classes = ['v5.0']),
             Span(attributes = {'latex-tip-icon': 'warning', 'latex-tip-position': 'right', 'latex-tip-size': 24})
         ),
         metadata=metadata(),
@@ -41,6 +51,7 @@ def test_span():
     assert doc.content[0].content[2].format == 'tex'
     assert doc.content[0].content[4].format == 'tex'
     assert doc.content[0].content[6].format == 'tex'
+    assert doc.content[0].content[8].format == 'tex'
 
 def test_div():
     doc = Doc(
