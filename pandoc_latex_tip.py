@@ -27,7 +27,9 @@ def tip(elem, doc):
                     'latex-tip-icon',
                     'latex-tip-position',
                     'latex-tip-size',
-                    'latex-tip-color'
+                    'latex-tip-color',
+                    'latex-tip-version',
+                    'latex-tip-variant'
                 )
             )
         else:
@@ -61,7 +63,7 @@ def add_latex(elem, latex):
             if not inserted[0]:
                 return [RawBlock(latex, 'tex'), elem]
 
-def latex_code(doc, definition, key_icon, key_position, key_size, key_color):
+def latex_code(doc, definition, key_icon, key_position, key_size, key_color, key_version, key_variant):
     # Get the default color
     color = get_color(doc, definition, key_color)
 
@@ -71,8 +73,14 @@ def latex_code(doc, definition, key_icon, key_position, key_size, key_color):
     # Get the prefix
     prefix = get_prefix(doc, definition, key_position)
 
+    # Get the version
+    version = get_version(doc, definition, key_version)
+
+    # Get the variant
+    variant = get_variant(doc, definition, key_variant)
+
     # Get the icons
-    icons = get_icons(doc, definition, key_icon, color)
+    icons = get_icons(doc, definition, key_icon, color, version, variant)
 
     # Get the images
     images = create_images(doc, icons, size)
@@ -99,22 +107,22 @@ def latex_code(doc, definition, key_icon, key_position, key_size, key_color):
         return ''
 
 
-def get_icons(doc, definition, key_icons, color):
+def get_icons(doc, definition, key_icons, color, version, variant):
     icons = [{
         'name': 'exclamation-circle',
         'color': color,
-        'version': '4.7',
-        'variant': 'regular'
+        'version': version,
+        'variant': variant
     }]
 
     # Test the icons definition
     if key_icons in definition:
         icons = []
         if isinstance(definition[key_icons], str) or isinstance(definition[key_icons], unicode):
-            check_icon(doc, icons, definition[key_icons], color)
+            check_icon(doc, icons, definition[key_icons], color, version, variant)
         elif isinstance(definition[key_icons], list):
             for icon in definition[key_icons]:
-                check_icon(doc, icons, icon, color)
+                check_icon(doc, icons, icon, color, version, variant)
 
     return icons
 
@@ -124,9 +132,7 @@ try:
 except (NameError):
     unicode = str
 
-def check_icon(doc, icons, icon, color):
-    version = '4.7'
-    variant = 'regular'
+def check_icon(doc, icons, icon, color, version, variant):
     if isinstance(icon, str) or isinstance(icon, unicode):
         # Simple icon
         name = icon
@@ -134,7 +140,6 @@ def check_icon(doc, icons, icon, color):
         # Complex icon with name and color
         color = str(icon['color'])
         name = str(icon['name'])
-        version
         if 'version' in icon:
             version = str(icon['version'])
         if 'variant' in icon:
@@ -185,6 +190,18 @@ def get_prefix(doc, definition, key):
             debug('[WARNING] pandoc-latex-tip: ' + str(definition[key]) + ' is not a correct position; using left')
             return '\\reversemarginpar'
     return '\\reversemarginpar'
+
+def get_version(doc, definition, key):
+    if key in definition:
+        return str(definition[key])
+    else:
+        return '4.7'
+
+def get_variant(doc, definition, key):
+    if key in definition:
+        return str(definition[key])
+    else:
+        return 'regular'
 
 def get_size(doc, definition, key):
    # Get the size
@@ -241,7 +258,7 @@ def add_definition(doc, definition):
 
     # Add a definition if correct
     if bool(classes):
-        latex = latex_code(doc, definition, 'icons', 'position', 'size', 'color')
+        latex = latex_code(doc, definition, 'icons', 'position', 'size', 'color', 'version', 'variant')
         if latex:
             doc.defined.append({'classes' : set(classes), 'latex': latex})
 
