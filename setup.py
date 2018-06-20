@@ -55,36 +55,36 @@ def _post():
             '5.0'
         )
     )
+    import requests
+    import re
+    from distutils.version import StrictVersion
+    try:
+        versions = requests.get('https://api.github.com/repos/FortAwesome/Font-Awesome/tags').json()
+    except ValueError:
+        import sys
+        sys.stderr.write('Unable to get the last version number of the Font-Awesome package on github\n')
+        sys.exit(1)
+
+    latest = '5.0'
+    for version in versions:
+        if re.match('^5.0', version['name']) and StrictVersion(version['name']) > StrictVersion(latest):
+            latest = version['name']
+
     directory = dirs.user_data_dir
     if not path.exists(directory):
         makedirs(directory)
 
-        import requests
-        import re
-        from distutils.version import StrictVersion
-        try:
-            versions = requests.get('https://api.github.com/repos/FortAwesome/Font-Awesome/tags').json()
-        except ValueError:
-            import sys
-            sys.stderr.write('Unable to get the last version number of the Font-Awesome package on github\n')
-            sys.exit(1)
-
-        latest = '5.0'
-        for version in versions:
-            if re.match('^5.0', version['name']) and StrictVersion(version['name']) > StrictVersion(latest):
-                latest = version['name']
-
-        downloader = icon_font_to_png.FontAwesomeDownloader(directory)
-        downloader.css_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/css/fontawesome.css'
-        # brands
-        downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-brands-400.ttf'
-        downloader.download_files()
-        # regular
-        downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-regular-400.ttf'
-        downloader.download_files()
-        # solid
-        downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-solid-900.ttf'
-        downloader.download_files()
+    downloader = icon_font_to_png.FontAwesomeDownloader(directory)
+    downloader.css_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/css/fontawesome.css'
+    # brands
+    downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-brands-400.ttf'
+    downloader.download_files()
+    # regular
+    downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-regular-400.ttf'
+    downloader.download_files()
+    # solid
+    downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-solid-900.ttf'
+    downloader.download_files()
 
 
 class build_py(_build_py):
