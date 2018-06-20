@@ -29,6 +29,9 @@ def _post():
     import icon_font_to_png
     from pkg_resources import get_distribution
     from appdirs import AppDirs
+    import requests
+    import re
+    from distutils.version import LooseVersion
     import os
 
     # fontawesome 4.7
@@ -36,6 +39,7 @@ def _post():
         os.path.join(
             'pandoc_latex_tip',
             get_distribution('pandoc_latex_tip').version,
+            'fontawesome',
             '4.7'
         )
     )
@@ -52,12 +56,10 @@ def _post():
         os.path.join(
             'pandoc_latex_tip',
             get_distribution('pandoc_latex_tip').version,
+            'fontawesome',
             '5.0'
         )
     )
-    import requests
-    import re
-    from distutils.version import StrictVersion
     try:
         versions = requests.get('https://api.github.com/repos/FortAwesome/Font-Awesome/tags').json()
     except ValueError:
@@ -67,7 +69,7 @@ def _post():
 
     latest = '5.0'
     for version in versions:
-        if re.match('^5.0', version['name']) and StrictVersion(version['name']) > StrictVersion(latest):
+        if re.match('^5.0', version['name']) and LooseVersion(version['name']) > LooseVersion(latest):
             latest = version['name']
 
     directory = dirs.user_data_dir
@@ -84,6 +86,63 @@ def _post():
     downloader.download_files()
     # solid
     downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-solid-900.ttf'
+    downloader.download_files()
+
+    # glyphicons 3.3
+    dirs = AppDirs(
+        os.path.join(
+            'pandoc_latex_tip',
+            get_distribution('pandoc_latex_tip').version,
+            'glyphicons',
+            '3.3'
+        )
+    )
+    directory = dirs.user_data_dir
+    if not path.exists(directory):
+        makedirs(directory)
+        downloader = icon_font_to_png.FontAwesomeDownloader(directory)
+        downloader.css_url = 'https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.css'
+        downloader.ttf_url = 'https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf'
+        downloader.download_files()
+        original = open(os.path.join(directory, "bootstrap.css"), "rt")
+        modified = open(os.path.join(directory, "bootstrap-modified.css"), "w")
+        index = 0
+        for line in original:
+            if index >= 1067:
+                break
+            elif index >= 280:
+                modified.write(line)
+            index = index + 1
+        original.close()
+        modified.close()
+
+    # material design 2.4
+    dirs = AppDirs(
+        os.path.join(
+            'pandoc_latex_tip',
+            get_distribution('pandoc_latex_tip').version,
+            'materialdesign',
+            '2.4'
+        )
+    )
+    try:
+        versions = requests.get('https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags').json()
+    except ValueError:
+        import sys
+        sys.stderr.write('Unable to get the last version number of the MaterialDesign-Webfont package on github\n')
+        sys.exit(1)
+
+    latest = 'v2.4'
+    for version in versions:
+        if re.match('^v2.4', version['name']) and LooseVersion(version['name']) > LooseVersion(latest):
+            latest = version['name']
+
+    directory = dirs.user_data_dir
+    if not path.exists(directory):
+        makedirs(directory)
+    downloader = icon_font_to_png.FontAwesomeDownloader(directory)
+    downloader.css_url = 'https://cdn.rawgit.com/Templarian/MaterialDesign-Webfont/' + latest + '/css/materialdesignicons.css'
+    downloader.ttf_url = 'https://cdn.rawgit.com/Templarian/MaterialDesign-Webfont/' + latest + '/fonts/materialdesignicons-webfont.ttf'
     downloader.download_files()
 
 
@@ -104,7 +163,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.4.2',
+    version='1.5.0',
 
     # The project's description
     description='A pandoc filter for adding tip in LaTeX',
