@@ -1,22 +1,14 @@
 # pandoc-latex-tip
-[![Build Status](https://img.shields.io/travis/chdemko/pandoc-latex-tip/master.svg)](https://travis-ci.org/chdemko/pandoc-latex-tip/branches)
-[![Coveralls](https://img.shields.io/coveralls/github/chdemko/pandoc-latex-tip/master.svg)](https://coveralls.io/github/chdemko/pandoc-latex-tip?branch=master)
+[![Build Status](https://img.shields.io/travis/chdemko/pandoc-latex-tip/1.5.1.svg)](https://travis-ci.org/chdemko/pandoc-latex-tip/branches)
+[![Coveralls](https://img.shields.io/coveralls/github/chdemko/pandoc-latex-tip/1.5.1.svg)](https://coveralls.io/github/chdemko/pandoc-latex-tip?branch=1.5.1)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/chdemko/pandoc-latex-tip.svg)](https://scrutinizer-ci.com/g/chdemko/pandoc-latex-tip/)
 [![PyPI version](https://img.shields.io/pypi/v/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
-[![PyPI format](https://img.shields.io/pypi/format/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
-[![License](https://img.shields.io/pypi/l/pandoc-latex-tip.svg)](https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/master/LICENSE)
+[![PyPI format](https://img.shields.io/pypi/format/pandoc-latex-tip/1.5.1.svg)](https://pypi.org/project/pandoc-latex-tip/1.5.1/)
+[![License](https://img.shields.io/pypi/l/pandoc-latex-tip/1.5.1.svg)](https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/1.5.1/LICENSE)
 [![Python version](https://img.shields.io/pypi/pyversions/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 [![Development Status](https://img.shields.io/pypi/status/pandoc-latex-tip.svg)](https://pypi.org/project/pandoc-latex-tip/)
 
-*pandoc-latex-tip* is a [pandoc] filter for adding icon tooltips in the margin using popular icon collections:
-
-Collection name | Versions  | Author                                                          | License
---------------- | ----------|-----------------------------------------------------------------|--------
-Font-Awesome    | 4.7, 5.0  |[Dave Gandy - https://fontawesome.com/](https://fontawesome.com/)|[SIL OFL 1.1](https://fontawesome.com/license/)
-Glyphicons      | 3.3       |[Jan Kovarik - https://glyphicons.com/](https://glyphicons.com/) |[MIT](https://github.com/twbs/bootstrap/blob/v3.3.7/LICENSE)
-Material Design | 2.4       |[Austin Andrews & Google - https://materialdesignicons.com/](https://materialdesignicons.com/) |[SIL OFL 1.1](https://github.com/Templarian/MaterialDesign/blob/master/LICENSE)
-
-It uses the *icon_font_to_png* package to generate on-fly images.
+*pandoc-latex-tip* is a [pandoc] filter for adding icon tooltips in the margin using popular icon collections. It uses the *icon_font_to_png* package to generate on-fly images.
 
 [pandoc]: http://pandoc.org/
 
