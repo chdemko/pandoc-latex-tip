@@ -9,7 +9,7 @@ def metadata():
         'pandoc-latex-tip': MetaList(
             MetaMap(
                 classes = MetaList(MetaString('tip'), MetaString('listing')),
-                icons = MetaList(MetaMap(name = MetaString('file-text'), color=MetaString('darksalmon')), MetaString('comments')),
+                icons = MetaList(MetaMap(name = MetaString('file-text'), color=MetaString('darksalmon'), link=MetaString('http://www.google.fr')), MetaString('comments')),
                 size = MetaString('36'),
                 position = MetaString('right')
             ),

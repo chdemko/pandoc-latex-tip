@@ -4,14 +4,16 @@
 Pandoc filter for adding tip in LaTeX
 """
 
-from panflute import *
 import os
+
+from panflute import run_filter, convert_text, debug, Span, Code, CodeBlock, Inline, RawBlock, RawInline, Image, Link, Plain, MetaList, MetaInlines
 
 try:
     FileNotFoundError
 except NameError:
-    #py2
-    FileNotFoundError = IOError
+    # py2
+    FileNotFoundError = IOError  # pylint: disable=redefined-builtin
+
 
 def tip(elem, doc):
     # Is it in the right format and is it a Span, Div?
@@ -30,7 +32,8 @@ def tip(elem, doc):
                     'latex-tip-color',
                     'latex-tip-collection',
                     'latex-tip-version',
-                    'latex-tip-variant'
+                    'latex-tip-variant',
+                    'latex-tip-link'
                 )
             )
         else:
@@ -44,10 +47,13 @@ def tip(elem, doc):
                 if classes >= definition['classes']:
                     return add_latex(elem, definition['latex'])
 
+    return None
+
+
 def add_latex(elem, latex):
     if bool(latex):
         # Is it a Span or a Code?
-        if isinstance(elem, Span) or isinstance(elem, Code):
+        if isinstance(elem, (Span, Code)):
             return [RawInline(latex, 'tex'), elem]
 
         # It is a CodeBlock: create a minipage to ensure the tip to be on the same page as the codeblock
@@ -56,15 +62,22 @@ def add_latex(elem, latex):
         # It is a Div: try to insert an inline raw before the first inline element
         else:
             inserted = [False]
-            def insert(elem, doc):
+
+            def insert(elem, _):
                 if not inserted[0] and isinstance(elem, Inline) and not isinstance(elem.parent, Inline):
                     inserted[0] = True
                     return [RawInline(latex, 'tex'), elem]
+                return None
+
             elem.walk(insert)
             if not inserted[0]:
                 return [RawBlock(latex, 'tex'), elem]
 
-def latex_code(doc, definition, key_icon, key_position, key_size, key_color, key_collection, key_version, key_variant):
+    return None
+
+
+# pylint: disable=too-many-arguments,too-many-locals
+def latex_code(doc, definition, key_icon, key_position, key_size, key_color, key_collection, key_version, key_variant, key_link):
     # Get the default color
     color = get_color(doc, definition, key_color)
 
@@ -83,8 +96,11 @@ def latex_code(doc, definition, key_icon, key_position, key_size, key_color, key
     # Get the variant
     variant = get_variant(doc, definition, key_variant)
 
+    # Get the link
+    link = get_link(doc, definition, key_link)
+
     # Get the icons
-    icons = get_icons(doc, definition, key_icon, color, collection, version, variant)
+    icons = get_icons(doc, definition, key_icon, color, collection, version, variant, link)
 
     # Get the images
     images = create_images(doc, icons, size)
@@ -107,38 +123,44 @@ def latex_code(doc, definition, key_icon, key_position, key_size, key_color, key
 
         # Return LaTeX code
         return ''.join(latex)
-    else:
-        return ''
+    return ''
 
 
-def get_icons(doc, definition, key_icons, color, collection, version, variant):
+def get_icons(doc, definition, key_icons, color, collection, version, variant, link):
     icons = [{
-        'name': 'fa-exclamation-circle',
+        'extended-name': 'fa-exclamation-circle',
+        'name': 'exclamation-circle',
         'color': color,
         'collection': collection,
         'version': version,
-        'variant': variant
+        'variant': variant,
+        'link': link
     }]
 
     # Test the icons definition
     if key_icons in definition:
         icons = []
-        if isinstance(definition[key_icons], str) or isinstance(definition[key_icons], unicode):
-            check_icon(doc, icons, definition[key_icons], color, collection, version, variant)
+        # pylint: disable=invalid-name
+        if isinstance(definition[key_icons], (str, unicode)):
+            check_icon(doc, icons, definition[key_icons], color, collection, version, variant, link)
         elif isinstance(definition[key_icons], list):
             for icon in definition[key_icons]:
-                check_icon(doc, icons, icon, color, collection, version, variant)
+                check_icon(doc, icons, icon, color, collection, version, variant, link)
 
     return icons
 
+
 # Fix unicode for python3
+# pylint: disable=invalid-name
 try:
+    # pylint: disable=redefined-builtin
     unicode = unicode
-except (NameError):
+except NameError:
     unicode = str
 
-def check_icon(doc, icons, icon, color, collection, version, variant):
-    if isinstance(icon, str) or isinstance(icon, unicode):
+
+def check_icon(doc, icons, icon, color, collection, version, variant, link):
+    if isinstance(icon, (str, unicode)):
         # Simple icon
         name = icon
     elif isinstance(icon, dict) and 'color' in icon and 'name' in icon:
@@ -151,22 +173,25 @@ def check_icon(doc, icons, icon, color, collection, version, variant):
             version = str(icon['version'])
         if 'variant' in icon:
             variant = str(icon['variant'])
+        if 'link' in icon:
+            link = str(icon['link'])
     else:
         # Bad formed icon
         debug('[WARNING] pandoc-latex-tip: Bad formed icon')
         return
 
-    add_icon(doc, icons, color, name, collection, version, variant)
+    add_icon(doc, icons, color, name, collection, version, variant, link)
 
-def add_icon(doc, icons, color, name, collection, version, variant):
+
+def add_icon(doc, icons, color, name, collection, version, variant, link):
     # Lower the color
-    lowerColor = color.lower()
+    lower_color = color.lower()
 
     # Convert the color to black if unexisting
     from PIL import ImageColor
-    if lowerColor not in ImageColor.colormap:
-        debug('[WARNING] pandoc-latex-tip: ' + lowerColor + ' is not a correct color name; using black')
-        lowerColor = 'black'
+    if lower_color not in ImageColor.colormap:
+        debug('[WARNING] pandoc-latex-tip: ' + lower_color + ' is not a correct color name; using black')
+        lower_color = 'black'
 
     # Is the icon correct?
     try:
@@ -175,11 +200,13 @@ def add_icon(doc, icons, color, name, collection, version, variant):
             extended_name = doc.get_icon_font[category]['prefix'] + name
             if extended_name in doc.get_icon_font[category]['font'].css_icons:
                 icons.append({
-                    'name': extended_name,
-                    'color': lowerColor,
+                    'name': name,
+                    'extended-name': extended_name,
+                    'color': lower_color,
                     'collection': collection,
                     'version': version,
-                    'variant': variant
+                    'variant': variant,
+                    'link': link
                 })
             else:
                 debug('[WARNING] pandoc-latex-tip: ' + name + ' is not a correct icon name')
@@ -188,43 +215,50 @@ def add_icon(doc, icons, color, name, collection, version, variant):
     except FileNotFoundError:
         debug('[WARNING] pandoc-latex-tip: error in accessing to icons definition')
 
-def get_color(doc, definition, key):
+
+def get_color(_, definition, key):
     if key in definition:
         return str(definition[key])
-    else:
-        return 'black'
+    return 'black'
 
-def get_prefix(doc, definition, key):
+
+def get_prefix(_, definition, key):
     if key in definition:
         if definition[key] == 'right':
             return '\\normalmarginpar'
         elif definition[key] == 'left':
             return '\\reversemarginpar'
-        else:
-            debug('[WARNING] pandoc-latex-tip: ' + str(definition[key]) + ' is not a correct position; using left')
-            return '\\reversemarginpar'
+        debug('[WARNING] pandoc-latex-tip: ' + str(definition[key]) + ' is not a correct position; using left')
+
     return '\\reversemarginpar'
 
-def get_version(doc, definition, key):
+
+def get_version(_, definition, key):
     if key in definition:
         return str(definition[key])
-    else:
-        return '4.7'
+    return '4.7'
 
-def get_collection(doc, definition, key):
+
+def get_collection(_, definition, key):
     if key in definition:
         return str(definition[key])
-    else:
-        return 'fontawesome'
+    return 'fontawesome'
 
-def get_variant(doc, definition, key):
+
+def get_variant(_, definition, key):
     if key in definition:
         return str(definition[key])
-    else:
-        return 'regular'
+    return 'regular'
 
-def get_size(doc, definition, key):
-   # Get the size
+
+def get_link(_, definition, key):
+    if key in definition:
+        return str(definition[key])
+    return None
+
+
+def get_size(_, definition, key):
+    # Get the size
     size = '18'
     if key in definition:
         try:
@@ -237,6 +271,7 @@ def get_size(doc, definition, key):
             debug('[WARNING] pandoc-latex-tip: size must be a number; using ' + size)
     return size
 
+
 def create_images(doc, icons, size):
     # Generate the LaTeX image code
     images = []
@@ -246,7 +281,7 @@ def create_images(doc, icons, size):
         # Get the apps dirs
         from pkg_resources import get_distribution
         from appdirs import AppDirs
-        dirs = AppDirs('pandoc_latex_tip', version = get_distribution('pandoc_latex_tip').version)
+        dirs = AppDirs('pandoc_latex_tip', version=get_distribution('pandoc_latex_tip').version)
 
         # Get the image from the App cache folder
         image_dir = os.path.join(
@@ -256,7 +291,7 @@ def create_images(doc, icons, size):
             icon['variant'],
             icon['color']
         )
-        image = os.path.join(image_dir, icon['name'] + '.png')
+        image = os.path.join(image_dir, icon['extended-name'] + '.png')
 
         # Create the image if not existing in the cache
         try:
@@ -264,20 +299,26 @@ def create_images(doc, icons, size):
                 # Create the image in the cache
                 category = icon['collection'] + '-' + icon['version'] + '-' + icon['variant']
                 doc.get_icon_font[category]['font'].export_icon(
-                    icon['name'],
+                    icon['extended-name'],
                     512,
-                    color = icon['color'],
-                    export_dir = image_dir
+                    color=icon['color'],
+                    export_dir=image_dir
                 )
 
             # Add the LaTeX image
-            images.append('\\includegraphics[width=' + size + 'pt]{' + image + '}')
+            image = Image(url=image, attributes={'width': size + 'pt', 'height': size + 'pt'})
+            if icon['link'] is None:
+                elem = image
+            else:
+                elem = Link(image, url=icon['link'])
+            images.append(convert_text(Plain(elem), input_format='panflute', output_format='latex'))
         except TypeError:
-            debug('[WARNING] pandoc-latex-tip: icon name ' + icon['name'] + ' does not exist in variant ' + icon['variant'])
+            debug('[WARNING] pandoc-latex-tip: icon name ' + icon['name'] + ' does not exist in variant ' + icon['variant'] + ' for collection ' + icon['collection'] + '-' + icon['version'])
         except FileNotFoundError:
             debug('[WARNING] pandoc-latex-tip: error in generating image')
 
     return images
+
 
 def add_definition(doc, definition):
     # Get the classes
@@ -294,17 +335,19 @@ def add_definition(doc, definition):
             'color',
             'collection',
             'version',
-            'variant'
+            'variant',
+            'link'
         )
         if latex:
-            doc.defined.append({'classes' : set(classes), 'latex': latex})
+            doc.defined.append({'classes': set(classes), 'latex': latex})
+
 
 def prepare(doc):
     # Add getIconFont library to doc
     import icon_font_to_png
     from pkg_resources import get_distribution
     from appdirs import AppDirs
-    dirs = AppDirs('pandoc_latex_tip', version = get_distribution('pandoc_latex_tip').version)
+    dirs = AppDirs('pandoc_latex_tip', version=get_distribution('pandoc_latex_tip').version)
     doc.get_icon_font = {
         'fontawesome-4.7-regular': {
             'font': icon_font_to_png.IconFont(
@@ -371,6 +414,7 @@ def prepare(doc):
             if isinstance(definition, dict) and 'classes' in definition and isinstance(definition['classes'], list):
                 add_definition(doc, definition)
 
+
 def finalize(doc):
     # Add header-includes if necessary
     if 'header-includes' not in doc.metadata:
@@ -383,9 +427,10 @@ def finalize(doc):
     doc.metadata['header-includes'].append(MetaInlines(RawInline('\\usepackage{marginnote}', 'tex')))
     doc.metadata['header-includes'].append(MetaInlines(RawInline('\\usepackage{etoolbox}', 'tex')))
 
-def main(doc = None):
-    return run_filter(tip, prepare = prepare, finalize = finalize, doc = doc)
+
+def main(doc=None):
+    return run_filter(tip, prepare=prepare, finalize=finalize, doc=doc)
+
 
 if __name__ == '__main__':
     main()
-
