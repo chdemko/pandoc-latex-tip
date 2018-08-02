@@ -36,16 +36,16 @@ def tip(elem, doc):
                     'latex-tip-link'
                 )
             )
-        else:
-            # Get the classes
-            classes = set(elem.classes)
 
-            # Loop on all fontsize definition
-            for definition in doc.defined:
+        # Get the classes
+        classes = set(elem.classes)
 
-                # Are the classes correct?
-                if classes >= definition['classes']:
-                    return add_latex(elem, definition['latex'])
+        # Loop on all fontsize definition
+        for definition in doc.defined:
+
+            # Are the classes correct?
+            if classes >= definition['classes']:
+                return add_latex(elem, definition['latex'])
 
     return None
 
@@ -57,21 +57,21 @@ def add_latex(elem, latex):
             return [RawInline(latex, 'tex'), elem]
 
         # It is a CodeBlock: create a minipage to ensure the tip to be on the same page as the codeblock
-        elif isinstance(elem, CodeBlock):
+        if isinstance(elem, CodeBlock):
             return [RawBlock('\\begin{minipage}{\\textwidth}' + latex, 'tex'), elem, RawBlock('\\end{minipage}', 'tex')]
+
         # It is a Div: try to insert an inline raw before the first inline element
-        else:
-            inserted = [False]
+        inserted = [False]
 
-            def insert(elem, _):
-                if not inserted[0] and isinstance(elem, Inline) and not isinstance(elem.parent, Inline):
-                    inserted[0] = True
-                    return [RawInline(latex, 'tex'), elem]
-                return None
+        def insert(elem, _):
+            if not inserted[0] and isinstance(elem, Inline) and not isinstance(elem.parent, Inline):
+                inserted[0] = True
+                return [RawInline(latex, 'tex'), elem]
+            return None
 
-            elem.walk(insert)
-            if not inserted[0]:
-                return [RawBlock(latex, 'tex'), elem]
+        elem.walk(insert)
+        if not inserted[0]:
+            return [RawBlock(latex, 'tex'), elem]
 
     return None
 
@@ -226,7 +226,7 @@ def get_prefix(_, definition, key):
     if key in definition:
         if definition[key] == 'right':
             return '\\normalmarginpar'
-        elif definition[key] == 'left':
+        if definition[key] == 'left':
             return '\\reversemarginpar'
         debug('[WARNING] pandoc-latex-tip: ' + str(definition[key]) + ' is not a correct position; using left')
 
