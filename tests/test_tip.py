@@ -25,7 +25,7 @@ def metadata():
                 classes = MetaList(MetaString('v5.0')),
                 icons = MetaList(MetaMap(
                     name=MetaString('balance-scale'),
-                    version=MetaString('5.0'),
+                    version=MetaString('5.x'),
                     variant=MetaString('solid'),
                     color=MetaString('orange')
                 ))
