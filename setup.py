@@ -235,7 +235,7 @@ setup(
     install_requires=[
         'panflute>=1.10',
         'icon_font_to_png>=0.4',
-        'pillow>=5.1',
+        'pillow>=5.2',
         'appdirs>=1.4',
         'pypandoc>=1.4'
     ],
