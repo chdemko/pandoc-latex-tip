@@ -51,13 +51,13 @@ def _post():
         downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/fonts/fontawesome-webfont.ttf'
         downloader.download_files()
 
-    # fontawesome 5.0
+    # fontawesome 5.x
     dirs = AppDirs(
         os.path.join(
             'pandoc_latex_tip',
             get_distribution('pandoc_latex_tip').version,
             'fontawesome',
-            '5.0'
+            '5.x'
         )
     )
     try:
@@ -67,9 +67,9 @@ def _post():
         sys.stderr.write('Unable to get the last version number of the Font-Awesome package on github\n')
         sys.exit(1)
 
-    latest = '5.0'
+    latest = '5.2'
     for version in versions:
-        if re.match('^5.0', version['name']) and LooseVersion(version['name']) > LooseVersion(latest):
+        if re.match('^5.', version['name']) and LooseVersion(version['name']) > LooseVersion(latest):
             latest = version['name']
 
     directory = dirs.user_data_dir
@@ -116,13 +116,13 @@ def _post():
         original.close()
         modified.close()
 
-    # material design 2.4
+    # material design 2.x
     dirs = AppDirs(
         os.path.join(
             'pandoc_latex_tip',
             get_distribution('pandoc_latex_tip').version,
             'materialdesign',
-            '2.4'
+            '2.x'
         )
     )
     try:
@@ -132,9 +132,9 @@ def _post():
         sys.stderr.write('Unable to get the last version number of the MaterialDesign-Webfont package on github\n')
         sys.exit(1)
 
-    latest = 'v2.4'
+    latest = 'v2.5'
     for version in versions:
-        if re.match('^v2.4', version['name']) and LooseVersion(version['name']) > LooseVersion(latest):
+        if re.match('^v2.', version['name']) and LooseVersion(version['name']) > LooseVersion(latest):
             latest = version['name']
 
     directory = dirs.user_data_dir
@@ -163,7 +163,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.6.0',
+    version='2.0.0',
 
     # The project's description
     description='A pandoc filter for adding tip in LaTeX',

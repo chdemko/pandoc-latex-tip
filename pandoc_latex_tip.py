@@ -357,26 +357,26 @@ def prepare(doc):
             ),
             'prefix': 'fa-'
         },
-        'fontawesome-5.0-brands': {
+        'fontawesome-5.x-brands': {
             'font': icon_font_to_png.IconFont(
-                os.path.join(dirs.user_data_dir, 'fontawesome', '5.0', 'fontawesome.css'),
-                os.path.join(dirs.user_data_dir, 'fontawesome', '5.0', 'fa-brands-400.ttf'),
+                os.path.join(dirs.user_data_dir, 'fontawesome', '5.x', 'fontawesome.css'),
+                os.path.join(dirs.user_data_dir, 'fontawesome', '5.x', 'fa-brands-400.ttf'),
                 True
             ),
             'prefix': 'fa-'
         },
-        'fontawesome-5.0-regular': {
+        'fontawesome-5.x-regular': {
             'font': icon_font_to_png.IconFont(
-                os.path.join(dirs.user_data_dir, 'fontawesome', '5.0', 'fontawesome.css'),
-                os.path.join(dirs.user_data_dir, 'fontawesome', '5.0', 'fa-regular-400.ttf'),
+                os.path.join(dirs.user_data_dir, 'fontawesome', '5.x', 'fontawesome.css'),
+                os.path.join(dirs.user_data_dir, 'fontawesome', '5.x', 'fa-regular-400.ttf'),
                 True
             ),
             'prefix': 'fa-'
         },
-        'fontawesome-5.0-solid': {
+        'fontawesome-5.x-solid': {
             'font': icon_font_to_png.IconFont(
-                os.path.join(dirs.user_data_dir, 'fontawesome', '5.0', 'fontawesome.css'),
-                os.path.join(dirs.user_data_dir, 'fontawesome', '5.0', 'fa-solid-900.ttf'),
+                os.path.join(dirs.user_data_dir, 'fontawesome', '5.x', 'fontawesome.css'),
+                os.path.join(dirs.user_data_dir, 'fontawesome', '5.x', 'fa-solid-900.ttf'),
                 True
             ),
             'prefix': 'fa-'
@@ -389,10 +389,10 @@ def prepare(doc):
             ),
             'prefix': 'glyphicon-'
         },
-        'materialdesign-2.4-regular': {
+        'materialdesign-2.x-regular': {
             'font': icon_font_to_png.IconFont(
-                os.path.join(dirs.user_data_dir, 'materialdesign', '2.4', 'materialdesignicons.css'),
-                os.path.join(dirs.user_data_dir, 'materialdesign', '2.4', 'materialdesignicons-webfont.ttf'),
+                os.path.join(dirs.user_data_dir, 'materialdesign', '2.x', 'materialdesignicons.css'),
+                os.path.join(dirs.user_data_dir, 'materialdesign', '2.x', 'materialdesignicons-webfont.ttf'),
                 True
             ),
             'prefix': 'mdi-'
