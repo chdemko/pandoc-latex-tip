@@ -50,7 +50,7 @@ To upgrade to the current code, use
     apt-get update
     apt-get install python-pip
 
-Make sure you have required packages for [Pillow installation](https://pillow.readthedocs.org/en/3.1.x/installation.html). On linux you have to install some extra libraries **before** *pandoc-latex-tip*. On a Debian-based system (including Ubuntu), you can install it as root using
+Make sure you have required packages for [Pillow installation](https://pillow.readthedocs.io/en/5.2.x/installation.html). On linux you have to install some extra libraries **before** *pandoc-latex-tip*. On a Debian-based system (including Ubuntu), you can install it as root using
 
 	apt-get build-dep python-imaging
 	apt-get install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
