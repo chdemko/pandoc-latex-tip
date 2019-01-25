@@ -77,15 +77,15 @@ def _post():
         makedirs(directory)
 
     downloader = icon_font_to_png.FontAwesomeDownloader(directory)
-    downloader.css_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/css/fontawesome.css'
+    downloader.css_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/css/fontawesome.css'
     # brands
-    downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-brands-400.ttf'
+    downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/webfonts/fa-brands-400.ttf'
     downloader.download_files()
     # regular
-    downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-regular-400.ttf'
+    downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/webfonts/fa-regular-400.ttf'
     downloader.download_files()
     # solid
-    downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/web-fonts-with-css/webfonts/fa-solid-900.ttf'
+    downloader.ttf_url = 'https://cdn.rawgit.com/FortAwesome/Font-Awesome/' + latest + '/webfonts/fa-solid-900.ttf'
     downloader.download_files()
 
     # glyphicons 3.3
