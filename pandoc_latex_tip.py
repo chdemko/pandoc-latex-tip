@@ -441,92 +441,59 @@ def add_definition(doc, definition):
 
 def prepare(doc):
     # Add getIconFont library to doc
-    import icon_font_to_png
+    import appdirs
     from pkg_resources import get_distribution
-    from appdirs import AppDirs
 
-    dirs = AppDirs(
+    folder = appdirs.AppDirs(
         "pandoc_latex_tip", version=get_distribution("pandoc_latex_tip").version
-    )
+    ).user_data_dir
+
     doc.get_icon_font = {
         "fontawesome-4.7-regular": {
-            "font": icon_font_to_png.IconFont(
-                os.path.join(
-                    dirs.user_data_dir, "fontawesome", "4.7", "font-awesome.css"
-                ),
-                os.path.join(
-                    dirs.user_data_dir, "fontawesome", "4.7", "fontawesome-webfont.ttf"
-                ),
-                True,
+            "font": _icon_font(
+                folder,
+                "fontawesome",
+                "4.7",
+                "font-awesome.css",
+                "fontawesome-webfont.ttf",
             ),
             "prefix": "fa-",
         },
         "fontawesome-5.x-brands": {
-            "font": icon_font_to_png.IconFont(
-                os.path.join(
-                    dirs.user_data_dir, "fontawesome", "5.x", "fontawesome.css"
-                ),
-                os.path.join(
-                    dirs.user_data_dir, "fontawesome", "5.x", "fa-brands-400.ttf"
-                ),
-                True,
+            "font": _icon_font(
+                folder, "fontawesome", "5.x", "fontawesome.css", "fa-brands-400.ttf"
             ),
             "prefix": "fa-",
         },
         "fontawesome-5.x-regular": {
-            "font": icon_font_to_png.IconFont(
-                os.path.join(
-                    dirs.user_data_dir, "fontawesome", "5.x", "fontawesome.css"
-                ),
-                os.path.join(
-                    dirs.user_data_dir, "fontawesome", "5.x", "fa-regular-400.ttf"
-                ),
-                True,
+            "font": _icon_font(
+                folder, "fontawesome", "5.x", "fontawesome.css", "fa-regular-400.ttf"
             ),
             "prefix": "fa-",
         },
         "fontawesome-5.x-solid": {
-            "font": icon_font_to_png.IconFont(
-                os.path.join(
-                    dirs.user_data_dir, "fontawesome", "5.x", "fontawesome.css"
-                ),
-                os.path.join(
-                    dirs.user_data_dir, "fontawesome", "5.x", "fa-solid-900.ttf"
-                ),
-                True,
+            "font": _icon_font(
+                folder, "fontawesome", "5.x", "fontawesome.css", "fa-solid-900.ttf"
             ),
             "prefix": "fa-",
         },
         "glyphicons-3.3-regular": {
-            "font": icon_font_to_png.IconFont(
-                os.path.join(
-                    dirs.user_data_dir, "glyphicons", "3.3", "bootstrap-modified.css"
-                ),
-                os.path.join(
-                    dirs.user_data_dir,
-                    "glyphicons",
-                    "3.3",
-                    "glyphicons-halflings-regular.ttf",
-                ),
-                True,
+            "font": _icon_font(
+                folder,
+                "glyphicons",
+                "3.3",
+                "bootstrap-modified.css",
+                "glyphicons-halflings-regular.ttf",
             ),
             "prefix": "glyphicon-",
         },
         "materialdesign-3.x-regular": {
-            "font": icon_font_to_png.IconFont(
-                os.path.join(
-                    dirs.user_data_dir,
-                    "materialdesign",
-                    "3.x",
-                    "materialdesignicons.css",
-                ),
-                os.path.join(
-                    dirs.user_data_dir,
-                    "materialdesign",
-                    "3.x",
-                    "materialdesignicons-webfont.ttf",
-                ),
-                True,
+            "font": _icon_font(
+                folder,
+                "materialdesign",
+                "3.x",
+                "materialdesignicons.css",
+                "materialdesignicons-webfont.ttf",
             ),
             "prefix": "mdi-",
         },
@@ -550,6 +517,16 @@ def prepare(doc):
                 and isinstance(definition["classes"], list)
             ):
                 add_definition(doc, definition)
+
+
+def _icon_font(folder, collection, version, css, ttf):
+    import icon_font_to_png
+
+    return icon_font_to_png.IconFont(
+        os.path.join(folder, collection, version, css),
+        os.path.join(folder, collection, version, ttf),
+        True,
+    )
 
 
 def finalize(doc):

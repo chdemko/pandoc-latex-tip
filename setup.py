@@ -47,41 +47,25 @@ def _post_fontawesome_47():
     import icon_font_to_png
 
     directory = _directory("fontawesome", "4.7")
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        downloader = icon_font_to_png.FontAwesomeDownloader(directory)
-        downloader.css_url = "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/css/font-awesome.css"
-        downloader.ttf_url = "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/fonts/fontawesome-webfont.ttf"
-        downloader.download_files()
+    downloader = icon_font_to_png.FontAwesomeDownloader(directory)
+    downloader.css_url = (
+        "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/css/font-awesome.css"
+    )
+    downloader.ttf_url = "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/fonts/fontawesome-webfont.ttf"
+    downloader.download_files()
 
 
 def _post_fontawesome_5x():
     # fontawesome 5.x
     import icon_font_to_png
-    import requests
 
     directory = _directory("fontawesome", "5.x")
-    try:
-        versions = requests.get(
-            "https://api.github.com/repos/FortAwesome/Font-Awesome/tags"
-        ).json()
-    except ValueError:
-        import sys
+    versions = _versions(
+        "https://api.github.com/repos/FortAwesome/Font-Awesome/tags",
+        "Unable to get the last version number of the Font-Awesome package on github\n",
+    )
 
-        sys.stderr.write(
-            "Unable to get the last version number of the Font-Awesome package on github\n"
-        )
-        sys.exit(1)
-
-    latest = "5.6"
-    for version in versions:
-        if re.match("^5.", version["name"]) and LooseVersion(
-            version["name"]
-        ) > LooseVersion(latest):
-            latest = version["name"]
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
+    latest = _latest("^5.", versions, "5.6")
 
     downloader = icon_font_to_png.FontAwesomeDownloader(directory)
     downloader.css_url = (
@@ -89,27 +73,15 @@ def _post_fontawesome_5x():
         + latest
         + "/css/fontawesome.css"
     )
-    # brands
-    downloader.ttf_url = (
-        "https://cdn.rawgit.com/FortAwesome/Font-Awesome/"
-        + latest
-        + "/webfonts/fa-brands-400.ttf"
-    )
-    downloader.download_files()
-    # regular
-    downloader.ttf_url = (
-        "https://cdn.rawgit.com/FortAwesome/Font-Awesome/"
-        + latest
-        + "/webfonts/fa-regular-400.ttf"
-    )
-    downloader.download_files()
-    # solid
-    downloader.ttf_url = (
-        "https://cdn.rawgit.com/FortAwesome/Font-Awesome/"
-        + latest
-        + "/webfonts/fa-solid-900.ttf"
-    )
-    downloader.download_files()
+    for ttf in ["fa-brands-400", "fa-regular-400", "fa-solid-900"]:
+        downloader.ttf_url = (
+            "https://cdn.rawgit.com/FortAwesome/Font-Awesome/"
+            + latest
+            + "/webfonts/"
+            + ttf
+            + ".ttf"
+        )
+        downloader.download_files()
 
 
 def _post_glyphicons_33():
@@ -117,54 +89,38 @@ def _post_glyphicons_33():
     import icon_font_to_png
 
     directory = _directory("glyphicons", "3.3")
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        downloader = icon_font_to_png.FontAwesomeDownloader(directory)
-        downloader.css_url = (
-            "https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.css"
-        )
-        downloader.ttf_url = "https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf"
-        downloader.download_files()
-        original = open(os.path.join(directory, "bootstrap.css"), "rt")
-        modified = open(os.path.join(directory, "bootstrap-modified.css"), "w")
-        index = 0
-        for line in original:
-            if index >= 1067:
-                break
-            elif index >= 280:
-                modified.write(line)
-            index = index + 1
-        original.close()
-        modified.close()
+
+    downloader = icon_font_to_png.FontAwesomeDownloader(directory)
+    downloader.css_url = (
+        "https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.css"
+    )
+    downloader.ttf_url = "https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf"
+    downloader.download_files()
+    original = open(os.path.join(directory, "bootstrap.css"), "rt")
+    modified = open(os.path.join(directory, "bootstrap-modified.css"), "w")
+    index = 0
+    for line in original:
+        if index >= 1067:
+            break
+        elif index >= 280:
+            modified.write(line)
+        index = index + 1
+    original.close()
+    modified.close()
 
 
 def _post_material_design_3x():
     # material design 3.x
     import icon_font_to_png
-    import requests
 
     directory = _directory("materialdesign", "3.x")
-    try:
-        versions = requests.get(
-            "https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags"
-        ).json()
-    except ValueError:
-        import sys
+    versions = _versions(
+        "https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags",
+        "Unable to get the last version number of the MaterialDesign-Webfont package on github\n",
+    )
 
-        sys.stderr.write(
-            "Unable to get the last version number of the MaterialDesign-Webfont package on github\n"
-        )
-        sys.exit(1)
+    latest = _latest("^v3.", versions, "v3.3")
 
-    latest = "v3.3"
-    for version in versions:
-        if re.match("^v3.", version["name"]) and LooseVersion(
-            version["name"]
-        ) > LooseVersion(latest):
-            latest = version["name"]
-
-    if not os.path.exists(directory):
-        os.makedirs(directory)
     downloader = icon_font_to_png.FontAwesomeDownloader(directory)
     downloader.css_url = (
         "https://cdn.rawgit.com/Templarian/MaterialDesign-Webfont/"
@@ -179,6 +135,18 @@ def _post_material_design_3x():
     downloader.download_files()
 
 
+def _latest(match, versions, latest):
+    try:
+        for version in versions:
+            if re.match(match, version["name"]) and LooseVersion(
+                version["name"]
+            ) > LooseVersion(latest):
+                latest = version["name"]
+    except TypeError:
+        pass
+    return latest
+
+
 def _directory(collection, version):
     import appdirs
 
@@ -190,7 +158,21 @@ def _directory(collection, version):
             version,
         )
     )
-    return dirs.user_data_dir
+    directory = dirs.user_data_dir
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    return directory
+
+
+def _versions(url, message):
+    import requests
+    import sys
+
+    try:
+        return requests.get(url).json()
+    except ValueError:
+        sys.stderr.write(message)
+        sys.exit(1)
 
 
 class BuildPy(build_py):
