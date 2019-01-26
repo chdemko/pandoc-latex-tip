@@ -103,6 +103,7 @@ Example
 -------
 
 Demonstration: Using
-`pandoc-latex-tip-sample.txt <https://raw.githubusercontent.com/wiki/chdemko/pandoc-latex-tip/images/pandoc-latex-tip-sample.txt>`__
+`pandoc-latex-tip-sample.txt <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/master/docs/images/pandoc-latex-tip-sample.txt>`__
 as input gives output file in
-`pdf <https://raw.githubusercontent.com/wiki/chdemko/pandoc-latex-tip/images/pandoc-latex-tip-sample.pdf>`__.
+`pdf <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/master/docs/images/pandoc-latex-tip-sample.pdf>`__.
+
