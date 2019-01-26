@@ -1,6 +1,16 @@
 # This Python file uses the following encoding: utf-8
-from unittest import TestCase
-from panflute import *
+
+from panflute import (
+    MetaList,
+    MetaMap,
+    MetaString,
+    Doc,
+    Para,
+    Span,
+    Div,
+    Code,
+    CodeBlock,
+)
 
 import pandoc_latex_tip
 
