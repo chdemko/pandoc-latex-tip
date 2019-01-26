@@ -1,5 +1,7 @@
 # This Python file uses the following encoding: utf-8
 
+from unittest import TestCase
+
 from panflute import (
     MetaList,
     MetaMap,
@@ -11,10 +13,8 @@ from panflute import (
     Code,
     CodeBlock,
 )
-
 import pandoc_latex_tip
 
-from unittest import TestCase
 
 class TipTest(TestCase):
     def metadata(self):
@@ -34,9 +34,12 @@ class TipTest(TestCase):
                     position=MetaString("right"),
                 ),
                 MetaMap(
-                    classes=MetaList(MetaString("warning")), icons=MetaString("comments")
+                    classes=MetaList(MetaString("warning")),
+                    icons=MetaString("comments"),
                 ),
-                MetaMap(classes=MetaList(MetaString("tip")), position=MetaString("left")),
+                MetaMap(
+                    classes=MetaList(MetaString("tip")), position=MetaString("left")
+                ),
                 MetaMap(
                     classes=MetaList(MetaString("v5.0")),
                     icons=MetaList(
@@ -146,4 +149,3 @@ class TipTest(TestCase):
         self.assertEqual(doc.content[2].format, "tex")
         self.assertEqual(doc.content[5].format, "tex")
         self.assertEqual(doc.content[8].format, "tex")
-

@@ -35,6 +35,7 @@ def _post():
     from appdirs import AppDirs
     import requests
     import re
+
     # pylint: disable=no-name-in-module,import-error
     from distutils.version import LooseVersion
     import os
