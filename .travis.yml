@@ -2,7 +2,9 @@ language: python
 python:
   - "3.6"
 install:
-  - pip install -e .[test]
+  - pip install black
+  - pip install coverage
+  - pip install pylint
   - pip install coveralls
 script:
     black --check pandoc_latex_tip.py setup.py tests/test_include.py
