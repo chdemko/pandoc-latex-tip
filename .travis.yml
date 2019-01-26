@@ -7,9 +7,9 @@ install:
   - pip install pylint
   - pip install coveralls
 script:
-    black --check pandoc_latex_tip.py setup.py tests/test_include.py
-    coverage run -a --source=pandoc_latex_tip setup.py test
-    pylint pandoc_latex_tip.py setup.py tests/test_include.py
+  - black --check pandoc_latex_tip.py setup.py tests/test_include.py
+  - coverage run -a --source=pandoc_latex_tip setup.py test
+  - pylint pandoc_latex_tip.py setup.py tests/test_include.py
 after_success:
   - coveralls
 
