@@ -15,9 +15,7 @@ import re
 # pylint: disable=no-name-in-module,import-error
 from distutils.version import LooseVersion
 
-import icon_font_to_png
 import requests
-from appdirs import AppDirs
 from pkg_resources import get_distribution
 
 # Always prefer setuptools over distutils
@@ -47,6 +45,7 @@ def _post():
 
 def _post_fontawesome_47():
     # fontawesome 4.7
+    import icon_font_to_png
     directory = _directory("fontawesome", "4.7")
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -58,6 +57,7 @@ def _post_fontawesome_47():
 
 def _post_fontawesome_5x():
     # fontawesome 5.x
+    import icon_font_to_png
     directory = _directory("fontawesome", "5.x")
     try:
         versions = requests.get(
@@ -112,6 +112,7 @@ def _post_fontawesome_5x():
 
 def _post_glyphicons_33():
     # glyphicons 3.3
+    import icon_font_to_png
     directory = _directory("glyphicons", "3.3")
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -136,6 +137,7 @@ def _post_glyphicons_33():
 
 def _post_material_design_3x():
     # material design 3.x
+    import icon_font_to_png
     directory = _directory("materialdesign", "3.x")
     try:
         versions = requests.get(
@@ -173,7 +175,8 @@ def _post_material_design_3x():
 
 
 def _directory(collection, version):
-    dirs = AppDirs(
+    import appdirs
+    dirs = appdirs.AppDirs(
         os.path.join(
             "pandoc_latex_tip",
             get_distribution("pandoc_latex_tip").version,
