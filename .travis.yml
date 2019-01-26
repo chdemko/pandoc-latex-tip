@@ -1,19 +1,13 @@
-language: generic
-before_install:
-  - wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb
-  - sudo dpkg -i pandoc-2.5-1-amd64.deb
-  - pandoc -v
-  - sudo add-apt-repository -y ppa:deadsnakes/ppa
-  - sudo apt-get update
-  - sudo apt-get install python3.6
-  - sudo apt-get install python-pip
-  - pip install --user --upgrade pip
+language: python
+python:
+  - "3.6"
 install:
-  - pip install --user coveralls
-  - pip install --user -e .[test]
+  - pip install -e .[test]
+  - pip install coveralls
 script:
-  - tox
-  - coverage report -m
+    black --check pandoc_latex_tip.py setup.py tests/test_include.py
+    coverage run -a --source=pandoc_latex_tip setup.py test
+    pylint pandoc_latex_tip.py setup.py tests/test_include.py
 after_success:
   - coveralls
 

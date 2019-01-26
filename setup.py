@@ -269,9 +269,9 @@ setup(
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
-    extras_require={"dev": ["check-manifest"], "test": ["coverage", "tox"]},
+    extras_require={"dev": ["check-manifest"], "test": ["coverage", "tox", "pylint"]},
     # packages=find_packages(),
     # include_package_data = True,
     setup_requires=["pytest-runner", "icon_font_to_png>=0.4", "appdirs>=1.4"],
-    tests_require=["pytest", "coverage"],
+    tests_require=["pytest"],
 )
