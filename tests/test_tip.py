@@ -17,7 +17,8 @@ import pandoc_latex_tip
 
 
 class TipTest(TestCase):
-    def metadata(self):
+    @classmethod
+    def metadata(cls):
         return {
             "pandoc-latex-tip": MetaList(
                 MetaMap(
