@@ -11,11 +11,10 @@ https://github.com/chdemko/pandoc-latex-tip
 import codecs
 from os import path, makedirs
 
-from distutils.command.build_py import build_py as _build_py
-from distutils.command.build_ext import build_ext as _build_ext
-
 # Always prefer setuptools over distutils
 from setuptools import setup
+from setuptools.command.build_py import build_py
+from setuptools.command.build_ext import build_ext
 
 HERE = path.abspath(path.dirname(__file__))
 
@@ -191,15 +190,15 @@ def _post():
     downloader.download_files()
 
 
-class BuildPy(_build_py):
+class BuildPy(build_py):
     def run(self):
-        _build_py.run(self)
+        super().run()
         self.execute(_post, (), msg="Running post build task")
 
 
-class BuildExt(_build_ext):
+class BuildExt(build_ext):
     def run(self):
-        _build_ext.run(self)
+        super().run()
         self.execute(_post, (), msg="Running post build task")
 
 
