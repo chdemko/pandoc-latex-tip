@@ -6,13 +6,13 @@ install:
   - sudo dpkg -i pandoc-2.5-1-amd64.deb
   - pandoc -v
   - pip install black
-  - pip install coverage
   - pip install pylint
+  - pip install coverage
   - pip install coveralls
 script:
-  - black --check pandoc_latex_tip.py setup.py tests/test_include.py
+  - black --check pandoc_latex_tip.py setup.py tests/test_tip.py
+  - pylint pandoc_latex_tip.py setup.py tests/test_tip.py
   - coverage run -a --source=pandoc_latex_tip setup.py test
-  - pylint pandoc_latex_tip.py setup.py tests/test_include.py
 after_success:
   - coveralls
 
