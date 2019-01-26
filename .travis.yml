@@ -1,21 +1,18 @@
-language: python
-python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
+language: generic
 before_install:
-  - wget https://github.com/jgm/pandoc/releases/download/2.2.3.2/pandoc-2.2.3.2-1-amd64.deb
-  - sudo dpkg -i pandoc-2.2.3.2-1-amd64.deb
+  - wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb
+  - sudo dpkg -i pandoc-2.5-1-amd64.deb
   - pandoc -v
-  - sudo apt update
-  - sudo apt build-dep python-imaging
-  - sudo apt install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
+  - sudo apt-get install python2.7
+  - sudo apt-get install python
+  - sudo apt-get install python-pip
+  - pip install --user --upgrade pip
 install:
-  - pip install coveralls
-  - pip install tox-travis
+  - pip install --user coveralls
+  - pip install --user -e .[test]
 script:
   - tox
-  - coverage run --source=pandoc_latex_tip setup.py test
   - coverage report -m
 after_success:
   - coveralls
+
