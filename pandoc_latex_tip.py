@@ -62,7 +62,7 @@ def tip(elem, doc):
         # Get the classes
         classes = set(elem.classes)
 
-        # Loop on all fontsize definition
+        # Loop on all font size definition
         for definition in doc.defined:
 
             # Are the classes correct?
@@ -89,14 +89,14 @@ def add_latex(elem, latex):
         # It is a Div: try to insert an inline raw before the first inline element
         inserted = [False]
 
-        def insert(elem, _):
+        def insert(element, _):
             if (
                 not inserted[0]
-                and isinstance(elem, Inline)
-                and not isinstance(elem.parent, Inline)
+                and isinstance(element, Inline)
+                and not isinstance(element.parent, Inline)
             ):
                 inserted[0] = True
-                return [RawInline(latex, "tex"), elem]
+                return [RawInline(latex, "tex"), element]
             return None
 
         elem.walk(insert)
@@ -336,9 +336,9 @@ def get_size(_, definition, key):
     size = "18"
     if key in definition:
         try:
-            intValue = int(definition[key])
-            if intValue > 0:
-                size = str(intValue)
+            int_value = int(definition[key])
+            if int_value > 0:
+                size = str(int_value)
             else:
                 debug(
                     "[WARNING] pandoc-latex-tip: size must be greater than 0; using "

@@ -9,14 +9,23 @@ https://github.com/chdemko/pandoc-latex-tip
 
 # To use a consistent encoding
 import codecs
-from os import path, makedirs
+import os
+import re
+
+# pylint: disable=no-name-in-module,import-error
+from distutils.version import LooseVersion
+
+import icon_font_to_png
+import requests
+from appdirs import AppDirs
+from pkg_resources import get_distribution
 
 # Always prefer setuptools over distutils
 from setuptools import setup
-from setuptools.command.build_py import build_py
 from setuptools.command.build_ext import build_ext
+from setuptools.command.build_py import build_py
 
-HERE = path.abspath(path.dirname(__file__))
+HERE = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
 try:
@@ -24,48 +33,32 @@ try:
 
     LONG_DESCRIPTION = pypandoc.convert("README.md", "rst")
 except (IOError, ImportError):
-    with codecs.open(path.join(HERE, "README.md"), encoding="utf-8") as f:
+    with codecs.open(os.path.join(HERE, "README.md"), encoding="utf-8") as f:
         LONG_DESCRIPTION = f.read()
 
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements
 def _post():
-    import icon_font_to_png
-    from pkg_resources import get_distribution
-    from appdirs import AppDirs
-    import requests
-    import re
+    _post_fontawesome_47()
+    _post_fontawesome_5x()
+    _post_glyphicons_33()
+    _post_material_design_3x()
 
-    # pylint: disable=no-name-in-module,import-error
-    from distutils.version import LooseVersion
-    import os
 
+def _post_fontawesome_47():
     # fontawesome 4.7
-    dirs = AppDirs(
-        os.path.join(
-            "pandoc_latex_tip",
-            get_distribution("pandoc_latex_tip").version,
-            "fontawesome",
-            "4.7",
-        )
-    )
-    directory = dirs.user_data_dir
-    if not path.exists(directory):
-        makedirs(directory)
+    directory = _directory("fontawesome", "4.7")
+    if not os.path.exists(directory):
+        os.makedirs(directory)
         downloader = icon_font_to_png.FontAwesomeDownloader(directory)
         downloader.css_url = "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/css/font-awesome.css"
         downloader.ttf_url = "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/fonts/fontawesome-webfont.ttf"
         downloader.download_files()
 
+
+def _post_fontawesome_5x():
     # fontawesome 5.x
-    dirs = AppDirs(
-        os.path.join(
-            "pandoc_latex_tip",
-            get_distribution("pandoc_latex_tip").version,
-            "fontawesome",
-            "5.x",
-        )
-    )
+    directory = _directory("fontawesome", "5.x")
     try:
         versions = requests.get(
             "https://api.github.com/repos/FortAwesome/Font-Awesome/tags"
@@ -85,9 +78,8 @@ def _post():
         ) > LooseVersion(latest):
             latest = version["name"]
 
-    directory = dirs.user_data_dir
-    if not path.exists(directory):
-        makedirs(directory)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
     downloader = icon_font_to_png.FontAwesomeDownloader(directory)
     downloader.css_url = (
@@ -117,18 +109,12 @@ def _post():
     )
     downloader.download_files()
 
+
+def _post_glyphicons_33():
     # glyphicons 3.3
-    dirs = AppDirs(
-        os.path.join(
-            "pandoc_latex_tip",
-            get_distribution("pandoc_latex_tip").version,
-            "glyphicons",
-            "3.3",
-        )
-    )
-    directory = dirs.user_data_dir
-    if not path.exists(directory):
-        makedirs(directory)
+    directory = _directory("glyphicons", "3.3")
+    if not os.path.exists(directory):
+        os.makedirs(directory)
         downloader = icon_font_to_png.FontAwesomeDownloader(directory)
         downloader.css_url = (
             "https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.css"
@@ -147,15 +133,10 @@ def _post():
         original.close()
         modified.close()
 
+
+def _post_material_design_3x():
     # material design 3.x
-    dirs = AppDirs(
-        os.path.join(
-            "pandoc_latex_tip",
-            get_distribution("pandoc_latex_tip").version,
-            "materialdesign",
-            "3.x",
-        )
-    )
+    directory = _directory("materialdesign", "3.x")
     try:
         versions = requests.get(
             "https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags"
@@ -175,9 +156,8 @@ def _post():
         ) > LooseVersion(latest):
             latest = version["name"]
 
-    directory = dirs.user_data_dir
-    if not path.exists(directory):
-        makedirs(directory)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     downloader = icon_font_to_png.FontAwesomeDownloader(directory)
     downloader.css_url = (
         "https://cdn.rawgit.com/Templarian/MaterialDesign-Webfont/"
@@ -190,6 +170,18 @@ def _post():
         + "/fonts/materialdesignicons-webfont.ttf"
     )
     downloader.download_files()
+
+
+def _directory(collection, version):
+    dirs = AppDirs(
+        os.path.join(
+            "pandoc_latex_tip",
+            get_distribution("pandoc_latex_tip").version,
+            collection,
+            version,
+        )
+    )
+    return dirs.user_data_dir
 
 
 class BuildPy(build_py):
