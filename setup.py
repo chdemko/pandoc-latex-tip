@@ -211,7 +211,7 @@ setup(
     version="2.0.1",
     # The project's description
     description="A pandoc filter for adding tip in LaTeX",
-    LONG_DESCRIPTION=LONG_DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
     # The project's main homepage.
     url="https://github.com/chdemko/pandoc-latex-tip",
     # The project's download page
