@@ -48,7 +48,7 @@ def _icon_font(collection, version, css, ttf):
     )
 
 
-ICON_FONTS = {
+_ICON_FONTS = {
     "fontawesome-4.7-regular": {
         "font": _icon_font(
             "fontawesome", "4.7", "font-awesome.css", "fontawesome-webfont.ttf"
@@ -92,7 +92,7 @@ ICON_FONTS = {
 }
 
 
-def tip(elem, doc):
+def _tip(elem, doc):
     # Is it in the right format and is it a Span, Div?
     if doc.format in ["latex", "beamer"] and elem.tag in [
         "Span",
@@ -103,9 +103,9 @@ def tip(elem, doc):
 
         # Is there a latex-tip-icon attribute?
         if "latex-tip-icon" in elem.attributes:
-            return add_latex(
+            return _add_latex(
                 elem,
-                latex_code(
+                _latex_code(
                     doc,
                     elem.attributes,
                     {
@@ -129,18 +129,18 @@ def tip(elem, doc):
 
             # Are the classes correct?
             if classes >= definition["classes"]:
-                return add_latex(elem, definition["latex"])
+                return _add_latex(elem, definition["latex"])
 
     return None
 
 
-def add_latex(elem, latex):
+def _add_latex(elem, latex):
     if bool(latex):
         # Is it a Span or a Code?
         if isinstance(elem, (Span, Code)):
             return [RawInline(latex, "tex"), elem]
 
-        # It is a CodeBlock: create a minipage to ensure the tip to be on the same page as the codeblock
+        # It is a CodeBlock: create a minipage to ensure the _tip to be on the same page as the codeblock
         if isinstance(elem, CodeBlock):
             return [
                 RawBlock("\\begin{minipage}{\\textwidth}" + latex, "tex"),
@@ -169,15 +169,15 @@ def add_latex(elem, latex):
 
 
 # pylint: disable=too-many-arguments,too-many-locals
-def latex_code(doc, definition, keys):
+def _latex_code(doc, definition, keys):
     # Get the default color
     color = str(definition.get(keys["color"], "black"))
 
     # Get the size
-    size = get_size(str(definition.get(keys["size"], "18")))
+    size = _get_size(str(definition.get(keys["size"], "18")))
 
     # Get the prefix
-    prefix = get_prefix(str(definition.get(keys["position"], "")))
+    prefix = _get_prefix(str(definition.get(keys["position"], "")))
 
     # Get the collection
     collection = str(definition.get(keys["collection"], "fontawesome"))
@@ -192,12 +192,12 @@ def latex_code(doc, definition, keys):
     link = str(definition.get(keys["link"], ""))
 
     # Get the icons
-    icons = get_icons(
+    icons = _get_icons(
         doc, definition, keys["icon"], color, collection, version, variant, link
     )
 
     # Get the images
-    images = create_images(doc, icons, size)
+    images = _create_images(doc, icons, size)
 
     if bool(images):
         # Prepare LaTeX code
@@ -220,7 +220,7 @@ def latex_code(doc, definition, keys):
     return ""
 
 
-def get_icons(doc, definition, key_icons, color, collection, version, variant, link):
+def _get_icons(doc, definition, key_icons, color, collection, version, variant, link):
     icons = [
         {
             "extended-name": "fa-exclamation-circle",
@@ -238,7 +238,7 @@ def get_icons(doc, definition, key_icons, color, collection, version, variant, l
         icons = []
         # pylint: disable=invalid-name
         if isinstance(definition[key_icons], (str, unicode)):
-            check_icon(
+            _check_icon(
                 doc,
                 icons,
                 definition[key_icons],
@@ -250,7 +250,7 @@ def get_icons(doc, definition, key_icons, color, collection, version, variant, l
             )
         elif isinstance(definition[key_icons], list):
             for icon in definition[key_icons]:
-                check_icon(doc, icons, icon, color, collection, version, variant, link)
+                _check_icon(doc, icons, icon, color, collection, version, variant, link)
 
     return icons
 
@@ -264,7 +264,7 @@ except NameError:
     unicode = str
 
 
-def check_icon(doc, icons, icon, color, collection, version, variant, link):
+def _check_icon(doc, icons, icon, color, collection, version, variant, link):
     if isinstance(icon, (str, unicode)):
         # Simple icon
         name = icon
@@ -285,10 +285,10 @@ def check_icon(doc, icons, icon, color, collection, version, variant, link):
         debug("[WARNING] pandoc-latex-tip: Bad formed icon")
         return
 
-    add_icon(doc, icons, color, name, collection, version, variant, link)
+    _add_icon(doc, icons, color, name, collection, version, variant, link)
 
 
-def add_icon(doc, icons, color, name, collection, version, variant, link):
+def _add_icon(doc, icons, color, name, collection, version, variant, link):
     # Lower the color
     lower_color = color.lower()
 
@@ -337,7 +337,7 @@ def add_icon(doc, icons, color, name, collection, version, variant, link):
         debug("[WARNING] pandoc-latex-tip: error in accessing to icons definition")
 
 
-def get_prefix(prefix):
+def _get_prefix(prefix):
     if prefix == "right":
         return "\\normalmarginpar"
     if prefix in ["left", ""]:
@@ -350,7 +350,7 @@ def get_prefix(prefix):
     return "\\reversemarginpar"
 
 
-def get_size(size):
+def _get_size(size):
     try:
         int_value = int(size)
         if int_value > 0:
@@ -364,7 +364,7 @@ def get_size(size):
     return size
 
 
-def create_images(doc, icons, size):
+def _create_images(doc, icons, size):
     # Generate the LaTeX image code
     images = []
 
@@ -428,13 +428,13 @@ def create_images(doc, icons, size):
     return images
 
 
-def add_definition(doc, definition):
+def _add_definition(doc, definition):
     # Get the classes
     classes = definition["classes"]
 
     # Add a definition if correct
     if bool(classes):
-        latex = latex_code(
+        latex = _latex_code(
             doc,
             definition,
             {
@@ -452,9 +452,9 @@ def add_definition(doc, definition):
             doc.defined.append({"classes": set(classes), "latex": latex})
 
 
-def prepare(doc):
+def _prepare(doc):
     # Add getIconFont library to doc
-    doc.get_icon_font = ICON_FONTS
+    doc.get_icon_font = _ICON_FONTS
 
     # Prepare the definitions
     doc.defined = []
@@ -473,10 +473,10 @@ def prepare(doc):
                 and "classes" in definition
                 and isinstance(definition["classes"], list)
             ):
-                add_definition(doc, definition)
+                _add_definition(doc, definition)
 
 
-def finalize(doc):
+def _finalize(doc):
     # Add header-includes if necessary
     if "header-includes" not in doc.metadata:
         doc.metadata["header-includes"] = MetaList()
@@ -496,7 +496,7 @@ def finalize(doc):
 
 
 def main(doc=None):
-    return run_filter(tip, prepare=prepare, finalize=finalize, doc=doc)
+    return run_filter(_tip, prepare=_prepare, finalize=_finalize, doc=doc)
 
 
 if __name__ == "__main__":
