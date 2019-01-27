@@ -65,7 +65,7 @@ def _post_fontawesome_5x():
         "Unable to get the last version number of the Font-Awesome package on github\n",
     )
 
-    latest = _latest("^5.", versions, "5.6")
+    latest = _latest("^5.", versions, "5.6.3")
 
     downloader = icon_font_to_png.FontAwesomeDownloader(directory)
     downloader.css_url = (
@@ -172,7 +172,7 @@ def _versions(url, message):
         return requests.get(url).json()
     except ValueError:
         sys.stderr.write(message)
-        # sys.exit(1)
+        sys.exit(1)
 
 
 class BuildPy(build_py):
