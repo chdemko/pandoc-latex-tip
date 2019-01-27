@@ -33,7 +33,7 @@ To apply the filter, use the following option with pandoc:
 Installation
 ------------
 
-*pandoc-latex-tip* requires [python], a programming language that comes pre-installed on linux and Mac OS X, and which is easily installed [on Windows]. Either python 2.7 or 3.x will do.
+*pandoc-latex-tip* requires [python 3.6], a programming language that comes pre-installed on linux and Mac OS X, and which is easily installed [on Windows].
 
 Install *pandoc-latex-tip* as root using the bash command
 
@@ -61,7 +61,7 @@ Make sure you have required packages for [Pillow installation](https://pillow.re
 	apt-get build-dep python-imaging
 	apt-get install libjpeg8 libjpeg62-dev libfreetype6 libfreetype6-dev
 
-[python]: https://www.python.org
+[python 3.6]: https://www.python.org
 [on Windows]: https://www.python.org/downloads/windows
 [PyPI]: https://pypi.org
 
