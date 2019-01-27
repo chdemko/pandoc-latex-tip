@@ -172,7 +172,7 @@ def _versions(url, message):
         return requests.get(url).json()
     except ValueError:
         sys.stderr.write(message)
-        sys.exit(1)
+        # sys.exit(1)
 
 
 class BuildPy(build_py):
