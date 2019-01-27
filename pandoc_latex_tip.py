@@ -221,36 +221,52 @@ def _latex_code(doc, definition, keys):
 
 
 def _get_icons(doc, definition, key_icons, color, collection, version, variant, link):
-    icons = [
-        {
-            "extended-name": "fa-exclamation-circle",
-            "name": "exclamation-circle",
-            "color": color,
-            "collection": collection,
-            "version": version,
-            "variant": variant,
-            "link": link,
-        }
-    ]
-
     # Test the icons definition
     if key_icons in definition:
         icons = []
         # pylint: disable=invalid-name
         if isinstance(definition[key_icons], (str, unicode)):
-            _check_icon(
-                doc,
-                icons,
-                definition[key_icons],
-                color,
-                collection,
-                version,
-                variant,
-                link,
-            )
-        elif isinstance(definition[key_icons], list):
-            for icon in definition[key_icons]:
-                _check_icon(doc, icons, icon, color, collection, version, variant, link)
+            def_icons = [
+                {
+                    "name": definition[key_icons],
+                    "color": color,
+                    "collection": collection,
+                    "version": version,
+                    "variant": variant,
+                    "link": link,
+                }
+            ]
+        else:
+            def_icons = definition[key_icons]
+        if isinstance(def_icons, list):
+            for icon in def_icons:
+                try:
+                    icon["color"] = icon.get("color", color)
+                    icon["collection"] = icon.get("collection", collection)
+                    icon["version"] = icon.get("version", version)
+                    icon["variant"] = icon.get("variant", variant)
+                    icon["link"] = icon.get("link", link)
+                except AttributeError:
+                    icon = {"name": icon}
+                    icon["color"] = color
+                    icon["collection"] = collection
+                    icon["version"] = version
+                    icon["variant"] = variant
+                    icon["link"] = link
+
+                _add_icon(doc, icons, icon)
+    else:
+        icons = [
+            {
+                "extended-name": "fa-exclamation-circle",
+                "name": "exclamation-circle",
+                "color": color,
+                "collection": collection,
+                "version": version,
+                "variant": variant,
+                "link": link,
+            }
+        ]
 
     return icons
 
@@ -264,33 +280,14 @@ except NameError:
     unicode = str
 
 
-def _check_icon(doc, icons, icon, color, collection, version, variant, link):
-    if isinstance(icon, (str, unicode)):
-        # Simple icon
-        name = icon
-    elif isinstance(icon, dict) and "color" in icon and "name" in icon:
-        # Complex icon with name and color
-        color = str(icon["color"])
-        name = str(icon["name"])
-        if "collection" in icon:
-            collection = str(icon["collection"])
-        if "version" in icon:
-            version = str(icon["version"])
-        if "variant" in icon:
-            variant = str(icon["variant"])
-        if "link" in icon:
-            link = str(icon["link"])
-    else:
+def _add_icon(doc, icons, icon):
+    if "name" not in icon:
         # Bad formed icon
         debug("[WARNING] pandoc-latex-tip: Bad formed icon")
         return
 
-    _add_icon(doc, icons, color, name, collection, version, variant, link)
-
-
-def _add_icon(doc, icons, color, name, collection, version, variant, link):
     # Lower the color
-    lower_color = color.lower()
+    lower_color = icon["color"].lower()
 
     # Convert the color to black if unexisting
     from PIL import ImageColor
@@ -305,33 +302,33 @@ def _add_icon(doc, icons, color, name, collection, version, variant, link):
 
     # Is the icon correct?
     try:
-        category = collection + "-" + version + "-" + variant
+        category = icon["collection"] + "-" + icon["version"] + "-" + icon["variant"]
         if category in doc.get_icon_font:
-            extended_name = doc.get_icon_font[category]["prefix"] + name
+            extended_name = doc.get_icon_font[category]["prefix"] + icon["name"]
             if extended_name in doc.get_icon_font[category]["font"].css_icons:
                 icons.append(
                     {
-                        "name": name,
+                        "name": icon["name"],
                         "extended-name": extended_name,
                         "color": lower_color,
-                        "collection": collection,
-                        "version": version,
-                        "variant": variant,
-                        "link": link,
+                        "collection": icon["collection"],
+                        "version": icon["version"],
+                        "variant": icon["variant"],
+                        "link": icon["link"],
                     }
                 )
             else:
                 debug(
                     "[WARNING] pandoc-latex-tip: "
-                    + name
+                    + icon["name"]
                     + " is not a correct icon name"
                 )
         else:
             debug(
                 "[WARNING] pandoc-latex-tip: "
-                + variant
+                + icon["variant"]
                 + " does not exist in version "
-                + version
+                + icon["version"]
             )
     except FileNotFoundError:
         debug("[WARNING] pandoc-latex-tip: error in accessing to icons definition")
