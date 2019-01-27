@@ -32,6 +32,66 @@ except NameError:
     FileNotFoundError = IOError  # pylint: disable=redefined-builtin
 
 
+def _icon_font(collection, version, css, ttf):
+    import appdirs
+    from pkg_resources import get_distribution
+
+    folder = appdirs.AppDirs(
+        "pandoc_latex_tip", version=get_distribution("pandoc_latex_tip").version
+    ).user_data_dir
+    import icon_font_to_png
+
+    return icon_font_to_png.IconFont(
+        os.path.join(folder, collection, version, css),
+        os.path.join(folder, collection, version, ttf),
+        True,
+    )
+
+
+ICON_FONTS = {
+    "fontawesome-4.7-regular": {
+        "font": _icon_font(
+            "fontawesome", "4.7", "font-awesome.css", "fontawesome-webfont.ttf"
+        ),
+        "prefix": "fa-",
+    },
+    "fontawesome-5.x-brands": {
+        "font": _icon_font(
+            "fontawesome", "5.x", "fontawesome.css", "fa-brands-400.ttf"
+        ),
+        "prefix": "fa-",
+    },
+    "fontawesome-5.x-regular": {
+        "font": _icon_font(
+            "fontawesome", "5.x", "fontawesome.css", "fa-regular-400.ttf"
+        ),
+        "prefix": "fa-",
+    },
+    "fontawesome-5.x-solid": {
+        "font": _icon_font("fontawesome", "5.x", "fontawesome.css", "fa-solid-900.ttf"),
+        "prefix": "fa-",
+    },
+    "glyphicons-3.3-regular": {
+        "font": _icon_font(
+            "glyphicons",
+            "3.3",
+            "bootstrap-modified.css",
+            "glyphicons-halflings-regular.ttf",
+        ),
+        "prefix": "glyphicon-",
+    },
+    "materialdesign-3.x-regular": {
+        "font": _icon_font(
+            "materialdesign",
+            "3.x",
+            "materialdesignicons.css",
+            "materialdesignicons-webfont.ttf",
+        ),
+        "prefix": "mdi-",
+    },
+}
+
+
 def tip(elem, doc):
     # Is it in the right format and is it a Span, Div?
     if doc.format in ["latex", "beamer"] and elem.tag in [
@@ -120,25 +180,25 @@ def latex_code(
     key_link,
 ):
     # Get the default color
-    color = get_color(doc, definition, key_color)
+    color = str(definition.get(key_color, "black"))
 
     # Get the size
-    size = get_size(doc, definition, key_size)
+    size = get_size(str(definition.get(key_size, "18")))
 
     # Get the prefix
-    prefix = get_prefix(doc, definition, key_position)
+    prefix = get_prefix(str(definition.get(key_position, "")))
 
     # Get the collection
-    collection = get_collection(doc, definition, key_collection)
+    collection = str(definition.get(key_collection, "fontawesome"))
 
     # Get the version
-    version = get_version(doc, definition, key_version)
+    version = str(definition.get(key_version, "4.7"))
 
     # Get the variant
-    variant = get_variant(doc, definition, key_variant)
+    variant = str(definition.get(key_variant, "regular"))
 
     # Get the link
-    link = get_link(doc, definition, key_link)
+    link = str(definition.get(key_link, ""))
 
     # Get the icons
     icons = get_icons(
@@ -286,66 +346,30 @@ def add_icon(doc, icons, color, name, collection, version, variant, link):
         debug("[WARNING] pandoc-latex-tip: error in accessing to icons definition")
 
 
-def get_color(_, definition, key):
-    if key in definition:
-        return str(definition[key])
-    return "black"
-
-
-def get_prefix(_, definition, key):
-    if key in definition:
-        if definition[key] == "right":
-            return "\\normalmarginpar"
-        if definition[key] == "left":
-            return "\\reversemarginpar"
-        debug(
-            "[WARNING] pandoc-latex-tip: "
-            + str(definition[key])
-            + " is not a correct position; using left"
-        )
-
+def get_prefix(prefix):
+    if prefix == "right":
+        return "\\normalmarginpar"
+    if prefix in ["left", ""]:
+        return "\\reversemarginpar"
+    debug(
+        "[WARNING] pandoc-latex-tip: "
+        + prefix
+        + " is not a correct position; using left"
+    )
     return "\\reversemarginpar"
 
 
-def get_version(_, definition, key):
-    if key in definition:
-        return str(definition[key])
-    return "4.7"
-
-
-def get_collection(_, definition, key):
-    if key in definition:
-        return str(definition[key])
-    return "fontawesome"
-
-
-def get_variant(_, definition, key):
-    if key in definition:
-        return str(definition[key])
-    return "regular"
-
-
-def get_link(_, definition, key):
-    if key in definition:
-        return str(definition[key])
-    return None
-
-
-def get_size(_, definition, key):
-    # Get the size
-    size = "18"
-    if key in definition:
-        try:
-            int_value = int(definition[key])
-            if int_value > 0:
-                size = str(int_value)
-            else:
-                debug(
-                    "[WARNING] pandoc-latex-tip: size must be greater than 0; using "
-                    + size
-                )
-        except ValueError:
-            debug("[WARNING] pandoc-latex-tip: size must be a number; using " + size)
+def get_size(size):
+    try:
+        int_value = int(size)
+        if int_value > 0:
+            size = str(int_value)
+        else:
+            debug(
+                "[WARNING] pandoc-latex-tip: size must be greater than 0; using " + size
+            )
+    except ValueError:
+        debug("[WARNING] pandoc-latex-tip: size must be a number; using " + size)
     return size
 
 
@@ -357,19 +381,15 @@ def create_images(doc, icons, size):
 
         # Get the apps dirs
         from pkg_resources import get_distribution
-        from appdirs import AppDirs
+        import appdirs
 
-        dirs = AppDirs(
+        folder = appdirs.AppDirs(
             "pandoc_latex_tip", version=get_distribution("pandoc_latex_tip").version
-        )
+        ).user_cache_dir
 
         # Get the image from the App cache folder
         image_dir = os.path.join(
-            dirs.user_cache_dir,
-            icon["collection"],
-            icon["version"],
-            icon["variant"],
-            icon["color"],
+            folder, icon["collection"], icon["version"], icon["variant"], icon["color"]
         )
         image = os.path.join(image_dir, icon["extended-name"] + ".png")
 
@@ -391,7 +411,7 @@ def create_images(doc, icons, size):
             image = Image(
                 url=image, attributes={"width": size + "pt", "height": size + "pt"}
             )
-            if icon["link"] is None:
+            if icon["link"] == "":
                 elem = image
             else:
                 elem = Link(image, url=icon["link"])
@@ -441,63 +461,7 @@ def add_definition(doc, definition):
 
 def prepare(doc):
     # Add getIconFont library to doc
-    import appdirs
-    from pkg_resources import get_distribution
-
-    folder = appdirs.AppDirs(
-        "pandoc_latex_tip", version=get_distribution("pandoc_latex_tip").version
-    ).user_data_dir
-
-    doc.get_icon_font = {
-        "fontawesome-4.7-regular": {
-            "font": _icon_font(
-                folder,
-                "fontawesome",
-                "4.7",
-                "font-awesome.css",
-                "fontawesome-webfont.ttf",
-            ),
-            "prefix": "fa-",
-        },
-        "fontawesome-5.x-brands": {
-            "font": _icon_font(
-                folder, "fontawesome", "5.x", "fontawesome.css", "fa-brands-400.ttf"
-            ),
-            "prefix": "fa-",
-        },
-        "fontawesome-5.x-regular": {
-            "font": _icon_font(
-                folder, "fontawesome", "5.x", "fontawesome.css", "fa-regular-400.ttf"
-            ),
-            "prefix": "fa-",
-        },
-        "fontawesome-5.x-solid": {
-            "font": _icon_font(
-                folder, "fontawesome", "5.x", "fontawesome.css", "fa-solid-900.ttf"
-            ),
-            "prefix": "fa-",
-        },
-        "glyphicons-3.3-regular": {
-            "font": _icon_font(
-                folder,
-                "glyphicons",
-                "3.3",
-                "bootstrap-modified.css",
-                "glyphicons-halflings-regular.ttf",
-            ),
-            "prefix": "glyphicon-",
-        },
-        "materialdesign-3.x-regular": {
-            "font": _icon_font(
-                folder,
-                "materialdesign",
-                "3.x",
-                "materialdesignicons.css",
-                "materialdesignicons-webfont.ttf",
-            ),
-            "prefix": "mdi-",
-        },
-    }
+    doc.get_icon_font = ICON_FONTS
 
     # Prepare the definitions
     doc.defined = []
@@ -517,16 +481,6 @@ def prepare(doc):
                 and isinstance(definition["classes"], list)
             ):
                 add_definition(doc, definition)
-
-
-def _icon_font(folder, collection, version, css, ttf):
-    import icon_font_to_png
-
-    return icon_font_to_png.IconFont(
-        os.path.join(folder, collection, version, css),
-        os.path.join(folder, collection, version, ttf),
-        True,
-    )
 
 
 def finalize(doc):
