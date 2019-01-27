@@ -108,14 +108,16 @@ def tip(elem, doc):
                 latex_code(
                     doc,
                     elem.attributes,
-                    "latex-tip-icon",
-                    "latex-tip-position",
-                    "latex-tip-size",
-                    "latex-tip-color",
-                    "latex-tip-collection",
-                    "latex-tip-version",
-                    "latex-tip-variant",
-                    "latex-tip-link",
+                    {
+                        "icon": "latex-tip-icon",
+                        "position": "latex-tip-position",
+                        "size": "latex-tip-size",
+                        "color": "latex-tip-color",
+                        "collection": "latex-tip-collection",
+                        "version": "latex-tip-version",
+                        "variant": "latex-tip-variant",
+                        "link": "latex-tip-link",
+                    },
                 ),
             )
 
@@ -167,42 +169,31 @@ def add_latex(elem, latex):
 
 
 # pylint: disable=too-many-arguments,too-many-locals
-def latex_code(
-    doc,
-    definition,
-    key_icon,
-    key_position,
-    key_size,
-    key_color,
-    key_collection,
-    key_version,
-    key_variant,
-    key_link,
-):
+def latex_code(doc, definition, keys):
     # Get the default color
-    color = str(definition.get(key_color, "black"))
+    color = str(definition.get(keys["color"], "black"))
 
     # Get the size
-    size = get_size(str(definition.get(key_size, "18")))
+    size = get_size(str(definition.get(keys["size"], "18")))
 
     # Get the prefix
-    prefix = get_prefix(str(definition.get(key_position, "")))
+    prefix = get_prefix(str(definition.get(keys["position"], "")))
 
     # Get the collection
-    collection = str(definition.get(key_collection, "fontawesome"))
+    collection = str(definition.get(keys["collection"], "fontawesome"))
 
     # Get the version
-    version = str(definition.get(key_version, "4.7"))
+    version = str(definition.get(keys["version"], "4.7"))
 
     # Get the variant
-    variant = str(definition.get(key_variant, "regular"))
+    variant = str(definition.get(keys["variant"], "regular"))
 
     # Get the link
-    link = str(definition.get(key_link, ""))
+    link = str(definition.get(keys["link"], ""))
 
     # Get the icons
     icons = get_icons(
-        doc, definition, key_icon, color, collection, version, variant, link
+        doc, definition, keys["icon"], color, collection, version, variant, link
     )
 
     # Get the images
@@ -446,14 +437,16 @@ def add_definition(doc, definition):
         latex = latex_code(
             doc,
             definition,
-            "icons",
-            "position",
-            "size",
-            "color",
-            "collection",
-            "version",
-            "variant",
-            "link",
+            {
+                "icon": "icons",
+                "position": "position",
+                "size": "size",
+                "color": "color",
+                "collection": "collection",
+                "version": "version",
+                "variant": "variant",
+                "link": "link",
+            },
         )
         if latex:
             doc.defined.append({"classes": set(classes), "latex": latex})
