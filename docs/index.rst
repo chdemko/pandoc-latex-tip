@@ -86,11 +86,11 @@ attribute description:
 -  ``latex-tip-position``: the position of the icon (``left`` by default
    or ``right``)
 -  ``latex-tip-color``: the color for the icon (``black`` by default)
--  ``latex-tip-name``: the collection ``name`` property (``fontawesome``
+-  ``latex-tip-name``: the collection name property (``fontawesome``
    by default)
--  ``latex-tip-version``: the collection ``version`` property (``4.7``
+-  ``latex-tip-version``: the collection version property (``4.7``
    by default)
--  ``latex-tip-variant``: the collection ``variant`` property
+-  ``latex-tip-variant``: the collection variant property
    (``regular`` by default)
 -  ``latex-tip-link``: a link for the clickable icon
 
