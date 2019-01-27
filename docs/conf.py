@@ -26,7 +26,7 @@ on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 # -- Project information -----------------------------------------------------
 
 project = "pandoc-latex-tip"
-copyright = "2015-2019, Christophe Demko"
+copyright = "2016-2019, Christophe Demko"
 author = "Christophe Demko"
 
 # The short X.Y version
