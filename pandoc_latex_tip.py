@@ -302,7 +302,7 @@ def _add_icon(doc, icons, icon):
 
     # Is the icon correct?
     try:
-        category = icon["collection"] + "-" + icon["version"] + "-" + icon["variant"]
+        category = _category(icon["collection"], icon["version"], icon["variant"])
         if category in doc.get_icon_font:
             extended_name = doc.get_icon_font[category]["prefix"] + icon["name"]
             if extended_name in doc.get_icon_font[category]["font"].css_icons:
@@ -332,6 +332,10 @@ def _add_icon(doc, icons, icon):
             )
     except FileNotFoundError:
         debug("[WARNING] pandoc-latex-tip: error in accessing to icons definition")
+
+
+def _category(collection, version, variant):
+    return collection + "-" + version + "-" + variant
 
 
 def _get_prefix(prefix):
@@ -385,9 +389,7 @@ def _create_images(doc, icons, size):
         try:
             if not os.path.isfile(image):
                 # Create the image in the cache
-                category = (
-                    icon["collection"] + "-" + icon["version"] + "-" + icon["variant"]
-                )
+                category = _category(icon["collection"], icon["version"], icon["variant"])
                 doc.get_icon_font[category]["font"].export_icon(
                     icon["extended-name"],
                     512,
