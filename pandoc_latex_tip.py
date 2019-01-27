@@ -389,7 +389,9 @@ def _create_images(doc, icons, size):
         try:
             if not os.path.isfile(image):
                 # Create the image in the cache
-                category = _category(icon["collection"], icon["version"], icon["variant"])
+                category = _category(
+                    icon["collection"], icon["version"], icon["variant"]
+                )
                 doc.get_icon_font[category]["font"].export_icon(
                     icon["extended-name"],
                     512,
