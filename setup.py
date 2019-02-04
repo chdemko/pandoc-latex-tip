@@ -44,22 +44,31 @@ def _post():
 
 def _post_fontawesome_47():
     # fontawesome 4.7
-    import icon_font_to_png
+    import urllib
+    import shutil
 
     directory = _directory("fontawesome", "4.7")
-    downloader = icon_font_to_png.FontAwesomeDownloader(directory)
-    downloader.css_url = (
+
+    with urllib.request.urlopen(
         "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/css/font-awesome.css"
-    )
-    downloader.ttf_url = "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/fonts/fontawesome-webfont.ttf"
-    downloader.download_files()
+    ) as response, open(os.path.join(directory, "font-awesome.css"), "wb") as out_file:
+        shutil.copyfileobj(response, out_file)
+
+    with urllib.request.urlopen(
+        "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/fonts/fontawesome-webfont.ttf"
+    ) as response, open(
+        os.path.join(directory, "fontawesome-webfont.ttf"), "wb"
+    ) as out_file:
+        shutil.copyfileobj(response, out_file)
 
 
 def _post_fontawesome_5x():
     # fontawesome 5.x
-    import icon_font_to_png
+    import urllib
+    import shutil
 
     directory = _directory("fontawesome", "5.x")
+
     versions = _versions(
         "https://api.github.com/repos/FortAwesome/Font-Awesome/tags",
         "Unable to get the last version number of the Font-Awesome package on github\n",
@@ -67,35 +76,43 @@ def _post_fontawesome_5x():
 
     latest = _latest("^5.", versions, "5.6.3")
 
-    downloader = icon_font_to_png.FontAwesomeDownloader(directory)
-    downloader.css_url = (
+    with urllib.request.urlopen(
         "https://cdn.rawgit.com/FortAwesome/Font-Awesome/"
         + latest
         + "/css/fontawesome.css"
-    )
+    ) as response, open(os.path.join(directory, "fontawesome.css"), "wb") as out_file:
+        shutil.copyfileobj(response, out_file)
+
     for ttf in ["fa-brands-400", "fa-regular-400", "fa-solid-900"]:
-        downloader.ttf_url = (
+        with urllib.request.urlopen(
             "https://cdn.rawgit.com/FortAwesome/Font-Awesome/"
             + latest
             + "/webfonts/"
             + ttf
             + ".ttf"
-        )
-        downloader.download_files()
+        ) as response, open(os.path.join(directory, ttf + ".ttf"), "wb") as out_file:
+            shutil.copyfileobj(response, out_file)
 
 
 def _post_glyphicons_33():
     # glyphicons 3.3
-    import icon_font_to_png
+    import urllib
+    import shutil
 
     directory = _directory("glyphicons", "3.3")
 
-    downloader = icon_font_to_png.FontAwesomeDownloader(directory)
-    downloader.css_url = (
+    with urllib.request.urlopen(
         "https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.css"
-    )
-    downloader.ttf_url = "https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf"
-    downloader.download_files()
+    ) as response, open(os.path.join(directory, "bootstrap.css"), "wb") as out_file:
+        shutil.copyfileobj(response, out_file)
+
+    with urllib.request.urlopen(
+        "https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf"
+    ) as response, open(
+        os.path.join(directory, "glyphicons-halflings-regular.ttf"), "wb"
+    ) as out_file:
+        shutil.copyfileobj(response, out_file)
+
     original = open(os.path.join(directory, "bootstrap.css"), "rt")
     modified = open(os.path.join(directory, "bootstrap-modified.css"), "w")
     index = 0
@@ -111,9 +128,11 @@ def _post_glyphicons_33():
 
 def _post_material_design_3x():
     # material design 3.x
-    import icon_font_to_png
+    import urllib
+    import shutil
 
     directory = _directory("materialdesign", "3.x")
+
     versions = _versions(
         "https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags",
         "Unable to get the last version number of the MaterialDesign-Webfont package on github\n",
@@ -121,18 +140,23 @@ def _post_material_design_3x():
 
     latest = _latest("^v3.", versions, "v3.3")
 
-    downloader = icon_font_to_png.FontAwesomeDownloader(directory)
-    downloader.css_url = (
+    with urllib.request.urlopen(
         "https://cdn.rawgit.com/Templarian/MaterialDesign-Webfont/"
         + latest
         + "/css/materialdesignicons.css"
-    )
-    downloader.ttf_url = (
+    ) as response, open(
+        os.path.join(directory, "materialdesignicons.css"), "wb"
+    ) as out_file:
+        shutil.copyfileobj(response, out_file)
+
+    with urllib.request.urlopen(
         "https://cdn.rawgit.com/Templarian/MaterialDesign-Webfont/"
         + latest
         + "/fonts/materialdesignicons-webfont.ttf"
-    )
-    downloader.download_files()
+    ) as response, open(
+        os.path.join(directory, "materialdesignicons-webfont.ttf"), "wb"
+    ) as out_file:
+        shutil.copyfileobj(response, out_file)
 
 
 def _latest(match, versions, latest):
