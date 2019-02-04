@@ -118,9 +118,6 @@ def _post_glyphicons_33():
 
 def _post_material_design_3x():
     # material design 3.x
-    import urllib
-    import shutil
-
     directory = _directory("materialdesign", "3.x")
 
     versions = _versions(
