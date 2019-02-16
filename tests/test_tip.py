@@ -76,11 +76,11 @@ class TipTest(TestCase):
             api_version=(1, 17, 2),
         )
         pandoc_latex_tip.main(doc)
-        self.assertEqual(doc.content[0].content[0].format, "tex")
-        self.assertEqual(doc.content[0].content[2].format, "tex")
-        self.assertEqual(doc.content[0].content[4].format, "tex")
-        self.assertEqual(doc.content[0].content[6].format, "tex")
-        self.assertEqual(doc.content[0].content[8].format, "tex")
+        self.assertEqual(doc.content[0].content[1].format, "tex")
+        self.assertEqual(doc.content[0].content[3].format, "tex")
+        self.assertEqual(doc.content[0].content[5].format, "tex")
+        self.assertEqual(doc.content[0].content[7].format, "tex")
+        self.assertEqual(doc.content[0].content[9].format, "tex")
 
     def test_div(self):
         doc = Doc(
@@ -124,10 +124,10 @@ class TipTest(TestCase):
             api_version=(1, 17, 2),
         )
         pandoc_latex_tip.main(doc)
-        self.assertEqual(doc.content[0].content[0].format, "tex")
-        self.assertEqual(doc.content[0].content[2].format, "tex")
-        self.assertEqual(doc.content[0].content[4].format, "tex")
-        self.assertEqual(doc.content[0].content[6].format, "tex")
+        self.assertEqual(doc.content[0].content[1].format, "tex")
+        self.assertEqual(doc.content[0].content[3].format, "tex")
+        self.assertEqual(doc.content[0].content[5].format, "tex")
+        self.assertEqual(doc.content[0].content[7].format, "tex")
 
     def test_codeblock(self):
         doc = Doc(

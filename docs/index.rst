@@ -51,7 +51,7 @@ Each entry of ``pandoc-latex-tip`` is a YAML dictionary containing:
    by default)
 -  ``size``: the size of the rendered icons (``18`` by default)
 -  ``position``: the position of the icons (``left`` by default or
-   ``right``)
+   ``right`` or ``inner`` or ``outer``)
 -  ``color``: the default color for icons which do not have a color
    description by themselves
 
@@ -84,7 +84,7 @@ attribute description:
 -  ``latex-tip-icon``: the name of the icon
 -  ``latex-tip-size``: the size of the rendered icon (``18`` by default)
 -  ``latex-tip-position``: the position of the icon (``left`` by default
-   or ``right``)
+   or ``right`` or ``inner`` or ``outer``)
 -  ``latex-tip-color``: the color for the icon (``black`` by default)
 -  ``latex-tip-name``: the collection name property (``fontawesome``
    by default)
@@ -98,6 +98,7 @@ The following LaTeX packages are required:
 
 -  ``marginnote``
 -  ``etoolbox``
+-  ``changepage``
 
 Example
 -------

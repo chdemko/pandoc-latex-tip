@@ -138,7 +138,7 @@ def _add_latex(elem, latex):
     if bool(latex):
         # Is it a Span or a Code?
         if isinstance(elem, (Span, Code)):
-            return [RawInline(latex, "tex"), elem]
+            return [elem, RawInline(latex, "tex")]
 
         # It is a CodeBlock: create a minipage to ensure the _tip to be on the same page as the codeblock
         if isinstance(elem, CodeBlock):
@@ -158,7 +158,7 @@ def _add_latex(elem, latex):
                 and not isinstance(element.parent, Inline)
             ):
                 inserted[0] = True
-                return [RawInline(latex, "tex"), element]
+                return [element, RawInline(latex, "tex")]
             return None
 
         elem.walk(insert)
@@ -176,8 +176,9 @@ def _latex_code(doc, definition, keys):
     # Get the size
     size = _get_size(str(definition.get(keys["size"], "18")))
 
-    # Get the prefix
-    prefix = _get_prefix(str(definition.get(keys["position"], "")))
+    # Get the prefixes
+    prefix_odd = _get_prefix(str(definition.get(keys["position"], "")), True)
+    prefix_even = _get_prefix(str(definition.get(keys["position"], "")), False)
 
     # Get the collection
     collection = str(definition.get(keys["collection"], "fontawesome"))
@@ -200,23 +201,20 @@ def _latex_code(doc, definition, keys):
     images = _create_images(doc, icons, size)
 
     if bool(images):
-        # Prepare LaTeX code
-        latex = (
-            [
-                "{",
-                "\\makeatletter",
-                "\\patchcmd{\\@mn@margintest}{\\@tempswafalse}{\\@tempswatrue}{}{}",
-                "\\patchcmd{\\@mn@margintest}{\\@tempswafalse}{\\@tempswatrue}{}{}",
-                "\\makeatother",
-                prefix,
-                "\\marginnote{",
-            ]
-            + images
-            + ["}[0pt]", "\\vspace{0cm}", "}"]
+        return r"""
+\checkoddpage%%
+\ifoddpage%%
+%s%%
+\else%%
+%s%%
+\fi%%
+\marginnote{%s}[0pt]\vspace{0cm}%%
+""" % (
+            prefix_odd,
+            prefix_even,
+            "".join(images),
         )
 
-        # Return LaTeX code
-        return "".join(latex)
     return ""
 
 
@@ -338,17 +336,32 @@ def _category(collection, version, variant):
     return collection + "-" + version + "-" + variant
 
 
-def _get_prefix(prefix):
-    if prefix == "right":
-        return "\\normalmarginpar"
-    if prefix in ["left", ""]:
-        return "\\reversemarginpar"
+# pylint:disable=too-many-return-statements
+def _get_prefix(position, odd=True):
+    if position == "right":
+        if odd:
+            return "\\oddrighttip"
+        return "\\evenrighttip"
+    if position in ["left", ""]:
+        if odd:
+            return "\\oddlefttip"
+        return "\\evenlefttip"
+    if position == "inner":
+        if odd:
+            return "\\oddinnertip"
+        return "\\eveninnertip"
+    if position == "outer":
+        if odd:
+            return "\\oddoutertip"
+        return "\\evenoutertip"
     debug(
         "[WARNING] pandoc-latex-tip: "
-        + prefix
+        + position
         + " is not a correct position; using left"
     )
-    return "\\reversemarginpar"
+    if odd:
+        return "\\oddlefttip"
+    return "\\evenlefttip"
 
 
 def _get_size(size):
@@ -495,67 +508,47 @@ def _finalize(doc):
         MetaInlines(RawInline("\\usepackage{etoolbox}", "tex"))
     )
     doc.metadata["header-includes"].append(
+        MetaInlines(RawInline("\\usepackage{changepage}\n\\strictpagecheck", "tex"))
+    )
+    doc.metadata["header-includes"].append(
         MetaInlines(
             RawInline(
                 r"""
-\makeatletter
-\long\def\@mn@@@marginnote[#1]#2[#3]{%
-  \begingroup
-    \ifmmode\mn@strut\let\@tempa\mn@vadjust\else
-      \if@inlabel\leavevmode\fi
-      \ifhmode\mn@strut\let\@tempa\mn@vadjust\else\let\@tempa\mn@vlap\fi
-    \fi
-    \@tempa{%
-      \vbox to\z@{%
-        \vss
-        \@mn@margintest
-        \if@reversemargin\if@tempswa
-            \@tempswafalse
-          \else
-            \@tempswatrue
-        \fi\fi
-
-          \llap{%
-            \vbox to\z@{\kern\marginnotevadjust\kern #3
-              \vbox to\z@{%
-                \hsize\marginparwidth
-                \linewidth\hsize
-                \kern-\parskip
-                %\mn@parboxrestore
-                \marginfont\raggedleftmarginnote\strut\hspace{\z@}%
-                \ignorespaces#1\endgraf
-                \vss
-              }%
-              \vss
-            }%
-            \if@mn@verbose
-              \PackageInfo{marginnote}{xpos seems to be \@mn@currxpos}%
-            \fi
-            \begingroup
-              \ifx\@mn@currxpos\relax\else\ifx\@mn@currpos\@empty\else
-                  \kern\@mn@currxpos
-              \fi\fi
-              \ifx\@mn@currpage\relax
-                \let\@mn@currpage\@ne
-              \fi
-              \if@twoside\ifodd\@mn@currpage\relax
-                  \kern-\oddsidemargin
-                \else
-                  \kern-\evensidemargin
-                \fi
-              \else
-                \kern-\oddsidemargin
-              \fi
-              \kern-1in
-            \endgroup
-            \kern\marginparsep
-          }%
-      }%
-    }%
-  \endgroup
-}
-\makeatother
-""",
+\makeatletter%
+\@ifpackagelater{marginnote}{2018/04/12}%
+{%
+\newcommand{\oddinnertip}{\reversemarginpar}%
+\newcommand{\eveninnertip}{\reversemarginpar}%
+\newcommand{\oddoutertip}{\normalmarginpar}%
+\newcommand{\evenoutertip}{\normalmarginpar}%
+\newcommand{\oddlefttip}{\reversemarginpar}%
+\newcommand{\evenlefttip}{\normalmarginpar}%
+\newcommand{\oddrighttip}{\normalmarginpar}%
+\newcommand{\evenrighttip}{\reversemarginpar}%
+}%
+{%
+\if@twoside%
+\newcommand{\oddinnertip}{\reversemarginpar}%
+\newcommand{\eveninnertip}{\reversemarginpar}%
+\newcommand{\oddoutertip}{\normalmarginpar}%
+\newcommand{\evenoutertip}{\normalmarginpar}%
+\newcommand{\oddlefttip}{\reversemarginpar}%
+\newcommand{\evenlefttip}{\normalmarginpar}%
+\newcommand{\oddrighttip}{\reversemarginpar}%
+\newcommand{\evenrighttip}{\normalmarginpar}%
+\else%
+\newcommand{\oddinnertip}{\reversemarginpar}%
+\newcommand{\eveninnertip}{\reversemarginpar}%
+\newcommand{\oddoutertip}{\normalmarginpar}%
+\newcommand{\evenoutertip}{\normalmarginpar}%
+\newcommand{\oddlefttip}{\reversemarginpar}%
+\newcommand{\evenlefttip}{\reversemarginpar}%
+\newcommand{\oddrighttip}{\normalmarginpar}%
+\newcommand{\evenrighttip}{\normalmarginpar}%
+\fi%
+}%
+\makeatother%
+    """,
                 "tex",
             )
         )
