@@ -494,6 +494,72 @@ def _finalize(doc):
     doc.metadata["header-includes"].append(
         MetaInlines(RawInline("\\usepackage{etoolbox}", "tex"))
     )
+    doc.metadata["header-includes"].append(
+        MetaInlines(
+            RawInline(
+                r"""
+\makeatletter
+\long\def\@mn@@@marginnote[#1]#2[#3]{%
+  \begingroup
+    \ifmmode\mn@strut\let\@tempa\mn@vadjust\else
+      \if@inlabel\leavevmode\fi
+      \ifhmode\mn@strut\let\@tempa\mn@vadjust\else\let\@tempa\mn@vlap\fi
+    \fi
+    \@tempa{%
+      \vbox to\z@{%
+        \vss
+        \@mn@margintest
+        \if@reversemargin\if@tempswa
+            \@tempswafalse
+          \else
+            \@tempswatrue
+        \fi\fi
+
+          \llap{%
+            \vbox to\z@{\kern\marginnotevadjust\kern #3
+              \vbox to\z@{%
+                \hsize\marginparwidth
+                \linewidth\hsize
+                \kern-\parskip
+                %\mn@parboxrestore
+                \marginfont\raggedleftmarginnote\strut\hspace{\z@}%
+                \ignorespaces#1\endgraf
+                \vss
+              }%
+              \vss
+            }%
+            \if@mn@verbose
+              \PackageInfo{marginnote}{xpos seems to be \@mn@currxpos}%
+            \fi
+            \begingroup
+              \ifx\@mn@currxpos\relax\else\ifx\@mn@currpos\@empty\else
+                  \kern\@mn@currxpos
+              \fi\fi
+              \ifx\@mn@currpage\relax
+                \let\@mn@currpage\@ne
+              \fi
+              \if@twoside\ifodd\@mn@currpage\relax
+                  \kern-\oddsidemargin
+                \else
+                  \kern-\evensidemargin
+                \fi
+              \else
+                \kern-\oddsidemargin
+              \fi
+              \kern-1in
+            \endgroup
+            \kern\marginparsep
+          }%
+      }%
+    }%
+  \endgroup
+}
+\makeatother
+""",
+                "tex",
+            )
+        )
+    )
 
 
 def main(doc=None):
