@@ -48,7 +48,8 @@ def _icon_font(collection, version, css, ttf):
             True,
         )
     except FileNotFoundError as exception:
-        debug("[WARNING] pandoc-latex-tip: " + str(exception))
+        debug("[ERROR] pandoc-latex-tip: " + str(exception))
+        exit(-1)
 
 
 _ICON_FONTS = {
