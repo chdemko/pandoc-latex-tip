@@ -154,8 +154,8 @@ def _download(url, directory, filename):
             os.path.join(directory, filename), "wb"
         ) as out_file:
             shutil.copyfileobj(response, out_file)
-    except urllib.error.HTTPError as e:
-        sys.stderr.write(e.message)
+    except urllib.error.HTTPError as exception:
+        sys.stderr.write(exception)
 
 
 def _latest(match, versions, latest):
