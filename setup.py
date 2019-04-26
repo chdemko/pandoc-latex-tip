@@ -147,11 +147,15 @@ def _post_material_design_3x():
 def _download(url, directory, filename):
     import urllib
     import shutil
+    import sys
 
-    with urllib.request.urlopen(url) as response, open(
-        os.path.join(directory, filename), "wb"
-    ) as out_file:
-        shutil.copyfileobj(response, out_file)
+    try:
+        with urllib.request.urlopen(url) as response, open(
+            os.path.join(directory, filename), "wb"
+        ) as out_file:
+            shutil.copyfileobj(response, out_file)
+    except urllib.error.HTTPError as e:
+        sys.stderr.write(e.message)
 
 
 def _latest(match, versions, latest):
