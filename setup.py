@@ -219,7 +219,7 @@ setup(
     # The project's main homepage.
     url="https://github.com/chdemko/pandoc-latex-tip",
     # The project's download page
-    download_url="https://github.com/chdemko/pandoc-latex-tip/archive/master.zip",
+    download_url="https://github.com/chdemko/pandoc-latex-tip/archive/develop.zip",
     # Author details
     author="Christophe Demko",
     author_email="chdemko@gmail.com",
