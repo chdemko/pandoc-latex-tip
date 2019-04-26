@@ -29,7 +29,7 @@ by attribute.
 The metadata block add information using the ``pandoc-latex-tip`` entry
 by a list of definitions:
 
-.. code:: yaml
+.. code-block:: yaml
 
    pandoc-latex-tip:
      - classes: [tip, error]
