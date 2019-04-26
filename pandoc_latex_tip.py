@@ -41,11 +41,14 @@ def _icon_font(collection, version, css, ttf):
     ).user_data_dir
     import icon_font_to_png
 
-    return icon_font_to_png.IconFont(
-        os.path.join(folder, collection, version, css),
-        os.path.join(folder, collection, version, ttf),
-        True,
-    )
+    try:
+        return icon_font_to_png.IconFont(
+            os.path.join(folder, collection, version, css),
+            os.path.join(folder, collection, version, ttf),
+            True,
+        )
+    except FileNotFoundError as exception:
+        debug("[ERROR] pandoc-latex-tip: " + str(exception))
 
 
 _ICON_FONTS = {
