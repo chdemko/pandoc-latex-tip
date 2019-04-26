@@ -155,7 +155,7 @@ def _download(url, directory, filename):
         ) as out_file:
             shutil.copyfileobj(response, out_file)
     except urllib.error.HTTPError as exception:
-        sys.stderr.write(exception)
+        sys.stderr.write(str(exception))
 
 
 def _latest(match, versions, latest):
