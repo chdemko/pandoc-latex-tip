@@ -46,12 +46,12 @@ def _post_fontawesome_47():
     # fontawesome 4.7
     directory = _directory("fontawesome", "4.7")
     _download(
-        "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/css/font-awesome.css",
+        "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@v4.7.0/css/font-awesome.css",
         directory,
         "font-awesome.css",
     )
     _download(
-        "https://cdn.rawgit.com/FortAwesome/Font-Awesome/v4.7.0/fonts/fontawesome-webfont.ttf",
+        "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@v4.7.0/fonts/fontawesome-webfont.ttf",
         directory,
         "fontawesome-webfont.ttf",
     )
@@ -69,7 +69,7 @@ def _post_fontawesome_5x():
     latest = _latest("^5.", versions, "5.6.3")
 
     _download(
-        "https://cdn.rawgit.com/FortAwesome/Font-Awesome/"
+        "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@"
         + latest
         + "/css/fontawesome.css",
         directory,
@@ -77,7 +77,7 @@ def _post_fontawesome_5x():
     )
     for ttf in ["fa-brands-400", "fa-regular-400", "fa-solid-900"]:
         _download(
-            "https://cdn.rawgit.com/FortAwesome/Font-Awesome/"
+            "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@"
             + latest
             + "/webfonts/"
             + ttf
@@ -92,13 +92,13 @@ def _post_glyphicons_33():
     directory = _directory("glyphicons", "3.3")
 
     _download(
-        "https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/css/bootstrap.css",
+        "https://cdn.jsdelivr.net/gh/twbs/bootstrap@v3.3.7/dist/css/bootstrap.css",
         directory,
         "bootstrap.css",
     )
 
     _download(
-        "https://cdn.rawgit.com/twbs/bootstrap/v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf",
+        "https://cdn.jsdelivr.net/gh/twbs/bootstrap@v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf",
         directory,
         "glyphicons-halflings-regular.ttf",
     )
@@ -128,7 +128,7 @@ def _post_material_design_3x():
     latest = _latest("^v3.", versions, "v3.3")
 
     _download(
-        "https://cdn.rawgit.com/Templarian/MaterialDesign-Webfont/"
+        "https://cdn.jsdelivr.net/gh/Templarian/MaterialDesign-Webfont@"
         + latest
         + "/css/materialdesignicons.css",
         directory,
@@ -136,7 +136,7 @@ def _post_material_design_3x():
     )
 
     _download(
-        "https://cdn.rawgit.com/Templarian/MaterialDesign-Webfont/"
+        "https://cdn.jsdelivr.net/gh/Templarian/MaterialDesign-Webfont@"
         + latest
         + "/fonts/materialdesignicons-webfont.ttf",
         directory,
