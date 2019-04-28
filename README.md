@@ -2,7 +2,7 @@
 [![Build Status](https://img.shields.io/travis/chdemko/pandoc-latex-tip/develop.svg?logo=travis)](https://travis-ci.org/chdemko/pandoc-latex-tip/branches)
 [![Coveralls](https://img.shields.io/coveralls/github/chdemko/pandoc-latex-tip/develop.svg?logo=Codecov&logoColor=white)](https://coveralls.io/github/chdemko/pandoc-latex-tip?branch=develop)
 [![Code Climate](https://codeclimate.com/github/chdemko/pandoc-latex-tip/badges/gpa.svg)](https://codeclimate.com/github/chdemko/pandoc-latex-tip/)
-[![Code Beat](https://codebeat.co/badges/b7154d85-9e8e-44c9-be1b-0c12accac050)](https://codebeat.co/projects/github-com-chdemko-pandoc-latex-tip-develop/)
+[![Code Beat](https://codebeat.co/badges/29a6cba2-1303-4e24-9b51-6aeb134b89e8)](https://codebeat.co/projects/github-com-chdemko-pandoc-latex-tip-develop/)
 [![Codacy](https://img.shields.io/codacy/grade/de425638e13b4ceab3bfad1c4557aa6c.svg?logo=codacy&logoColor=white)](https://www.codacy.com/app/chdemko/pandoc-latex-tip)
 [![CodeFactor](https://www.codefactor.io/repository/github/chdemko/pandoc-latex-tip/badge)](https://www.codefactor.io/repository/github/chdemko/pandoc-latex-tip)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/chdemko/pandoc-latex-tip.svg?logo=scrutinizer)](https://scrutinizer-ci.com/g/chdemko/pandoc-latex-tip/)
