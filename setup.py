@@ -66,7 +66,7 @@ def _post_fontawesome_5x():
         "Unable to get the last version number of the Font-Awesome package on github\n",
     )
 
-    latest = _latest("^5.", versions, "5.6.3")
+    latest = _latest("^5.", versions, "5.9.0")
 
     _download(
         "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@"
@@ -125,7 +125,7 @@ def _post_material_design_3x():
         "Unable to get the last version number of the MaterialDesign-Webfont package on github\n",
     )
 
-    latest = _latest("^v3.", versions, "v3.3")
+    latest = _latest("^v3.", versions, "v3.7.95")
 
     _download(
         "https://cdn.jsdelivr.net/gh/Templarian/MaterialDesign-Webfont@"
@@ -216,7 +216,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.1.1",
+    version="2.1.2",
     # The project's description
     description="A pandoc filter for adding tip in LaTeX",
     long_description=LONG_DESCRIPTION,

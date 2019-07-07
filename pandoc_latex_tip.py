@@ -161,7 +161,7 @@ def _add_latex(elem, latex):
                 and not isinstance(element.parent, Inline)
             ):
                 inserted[0] = True
-                return [element, RawInline(latex, "tex")]
+                return [RawInline("\\needspace{5em}", "tex"), RawInline(latex, "tex"), element]
             return None
 
         elem.walk(insert)
@@ -501,6 +501,9 @@ def _finalize(doc):
     elif not isinstance(doc.metadata["header-includes"], MetaList):
         doc.metadata["header-includes"] = MetaList(doc.metadata["header-includes"])
 
+    doc.metadata["header-includes"].append(
+        MetaInlines(RawInline("\\usepackage{needspace}", "tex"))
+    )
     doc.metadata["header-includes"].append(
         MetaInlines(RawInline("\\usepackage{graphicx,grffile}", "tex"))
     )
