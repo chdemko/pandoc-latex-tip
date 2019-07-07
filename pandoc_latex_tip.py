@@ -161,7 +161,11 @@ def _add_latex(elem, latex):
                 and not isinstance(element.parent, Inline)
             ):
                 inserted[0] = True
-                return [RawInline("\\needspace{5em}", "tex"), RawInline(latex, "tex"), element]
+                return [
+                    RawInline("\\needspace{5em}", "tex"),
+                    RawInline(latex, "tex"),
+                    element,
+                ]
             return None
 
         elem.walk(insert)
