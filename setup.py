@@ -66,7 +66,7 @@ def _post_fontawesome_5x():
         "Unable to get the last version number of the Font-Awesome package on github\n",
     )
 
-    latest = _latest("^5.", versions, "5.6.3")
+    latest = _latest("^5.", versions, "5.9.0")
 
     _download(
         "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@"
@@ -125,7 +125,7 @@ def _post_material_design_3x():
         "Unable to get the last version number of the MaterialDesign-Webfont package on github\n",
     )
 
-    latest = _latest("^v3.", versions, "v3.3")
+    latest = _latest("^v3.", versions, "v3.7.95")
 
     _download(
         "https://cdn.jsdelivr.net/gh/Templarian/MaterialDesign-Webfont@"
