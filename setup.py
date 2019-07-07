@@ -28,7 +28,7 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 try:
     import pypandoc
 
-    LONG_DESCRIPTION = pypandoc.convert("README.md", "rst")
+    LONG_DESCRIPTION = pypandoc.convert_file("README.md", "rst")
 except (IOError, ImportError):
     with codecs.open(os.path.join(HERE, "README.md"), encoding="utf-8") as f:
         LONG_DESCRIPTION = f.read()
@@ -216,7 +216,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.1.2",
+    version="2.1.3",
     # The project's description
     description="A pandoc filter for adding tip in LaTeX",
     long_description=LONG_DESCRIPTION,
