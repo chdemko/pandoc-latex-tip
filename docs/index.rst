@@ -99,6 +99,7 @@ The following LaTeX packages are required:
 -  ``marginnote``
 -  ``etoolbox``
 -  ``changepage``
+-  ``needspace``
 
 Example
 -------
