@@ -28,7 +28,7 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 try:
     import pypandoc
 
-    LONG_DESCRIPTION = pypandoc.convert("README.md", "rst")
+    LONG_DESCRIPTION = pypandoc.convert_file("README.md", "rst")
 except (IOError, ImportError):
     with codecs.open(os.path.join(HERE, "README.md"), encoding="utf-8") as f:
         LONG_DESCRIPTION = f.read()
