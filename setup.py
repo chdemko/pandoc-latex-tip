@@ -18,7 +18,6 @@ import re
 import urllib
 import shutil
 import sys
-import appdirs
 import requests
 
 from pkg_resources import get_distribution
@@ -173,6 +172,9 @@ def _latest(match, versions, latest):
 
 
 def _directory(collection, version):
+    # pylint: disable=import-outside-toplevel
+    import appdirs
+
     dirs = appdirs.AppDirs(
         os.path.join(
             "pandoc_latex_tip",
