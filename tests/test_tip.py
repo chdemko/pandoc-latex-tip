@@ -100,9 +100,13 @@ class TipTest(TestCase):
         )
         pandoc_latex_tip.main(doc)
         self.assertEqual(doc.content[0].format, "tex")
-        self.assertEqual(doc.content[2].format, "tex")
+        self.assertEqual(doc.content[1].format, "tex")
+        self.assertEqual(doc.content[3].format, "tex")
         self.assertEqual(doc.content[4].format, "tex")
         self.assertEqual(doc.content[6].format, "tex")
+        self.assertEqual(doc.content[7].format, "tex")
+        self.assertEqual(doc.content[9].format, "tex")
+        self.assertEqual(doc.content[10].format, "tex")
 
     def test_code(self):
         doc = Doc(
