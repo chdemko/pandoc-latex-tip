@@ -8,12 +8,18 @@ https://github.com/chdemko/pandoc-latex-tip
 # pylint: disable=bad-continuation
 
 # To use a consistent encoding
-import codecs
-import os
-import re
 
 # pylint: disable=no-name-in-module,import-error
 from distutils.version import LooseVersion
+
+import codecs
+import os
+import re
+import urllib
+import shutil
+import sys
+import appdirs
+import requests
 
 from pkg_resources import get_distribution
 
@@ -109,7 +115,7 @@ def _post_glyphicons_33():
     for line in original:
         if index >= 1067:
             break
-        elif index >= 280:
+        if index >= 280:
             modified.write(line)
         index = index + 1
     original.close()
@@ -145,10 +151,6 @@ def _post_material_design_3x():
 
 
 def _download(url, directory, filename):
-    import urllib
-    import shutil
-    import sys
-
     try:
         with urllib.request.urlopen(url) as response, open(
             os.path.join(directory, filename), "wb"
@@ -171,8 +173,6 @@ def _latest(match, versions, latest):
 
 
 def _directory(collection, version):
-    import appdirs
-
     dirs = appdirs.AppDirs(
         os.path.join(
             "pandoc_latex_tip",
@@ -188,9 +188,6 @@ def _directory(collection, version):
 
 
 def _versions(url, message):
-    import requests
-    import sys
-
     try:
         return requests.get(url).json()
     except ValueError:

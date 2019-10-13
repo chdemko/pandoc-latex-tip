@@ -7,6 +7,9 @@ Pandoc filter for adding tip in LaTeX
 # pylint: disable=bad-continuation
 
 import os
+import appdirs
+import icon_font_to_png
+from pkg_resources import get_distribution
 
 from panflute import (
     run_filter,
@@ -33,13 +36,9 @@ except NameError:
 
 
 def _icon_font(collection, version, css, ttf):
-    import appdirs
-    from pkg_resources import get_distribution
-
     folder = appdirs.AppDirs(
         "pandoc_latex_tip", version=get_distribution("pandoc_latex_tip").version
     ).user_data_dir
-    import icon_font_to_png
 
     try:
         return icon_font_to_png.IconFont(
@@ -167,8 +166,7 @@ def _add_latex(elem, latex):
         elem.walk(insert)
         if not inserted[0]:
             return [RawBlock("\\needspace{5em}", "tex"), RawBlock(latex, "tex"), elem]
-        else:
-            return [RawBlock("\\needspace{5em}", "tex"), elem]
+        return [RawBlock("\\needspace{5em}", "tex"), elem]
 
     return None
 
@@ -277,7 +275,7 @@ def _get_icons(doc, definition, key_icons, color, collection, version, variant, 
 # Fix unicode for python3
 # pylint: disable=invalid-name
 try:
-    # pylint: disable=redefined-builtin
+    # pylint: disable=redefined-builtin,self-assigning-variable
     unicode = unicode
 except NameError:
     unicode = str
@@ -388,11 +386,6 @@ def _create_images(doc, icons, size):
     images = []
 
     for icon in icons:
-
-        # Get the apps dirs
-        from pkg_resources import get_distribution
-        import appdirs
-
         folder = appdirs.AppDirs(
             "pandoc_latex_tip", version=get_distribution("pandoc_latex_tip").version
         ).user_cache_dir
