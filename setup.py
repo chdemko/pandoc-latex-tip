@@ -18,7 +18,6 @@ import re
 import urllib
 import shutil
 import sys
-import requests
 
 from pkg_resources import get_distribution
 
@@ -190,6 +189,9 @@ def _directory(collection, version):
 
 
 def _versions(url, message):
+    # pylint: disable=import-outside-toplevel
+    import requests
+
     try:
         return requests.get(url).json()
     except ValueError:
