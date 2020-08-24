@@ -26,13 +26,13 @@ on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 # -- Project information -----------------------------------------------------
 
 project = "pandoc-latex-tip"
-copyright = "2016-2019, Christophe Demko"
+copyright = "2016-2020, Christophe Demko"
 author = "Christophe Demko"
 
 # The short X.Y version
 version = "2.1"
 # The full version, including alpha/beta/rc tags
-release = "2.1.3"
+release = "2.1.6"
 
 # -- General configuration ---------------------------------------------------
 
