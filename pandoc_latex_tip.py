@@ -523,9 +523,9 @@ def _finalize(doc):
 \newcommand{\oddoutertip}{\normalmarginpar}%
 \newcommand{\evenoutertip}{\normalmarginpar}%
 \newcommand{\oddlefttip}{\reversemarginpar}%
-\newcommand{\evenlefttip}{\normalmarginpar}%
+\newcommand{\evenlefttip}{\reversemarginpar}%
 \newcommand{\oddrighttip}{\normalmarginpar}%
-\newcommand{\evenrighttip}{\reversemarginpar}%
+\newcommand{\evenrighttip}{\normalmarginpar}%
 }%
 {%
 \if@twoside%

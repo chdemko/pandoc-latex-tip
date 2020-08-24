@@ -70,7 +70,7 @@ def _post_fontawesome_5x():
         "Unable to get the last version number of the Font-Awesome package on github\n",
     )
 
-    latest = _latest("^5.", versions, "5.9.0")
+    latest = _latest("^5.", versions, "5.14.0")
 
     _download(
         "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@"
@@ -129,7 +129,7 @@ def _post_material_design_3x():
         "Unable to get the last version number of the MaterialDesign-Webfont package on github\n",
     )
 
-    latest = _latest("^v3.", versions, "v3.7.95")
+    latest = _latest("^v3.", versions, "v5.5.55")
 
     _download(
         "https://cdn.jsdelivr.net/gh/Templarian/MaterialDesign-Webfont@"
@@ -217,7 +217,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.1.5",
+    version="2.1.6",
     # The project's description
     description="A pandoc filter for adding tip in LaTeX",
     long_description=LONG_DESCRIPTION,
@@ -267,11 +267,11 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        "panflute>=1.10",
+        "panflute>=1.12",
         "icon_font_to_png>=0.4",
-        "pillow>=5.2",
+        "Pillow>=7.2",
         "appdirs>=1.4",
-        "pypandoc>=1.4",
+        "pypandoc>=1.5",
         "requests>=2",
     ],
     # List additional groups of dependencies here (e.g. development
