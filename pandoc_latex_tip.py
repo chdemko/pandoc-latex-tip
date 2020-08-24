@@ -4,8 +4,6 @@
 Pandoc filter for adding tip in LaTeX
 """
 
-# pylint: disable=bad-continuation
-
 import os
 import appdirs
 import icon_font_to_png
@@ -291,6 +289,7 @@ def _add_icon(doc, icons, icon):
     lower_color = icon["color"].lower()
 
     # Convert the color to black if unexisting
+    # pylint: disable=import-outside-toplevel
     from PIL import ImageColor
 
     if lower_color not in ImageColor.colormap:
