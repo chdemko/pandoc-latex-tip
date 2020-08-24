@@ -5,8 +5,6 @@ https://packaging.python.org/en/latest/distributing.html
 https://github.com/chdemko/pandoc-latex-tip
 """
 
-# pylint: disable=bad-continuation
-
 # To use a consistent encoding
 
 # pylint: disable=no-name-in-module,import-error
