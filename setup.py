@@ -180,7 +180,7 @@ def _directory(collection, icon_version):
         dirs = appdirs.AppDirs(
             os.path.join(
                 "pandoc_latex_tip",
-                pkg_resources.require("pandoc_latex_tip")[0].version
+                pkg_resources.require("pandoc_latex_tip")[0].version,
                 collection,
                 icon_version,
             )
