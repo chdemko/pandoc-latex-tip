@@ -285,6 +285,7 @@ setup(
             "mypy",
             "pytest-cov",
         ],
+        "docs": ["Sphinx>=3.5", "sphinx_rtd_theme>=0.5"]
     },
     # packages=find_packages(),
     # include_package_data = True,
