@@ -17,6 +17,7 @@ import urllib.error
 import shutil
 import sys
 
+import pkg_resources
 from pkg_resources import get_distribution
 
 # Always prefer setuptools over distutils
@@ -162,18 +163,29 @@ def _latest(match, versions, latest):
     return latest
 
 
-def _directory(collection, version):
+def _directory(collection, icon_version):
     # pylint: disable=import-outside-toplevel
     import appdirs
 
-    dirs = appdirs.AppDirs(
-        os.path.join(
-            "pandoc_latex_tip",
-            get_distribution("pandoc_latex_tip").version,
-            collection,
-            version,
+    try:
+        dirs = appdirs.AppDirs(
+            os.path.join(
+                "pandoc_latex_tip",
+                get_distribution("pandoc_latex_tip").version,
+                collection,
+                icon_version,
+            )
         )
-    )
+    except pkg_resources.DistributionNotFound:
+        dirs = appdirs.AppDirs(
+            os.path.join(
+                "pandoc_latex_tip",
+                pkg_resources.require("pandoc_latex_tip")[0].version
+                collection,
+                icon_version,
+            )
+        )
+
     directory = dirs.user_data_dir
     if not os.path.exists(directory):
         os.makedirs(directory)
