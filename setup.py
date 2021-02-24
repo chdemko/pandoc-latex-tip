@@ -11,6 +11,7 @@ https://github.com/chdemko/pandoc-latex-tip
 from distutils.version import LooseVersion
 
 import os
+import configparser
 import re
 import urllib.request
 import urllib.error
@@ -177,10 +178,12 @@ def _directory(collection, icon_version):
             )
         )
     except pkg_resources.DistributionNotFound:
+        config = configparser.RawConfigParser()
+        config.read("setup.cfg")
         dirs = appdirs.AppDirs(
             os.path.join(
                 "pandoc_latex_tip",
-                "2.1.7",
+                config.get("metadata","release"),
                 collection,
                 icon_version,
             )
