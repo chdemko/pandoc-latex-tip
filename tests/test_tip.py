@@ -73,7 +73,6 @@ class TipTest(TestCase):
             ),
             metadata=self.metadata(),
             format="latex",
-            api_version=(1, 17, 2),
         )
         pandoc_latex_tip.main(doc)
         self.assertEqual(doc.content[0].content[1].format, "tex")
@@ -96,7 +95,6 @@ class TipTest(TestCase):
             ),
             metadata=self.metadata(),
             format="latex",
-            api_version=(1, 17, 2),
         )
         pandoc_latex_tip.main(doc)
         self.assertEqual(doc.content[0].format, "tex")
@@ -125,7 +123,6 @@ class TipTest(TestCase):
             ),
             metadata=self.metadata(),
             format="latex",
-            api_version=(1, 17, 2),
         )
         pandoc_latex_tip.main(doc)
         self.assertEqual(doc.content[0].content[1].format, "tex")
@@ -148,7 +145,6 @@ class TipTest(TestCase):
             ),
             metadata=self.metadata(),
             format="latex",
-            api_version=(1, 17, 2),
         )
         pandoc_latex_tip.main(doc)
         self.assertEqual(doc.content[0].format, "tex")

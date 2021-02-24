@@ -26,20 +26,20 @@ on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 # -- Project information -----------------------------------------------------
 
 project = "pandoc-latex-tip"
-copyright = "2016-2019, Christophe Demko"
+copyright = "2016-2021, Christophe Demko"
 author = "Christophe Demko"
 
 # The short X.Y version
 version = "2.1"
 # The full version, including alpha/beta/rc tags
-release = "2.1.3"
+release = "2.1.7"
 
 # -- General configuration ---------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
 # needs_sphinx = '1.0'
-needs_sphinx = "2.0"
+needs_sphinx = "3.5"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom

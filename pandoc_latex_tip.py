@@ -5,11 +5,11 @@ Pandoc filter for adding tip in LaTeX
 """
 
 import os
-import appdirs
-import icon_font_to_png
+import appdirs  # type: ignore
+import icon_font_to_png  # type: ignore
 from pkg_resources import get_distribution
 
-from panflute import (
+from panflute import (  # type: ignore
     run_filter,
     convert_text,
     debug,
@@ -46,6 +46,7 @@ def _icon_font(collection, version, css, ttf):
         )
     except FileNotFoundError as exception:
         debug("[ERROR] pandoc-latex-tip: " + str(exception))
+        return None
 
 
 _ICON_FONTS = {
@@ -290,7 +291,7 @@ def _add_icon(doc, icons, icon):
 
     # Convert the color to black if unexisting
     # pylint: disable=import-outside-toplevel
-    from PIL import ImageColor
+    from PIL import ImageColor  # type: ignore
 
     if lower_color not in ImageColor.colormap:
         debug(

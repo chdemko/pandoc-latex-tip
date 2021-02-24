@@ -10,13 +10,15 @@ https://github.com/chdemko/pandoc-latex-tip
 # pylint: disable=no-name-in-module,import-error
 from distutils.version import LooseVersion
 
-import codecs
 import os
+import configparser
 import re
-import urllib
+import urllib.request
+import urllib.error
 import shutil
 import sys
 
+import pkg_resources
 from pkg_resources import get_distribution
 
 # Always prefer setuptools over distutils
@@ -27,14 +29,8 @@ from setuptools.command.build_py import build_py
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
-try:
-    import pypandoc
-
-    LONG_DESCRIPTION = pypandoc.convert_file("README.md", "rst")
-except (IOError, ImportError):
-    with codecs.open(os.path.join(HERE, "README.md"), encoding="utf-8") as f:
-        LONG_DESCRIPTION = f.read()
-
+with open("README.md", encoding="utf-8") as stream:
+    LONG_DESCRIPTION = stream.read()
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements
 def _post():
@@ -48,12 +44,12 @@ def _post_fontawesome_47():
     # fontawesome 4.7
     directory = _directory("fontawesome", "4.7")
     _download(
-        "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@v4.7.0/css/font-awesome.css",
+        "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/v4.7.0/css/font-awesome.css",
         directory,
         "font-awesome.css",
     )
     _download(
-        "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@v4.7.0/fonts/fontawesome-webfont.ttf",
+        "https://github.com/FortAwesome/Font-Awesome/blob/v4.7.0/fonts/fontawesome-webfont.ttf?raw=true",
         directory,
         "fontawesome-webfont.ttf",
     )
@@ -71,7 +67,7 @@ def _post_fontawesome_5x():
     latest = _latest("^5.", versions, "5.14.0")
 
     _download(
-        "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@"
+        "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/"
         + latest
         + "/css/fontawesome.css",
         directory,
@@ -79,11 +75,11 @@ def _post_fontawesome_5x():
     )
     for ttf in ["fa-brands-400", "fa-regular-400", "fa-solid-900"]:
         _download(
-            "https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@"
+            "https://github.com/FortAwesome/Font-Awesome/blob/"
             + latest
             + "/webfonts/"
             + ttf
-            + ".ttf",
+            + ".ttf?raw=true",
             directory,
             ttf + ".ttf",
         )
@@ -94,13 +90,13 @@ def _post_glyphicons_33():
     directory = _directory("glyphicons", "3.3")
 
     _download(
-        "https://cdn.jsdelivr.net/gh/twbs/bootstrap@v3.3.7/dist/css/bootstrap.css",
+        "https://github.com/twbs/bootstrap/raw/v3.3.7/dist/css/bootstrap.css",
         directory,
         "bootstrap.css",
     )
 
     _download(
-        "https://cdn.jsdelivr.net/gh/twbs/bootstrap@v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf",
+        "https://github.com/twbs/bootstrap/blob/v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf?raw=true",
         directory,
         "glyphicons-halflings-regular.ttf",
     )
@@ -127,10 +123,10 @@ def _post_material_design_3x():
         "Unable to get the last version number of the MaterialDesign-Webfont package on github\n",
     )
 
-    latest = _latest("^v3.", versions, "v5.5.55")
+    latest = _latest("^v3.", versions, "v5.9.55")
 
     _download(
-        "https://cdn.jsdelivr.net/gh/Templarian/MaterialDesign-Webfont@"
+        "https://github.com/Templarian/MaterialDesign-Webfont/blob/"
         + latest
         + "/css/materialdesignicons.css",
         directory,
@@ -138,9 +134,9 @@ def _post_material_design_3x():
     )
 
     _download(
-        "https://cdn.jsdelivr.net/gh/Templarian/MaterialDesign-Webfont@"
+        "https://github.com/Templarian/MaterialDesign-Webfont/blob/"
         + latest
-        + "/fonts/materialdesignicons-webfont.ttf",
+        + "/fonts/materialdesignicons-webfont.ttf?raw=true",
         directory,
         "materialdesignicons-webfont.ttf",
     )
@@ -168,18 +164,31 @@ def _latest(match, versions, latest):
     return latest
 
 
-def _directory(collection, version):
+def _directory(collection, icon_version):
     # pylint: disable=import-outside-toplevel
     import appdirs
 
-    dirs = appdirs.AppDirs(
-        os.path.join(
-            "pandoc_latex_tip",
-            get_distribution("pandoc_latex_tip").version,
-            collection,
-            version,
+    try:
+        dirs = appdirs.AppDirs(
+            os.path.join(
+                "pandoc_latex_tip",
+                get_distribution("pandoc_latex_tip").version,
+                collection,
+                icon_version,
+            )
         )
-    )
+    except pkg_resources.DistributionNotFound:
+        config = configparser.RawConfigParser()
+        config.read("setup.cfg")
+        dirs = appdirs.AppDirs(
+            os.path.join(
+                "pandoc_latex_tip",
+                config.get("metadata", "release"),
+                collection,
+                icon_version,
+            )
+        )
+
     directory = dirs.user_data_dir
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -215,10 +224,10 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version="2.1.6",
     # The project's description
     description="A pandoc filter for adding tip in LaTeX",
     long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
     # The project's main homepage.
     url="https://github.com/chdemko/pandoc-latex-tip",
     # The project's download page
@@ -250,6 +259,9 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     # What does your project relate to?
     keywords="pandoc filters latex tip Font-Awesome icon",
@@ -265,20 +277,32 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[
-        "panflute>=1.12",
+        "panflute>=2.0",
         "icon_font_to_png>=0.4",
-        "Pillow>=7.2",
+        "Pillow>=8.1",
         "appdirs>=1.4",
-        "pypandoc>=1.5",
         "requests>=2",
     ],
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
-    extras_require={"dev": ["check-manifest"], "test": ["tox"]},
+    extras_require={
+        "dev": ["check-manifest"],
+        "test": [
+            "black",
+            "tox",
+            "pytest-runner",
+            "coverage",
+            "pylint",
+            "Pygments",
+            "radon",
+            "mypy",
+            "pytest-cov",
+        ],
+        "docs": ["Sphinx>=3.5", "sphinx_rtd_theme>=0.5"],
+    },
     # packages=find_packages(),
     # include_package_data = True,
-    setup_requires=["pytest-runner", "icon_font_to_png>=0.4", "appdirs>=1.4"],
-    tests_require=["pytest"],
+    setup_requires=["icon_font_to_png>=0.4", "appdirs>=1.4"],
 )
