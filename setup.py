@@ -183,7 +183,7 @@ def _directory(collection, icon_version):
         dirs = appdirs.AppDirs(
             os.path.join(
                 "pandoc_latex_tip",
-                config.get("metadata","release"),
+                config.get("metadata", "release"),
                 collection,
                 icon_version,
             )
@@ -300,7 +300,7 @@ setup(
             "mypy",
             "pytest-cov",
         ],
-        "docs": ["Sphinx>=3.5", "sphinx_rtd_theme>=0.5"]
+        "docs": ["Sphinx>=3.5", "sphinx_rtd_theme>=0.5"],
     },
     # packages=find_packages(),
     # include_package_data = True,
