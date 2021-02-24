@@ -28,7 +28,8 @@ jobs:
         wget https://github.com/jgm/pandoc/releases/download/2.11.4/pandoc-2.11.4-1-amd64.deb
         sudo dpkg -i pandoc-2.11.4-1-amd64.deb
         python -m pip install --upgrade pip
-        pip install .[docs,test]
+        pip install --user wheel setuptools
+        pip install --user .[docs,test]
     - name: Test with tox
       run: |
         tox -e py
@@ -47,9 +48,8 @@ jobs:
         wget https://github.com/jgm/pandoc/releases/download/2.11.4/pandoc-2.11.4-1-amd64.deb
         sudo dpkg -i pandoc-2.11.4-1-amd64.deb
         python -m pip install --upgrade pip
-        pip install wheel
-        pip install setuptools coveralls
-        pip install .[test]
+        pip install --user wheel setuptools coveralls
+        pip install --user .[test]
     - name: Test
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
