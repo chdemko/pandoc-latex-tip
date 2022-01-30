@@ -1,3 +1,4 @@
+# pylint: disable=duplicate-code
 """A setuptools based setup module.
 
 See:
@@ -29,8 +30,8 @@ from setuptools.command.build_py import build_py
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 # Get the long description from the README file
-with open("README.md", encoding="utf-8") as stream:
-    LONG_DESCRIPTION = stream.read()
+with open("README.md", encoding="utf-8") as lg:
+    LONG_DESCRIPTION = lg.read()
 
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements
 def _post():
@@ -42,22 +43,24 @@ def _post():
 
 def _post_fontawesome_47():
     # fontawesome 4.7
-    directory = _directory("fontawesome", "4.7")
+    folder = _folder("fontawesome", "4.7")
     _download(
-        "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/v4.7.0/css/font-awesome.css",
-        directory,
+        "https://raw.githubusercontent.com/FortAwesome/"
+        "Font-Awesome/v4.7.0/css/font-awesome.css",
+        folder,
         "font-awesome.css",
     )
     _download(
-        "https://github.com/FortAwesome/Font-Awesome/blob/v4.7.0/fonts/fontawesome-webfont.ttf?raw=true",
-        directory,
+        "https://github.com/FortAwesome/Font-Awesome/"
+        "blob/v4.7.0/fonts/fontawesome-webfont.ttf?raw=true",
+        folder,
         "fontawesome-webfont.ttf",
     )
 
 
 def _post_fontawesome_5x():
     # fontawesome 5.x
-    directory = _directory("fontawesome", "5.x")
+    folder = _folder("fontawesome", "5.x")
 
     versions = _versions(
         "https://api.github.com/repos/FortAwesome/Font-Awesome/tags",
@@ -70,7 +73,7 @@ def _post_fontawesome_5x():
         "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/"
         + latest
         + "/css/fontawesome.css",
-        directory,
+        folder,
         "fontawesome.css",
     )
     for ttf in ["fa-brands-400", "fa-regular-400", "fa-solid-900"]:
@@ -80,43 +83,47 @@ def _post_fontawesome_5x():
             + "/webfonts/"
             + ttf
             + ".ttf?raw=true",
-            directory,
+            folder,
             ttf + ".ttf",
         )
 
 
 def _post_glyphicons_33():
     # glyphicons 3.3
-    directory = _directory("glyphicons", "3.3")
+    folder = _folder("glyphicons", "3.3")
 
     _download(
         "https://github.com/twbs/bootstrap/raw/v3.3.7/dist/css/bootstrap.css",
-        directory,
+        folder,
         "bootstrap.css",
     )
 
     _download(
-        "https://github.com/twbs/bootstrap/blob/v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf?raw=true",
-        directory,
+        "https://github.com/twbs/bootstrap/"
+        "blob/v3.3.7/dist/fonts/glyphicons-halflings-regular.ttf?raw=true",
+        folder,
         "glyphicons-halflings-regular.ttf",
     )
 
-    original = open(os.path.join(directory, "bootstrap.css"), "rt")
-    modified = open(os.path.join(directory, "bootstrap-modified.css"), "w")
-    index = 0
-    for line in original:
-        if index >= 1067:
-            break
-        if index >= 280:
-            modified.write(line)
-        index = index + 1
-    original.close()
-    modified.close()
+    with open(
+        os.path.join(folder, "bootstrap.css"), "rt", encoding="utf-8"
+    ) as original, open(
+        os.path.join(folder, "bootstrap-modified.css"), "w", encoding="utf-8"
+    ) as modified:
+        index = 0
+        for line in original:
+            if index >= 1067:
+                break
+            if index >= 280:
+                modified.write(line)
+            index = index + 1
+        original.close()
+        modified.close()
 
 
 def _post_material_design_3x():
     # material design 3.x
-    directory = _directory("materialdesign", "3.x")
+    folder = _folder("materialdesign", "3.x")
 
     versions = _versions(
         "https://api.github.com/repos/Templarian/MaterialDesign-Webfont/tags",
@@ -129,7 +136,7 @@ def _post_material_design_3x():
         "https://github.com/Templarian/MaterialDesign-Webfont/blob/"
         + latest
         + "/css/materialdesignicons.css",
-        directory,
+        folder,
         "materialdesignicons.css",
     )
 
@@ -137,15 +144,15 @@ def _post_material_design_3x():
         "https://github.com/Templarian/MaterialDesign-Webfont/blob/"
         + latest
         + "/fonts/materialdesignicons-webfont.ttf?raw=true",
-        directory,
+        folder,
         "materialdesignicons-webfont.ttf",
     )
 
 
-def _download(url, directory, filename):
+def _download(url, folder, filename):
     try:
         with urllib.request.urlopen(url) as response, open(
-            os.path.join(directory, filename), "wb"
+            os.path.join(folder, filename), "wb"
         ) as out_file:
             shutil.copyfileobj(response, out_file)
     except urllib.error.HTTPError as exception:
@@ -164,35 +171,34 @@ def _latest(match, versions, latest):
     return latest
 
 
-def _directory(collection, icon_version):
+def _folder(collection, icon_version):
     # pylint: disable=import-outside-toplevel
-    import appdirs
 
     try:
-        dirs = appdirs.AppDirs(
-            os.path.join(
-                "pandoc_latex_tip",
-                get_distribution("pandoc_latex_tip").version,
-                collection,
-                icon_version,
-            )
+        folder = os.path.join(
+            sys.prefix,
+            "share",
+            "pandoc_latex_tip",
+            get_distribution("pandoc_latex_tip").version,
+            collection,
+            icon_version,
         )
     except pkg_resources.DistributionNotFound:
         config = configparser.RawConfigParser()
         config.read("setup.cfg")
-        dirs = appdirs.AppDirs(
-            os.path.join(
-                "pandoc_latex_tip",
-                config.get("metadata", "release"),
-                collection,
-                icon_version,
-            )
+        folder = os.path.join(
+            sys.prefix,
+            "share",
+            "pandoc_latex_tip",
+            config.get("metadata", "release"),
+            collection,
+            icon_version,
         )
 
-    directory = dirs.user_data_dir
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    return directory
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+
+    return folder
 
 
 def _versions(url, message):
@@ -206,13 +212,19 @@ def _versions(url, message):
         return []
 
 
+# pylint: disable=too-many-ancestors
 class BuildPy(build_py):
+    """Builder for py extension"""
+
     def run(self):
         super().run()
         self.execute(_post, (), msg="Running post build task")
 
 
+# pylint: disable=too-many-ancestors
 class BuildExt(build_ext):
+    """Builder for classical extension"""
+
     def run(self):
         super().run()
         self.execute(_post, (), msg="Running post build task")
@@ -299,6 +311,7 @@ setup(
             "radon",
             "mypy",
             "pytest-cov",
+            "types-setuptools",
         ],
         "docs": ["Sphinx>=3.5", "sphinx_rtd_theme>=0.5"],
     },
