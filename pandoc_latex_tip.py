@@ -5,9 +5,12 @@ Pandoc filter for adding tip in LaTeX
 """
 
 import os
+import sys
+import tempfile
+from pkg_resources import get_distribution
+
 import appdirs  # type: ignore
 import icon_font_to_png  # type: ignore
-from pkg_resources import get_distribution
 
 from panflute import (  # type: ignore
     run_filter,
@@ -34,9 +37,12 @@ except NameError:
 
 
 def _icon_font(collection, version, css, ttf):
-    folder = appdirs.AppDirs(
-        "pandoc_latex_tip", version=get_distribution("pandoc_latex_tip").version
-    ).user_data_dir
+    folder = os.path.join(
+        sys.prefix,
+        "share",
+        "pandoc_latex_tip",
+        get_distribution("pandoc_latex_tip").version,
+    )
 
     try:
         return icon_font_to_png.IconFont(
@@ -141,7 +147,8 @@ def _add_latex(elem, latex):
         if isinstance(elem, (Span, Code)):
             return [elem, RawInline(latex, "tex")]
 
-        # It is a CodeBlock: create a minipage to ensure the _tip to be on the same page as the codeblock
+        # It is a CodeBlock: create a minipage to ensure the
+        # _tip to be on the same page as the codeblock
         if isinstance(elem, CodeBlock):
             return [
                 RawBlock("\\begin{minipage}{\\textwidth}" + latex, "tex"),
@@ -203,6 +210,7 @@ def _latex_code(doc, definition, keys):
     images = _create_images(doc, icons, size)
 
     if bool(images):
+        # pylint: disable=consider-using-f-string
         return r"""
 \checkoddpage%%
 \ifoddpage%%
@@ -386,13 +394,14 @@ def _create_images(doc, icons, size):
     images = []
 
     for icon in icons:
-        folder = appdirs.AppDirs(
-            "pandoc_latex_tip", version=get_distribution("pandoc_latex_tip").version
-        ).user_cache_dir
 
         # Get the image from the App cache folder
         image_dir = os.path.join(
-            folder, icon["collection"], icon["version"], icon["variant"], icon["color"]
+            doc.folder,
+            icon["collection"],
+            icon["version"],
+            icon["variant"],
+            icon["color"],
         )
         image = os.path.join(image_dir, icon["extended-name"] + ".png")
 
@@ -470,6 +479,21 @@ def _prepare(doc):
 
     # Prepare the definitions
     doc.defined = []
+
+    # Prepare the folder
+    try:
+        # Use user cache dir if possible
+        doc.folder = appdirs.AppDirs(
+            "pandoc_latex_tip", version=get_distribution("pandoc_latex_tip").version
+        ).user_cache_dir
+        if not os.path.exists(doc.folder):
+            os.makedirs(doc.folder)
+    except PermissionError:
+        # Fallback to a temporary dir
+        doc.folder = tempfile.mkdtemp(
+            prefix="pandoc_latex_tip_",
+            suffix="_cache",
+        )
 
     # Get the meta data
     meta = doc.get_metadata("pandoc-latex-tip")
@@ -557,6 +581,7 @@ def _finalize(doc):
 
 
 def main(doc=None):
+    """The main function"""
     return run_filter(_tip, prepare=_prepare, finalize=_finalize, doc=doc)
 
 
