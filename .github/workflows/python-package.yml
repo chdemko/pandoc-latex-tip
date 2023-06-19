@@ -37,7 +37,7 @@ jobs:
         poetry run python download.py
     - name: Test with tox
       run: |
-        poetry run tox -e py
+        VERSION=`poetry version -s` poetry run tox -e py
 
   poetry:
     runs-on: ubuntu-latest
