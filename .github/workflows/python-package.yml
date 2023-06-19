@@ -144,7 +144,7 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
-        poetry run tox -e coverage
+        VERSION=`poetry version -s` poetry run tox -e coverage
         poetry run pip install coveralls
         poetry run coveralls
 
