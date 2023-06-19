@@ -1,39 +1,41 @@
-#!/usr/bin/env python
+##!/usr/bin/env python
 
 """
-Pandoc filter for adding tip in LaTeX
+Pandoc filter for adding tip in LaTeX.
 """
 
 import os
+import pathlib
 import sys
 import tempfile
-from pkg_resources import get_distribution
 
-import appdirs  # type: ignore
 import icon_font_to_png  # type: ignore
 
 from panflute import (  # type: ignore
-    run_filter,
-    convert_text,
-    debug,
-    Span,
     Code,
     CodeBlock,
+    Image,
     Inline,
+    Link,
+    MetaInlines,
+    MetaList,
+    Plain,
     RawBlock,
     RawInline,
-    Image,
-    Link,
-    Plain,
-    MetaList,
-    MetaInlines,
+    Span,
+    convert_text,
+    debug,
+    run_filter,
 )
 
+import platformdirs
+
+# pylint: disable=used-before-assignment,redefined-builtin
 try:
     FileNotFoundError
 except NameError:
     # py2
-    FileNotFoundError = IOError  # pylint: disable=redefined-builtin
+    FileNotFoundError = IOError  # noqa: A001,VNE003
 
 
 def _icon_font(collection, version, css, ttf):
@@ -41,7 +43,6 @@ def _icon_font(collection, version, css, ttf):
         sys.prefix,
         "share",
         "pandoc_latex_tip",
-        get_distribution("pandoc_latex_tip").version,
     )
 
     try:
@@ -101,13 +102,12 @@ _ICON_FONTS = {
 
 def _tip(elem, doc):
     # Is it in the right format and is it a Span, Div?
-    if doc.format in ["latex", "beamer"] and elem.tag in [
+    if doc.format in ("latex", "beamer") and elem.tag in (
         "Span",
         "Div",
         "Code",
         "CodeBlock",
-    ]:
-
+    ):
         # Is there a latex-tip-icon attribute?
         if "latex-tip-icon" in elem.attributes:
             return _add_latex(
@@ -133,7 +133,6 @@ def _tip(elem, doc):
 
         # Loop on all font size definition
         for definition in doc.defined:
-
             # Are the classes correct?
             if classes >= definition["classes"]:
                 return _add_latex(elem, definition["latex"])
@@ -211,19 +210,15 @@ def _latex_code(doc, definition, keys):
 
     if bool(images):
         # pylint: disable=consider-using-f-string
-        return r"""
-\checkoddpage%%
-\ifoddpage%%
-%s%%
-\else%%
-%s%%
-\fi%%
-\marginnote{%s}[0pt]\vspace{0cm}%%
-""" % (
-            prefix_odd,
-            prefix_even,
-            "".join(images),
-        )
+        return f"""
+\\checkoddpage%%
+\\ifoddpage%%
+{prefix_odd}%%
+\\else%%
+{prefix_even}%%
+\\fi%%
+\\marginnote{{{''.join(images)}}}[0pt]\\vspace{{0cm}}%%
+"""
 
     return ""
 
@@ -255,12 +250,14 @@ def _get_icons(doc, definition, key_icons, color, collection, version, variant, 
                     icon["variant"] = icon.get("variant", variant)
                     icon["link"] = icon.get("link", link)
                 except AttributeError:
-                    icon = {"name": icon}
-                    icon["color"] = color
-                    icon["collection"] = collection
-                    icon["version"] = version
-                    icon["variant"] = variant
-                    icon["link"] = link
+                    icon = {
+                        "name": icon,
+                        "color": color,
+                        "collection": collection,
+                        "version": version,
+                        "variant": variant,
+                        "link": link,
+                    }
 
                 _add_icon(doc, icons, icon)
     else:
@@ -283,7 +280,7 @@ def _get_icons(doc, definition, key_icons, color, collection, version, variant, 
 # pylint: disable=invalid-name
 try:
     # pylint: disable=redefined-builtin,self-assigning-variable
-    unicode = unicode
+    unicode = unicode  # noqa: FURB160,SIM909
 except NameError:
     unicode = str
 
@@ -353,7 +350,7 @@ def _get_prefix(position, odd=True):
         if odd:
             return "\\oddrighttip"
         return "\\evenrighttip"
-    if position in ["left", ""]:
+    if position in ("left", ""):
         if odd:
             return "\\oddlefttip"
         return "\\evenlefttip"
@@ -394,7 +391,6 @@ def _create_images(doc, icons, size):
     images = []
 
     for icon in icons:
-
         # Get the image from the App cache folder
         image_dir = os.path.join(
             doc.folder,
@@ -434,14 +430,14 @@ def _create_images(doc, icons, size):
             )
         except TypeError:
             debug(
-                "[WARNING] pandoc-latex-tip: icon name "
-                + icon["name"]
-                + " does not exist in variant "
-                + icon["variant"]
-                + " for collection "
-                + icon["collection"]
-                + "-"
-                + icon["version"]
+                f"[WARNING] pandoc-latex-tip: icon name "
+                f"{icon['name']}"
+                f" does not exist in variant "
+                f"{icon['variant']}"
+                f" for collection "
+                f"{icon['collection']}"
+                f"-"
+                f"{icon['version']}"
             )
         except FileNotFoundError:
             debug("[WARNING] pandoc-latex-tip: error in generating image")
@@ -483,11 +479,11 @@ def _prepare(doc):
     # Prepare the folder
     try:
         # Use user cache dir if possible
-        doc.folder = appdirs.AppDirs(
-            "pandoc_latex_tip", version=get_distribution("pandoc_latex_tip").version
+        doc.folder = platformdirs.AppDirs(
+            "pandoc_latex_tip",
         ).user_cache_dir
-        if not os.path.exists(doc.folder):
-            os.makedirs(doc.folder)
+        if not pathlib.Path(doc.folder).exists():
+            pathlib.Path(doc.folder).mkdir(parents=True)
     except PermissionError:
         # Fallback to a temporary dir
         doc.folder = tempfile.mkdtemp(
@@ -499,10 +495,8 @@ def _prepare(doc):
     meta = doc.get_metadata("pandoc-latex-tip")
 
     if isinstance(meta, list):
-
         # Loop on all definitions
         for definition in meta:
-
             # Verify the definition
             if (
                 isinstance(definition, dict)
@@ -581,7 +575,18 @@ def _finalize(doc):
 
 
 def main(doc=None):
-    """The main function"""
+    """
+    Transform the pandoc document.
+
+    Arguments
+    ---------
+    doc
+        The pandoc document
+
+    Returns
+    -------
+        The transformed document
+    """
     return run_filter(_tip, prepare=_prepare, finalize=_finalize, doc=doc)
 
 
