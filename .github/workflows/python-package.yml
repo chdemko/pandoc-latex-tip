@@ -27,13 +27,12 @@ jobs:
       uses: abatilo/actions-poetry@v2
       with:
         poetry-version: ${{ matrix.poetry-version }}
-      run: |
-        poetry self update
-        poetry self add poeblix
     - name: Install dependencies
       run: |
         wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc-version }}/pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
         sudo dpkg -i ./pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
+        poetry self update
+        poetry self add poeblix
         poetry install
     - name: Test with tox
       run: |
@@ -52,9 +51,6 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-      run: |
-        poetry self update
-        poetry self add poeblix
     - name: Set up Poetry ${{ matrix.poetry-version }}
       uses: abatilo/actions-poetry@v2
       with:
@@ -63,6 +59,8 @@ jobs:
       run: |
         wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc-version }}/pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
         sudo dpkg -i ./pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
+        poetry self update
+        poetry self add poeblix
         poetry install
     - name: Test with tox
       run: |
