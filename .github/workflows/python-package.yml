@@ -37,8 +37,7 @@ jobs:
         poetry run python download.py
     - name: Test with tox
       run: |
-        poetry shell
-        VERSION=`poetry version -s` tox -e py
+        VERSION=`poetry version -s` poetry run tox -e py
 
   poetry:
     runs-on: ubuntu-latest
@@ -145,8 +144,7 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
-        poetry shell
-        VERSION=`poetry version -s` tox -e coverage
-        pip install coveralls
-        coveralls
+        VERSION=`poetry version -s` poetry run tox -e coverage
+        poetry run pip install coveralls
+        poetry run coveralls
 
