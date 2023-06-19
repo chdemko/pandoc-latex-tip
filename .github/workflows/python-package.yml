@@ -66,7 +66,7 @@ jobs:
         poetry run python download.py
     - name: Test with tox
       run: |
-        poetry run tox -e py
+        VERSION=`poetry version -s` poetry run tox -e py
 
   pandoc:
     runs-on: ubuntu-latest
@@ -95,7 +95,7 @@ jobs:
         poetry run python download.py
     - name: Test with tox
       run: |
-        poetry run tox -e py
+        VERSION=`poetry version -s` poetry run tox -e py
 
   style:
     runs-on: ubuntu-latest
@@ -143,6 +143,7 @@ jobs:
     - name: Test
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        VER
       run: |
         VERSION=`poetry version -s` poetry run tox -e coverage
         poetry run pip install coveralls
