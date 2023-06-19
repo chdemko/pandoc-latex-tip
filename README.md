@@ -1,5 +1,6 @@
-# pandoc-latex-tip
-![Python package](https://github.com/chdemko/pandoc-latex-tip/workflows/Python%20package/badge.svg?branch=develop)
+# Installation
+
+[![Python package](https://github.com/chdemko/pandoc-latex-tip/workflows/Python%20package/badge.svg?branch=develop)](https://github.com/chdemko/pandoc-latex-tip/actions/workflows/python-package.yml)
 [![Coveralls](https://img.shields.io/coveralls/github/chdemko/pandoc-latex-tip/develop.svg?logo=Codecov&logoColor=white)](https://coveralls.io/github/chdemko/pandoc-latex-tip?branch=develop)
 [![Code Climate](https://codeclimate.com/github/chdemko/pandoc-latex-tip/badges/gpa.svg)](https://codeclimate.com/github/chdemko/pandoc-latex-tip/)
 [![Code Beat](https://codebeat.co/badges/29a6cba2-1303-4e24-9b51-6aeb134b89e8)](https://codebeat.co/projects/github-com-chdemko-pandoc-latex-tip-develop/)
