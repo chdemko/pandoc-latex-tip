@@ -9,9 +9,9 @@ import pathlib
 import sys
 import tempfile
 
-import icon_font_to_png  # type: ignore
+import icon_font_to_png
 
-from panflute import (  # type: ignore
+from panflute import (
     Code,
     CodeBlock,
     Image,
@@ -296,7 +296,7 @@ def _add_icon(doc, icons, icon):
 
     # Convert the color to black if unexisting
     # pylint: disable=import-outside-toplevel
-    from PIL import ImageColor  # type: ignore
+    from PIL import ImageColor
 
     if lower_color not in ImageColor.colormap:
         debug(
