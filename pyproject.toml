@@ -41,7 +41,7 @@ version = "0.0.0.0"
 icon-font-to-png = "^0.4.1"
 packaging = "^23.2"
 panflute = "^2.3.0"
-pillow = "^10.0.1"
+pillow = "^9.5.0"
 platformdirs = "^3.11.0"
 python = "^3.9"
 
