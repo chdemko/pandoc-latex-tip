@@ -35,7 +35,7 @@ license = "BSD-3-Clause"
 name = "pandoc-latex-tip"
 packages = [{include = "pandoc_latex_tip.py"}]
 readme = "README.md"
-version = "2.3.0.0.post16.dev0+e522e0b"
+version = "0.0.0.0"
 
 [tool.poetry.dependencies]
 icon-font-to-png = "^0.4.1"
@@ -166,7 +166,7 @@ ignore_missing_imports = true
 module = "panflute.*"
 
 [tool.poetry-dynamic-versioning]
-enable = false
+enable = true
 # tag regex
 pattern = """(?x)                                                (?# ignore whitespace)
     ^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)               (?# 1.2.3 or 1!2000.1.2)
