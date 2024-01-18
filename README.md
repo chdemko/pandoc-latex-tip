@@ -36,26 +36,16 @@ Instructions
 Install *pandoc-latex-tip* using the bash command
 
 ~~~shell
-$ pip install pandoc-latex-tip
+$ pipx install pandoc-latex-tip
 ~~~
 
 To upgrade to the most recent release, use
 
 ~~~shell
-$ pip install --upgrade pandoc-latex-tip
+$ pipx install --upgrade pandoc-latex-tip
 ~~~
 
-To upgrade the icon collections add the `--force` and `--no-cache` flags
-
-~~~shell
-$ pip install --upgrade --force --no-cache pandoc-latex-tip
-~~~
-
-`pip` is a script that downloads and installs modules from the Python Package Index, [PyPI].  It should come installed with your python distribution. If you are running linux, `pip` may be bundled separately. On a Debian-based system (including Ubuntu), you can install it as root using
-
-~~~shell
-$ sudo apt-get install python3-pip
-~~~
+`pipx` is a script to install and run python applications in isolated environments from the Python Package Index, [PyPI]. It can be installed using instructions given [here](https://pipx.pypa.io/stable/).
 
 Make sure you have required packages for [Pillow installation](https://pillow.readthedocs.io/en/5.2.x/installation.html). On linux you have to install some extra libraries **before** *pandoc-latex-tip*. On a Debian-based system (including Ubuntu), you can install it as root using
 
@@ -85,7 +75,11 @@ Instructions
 Install `poetry`, then run
 
 ~~~shell
+$ poetry self add poeblix
 $ poetry install
+$ poetry run python download.py
+$ poetry blixbuild
+$ poetry run pip install dist/pandoc_latex_tip-`poetry version -s`-py3-none-any.whl
 $ poetry shell
 ~~~
 
