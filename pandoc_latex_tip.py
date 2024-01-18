@@ -348,28 +348,28 @@ def _category(collection, version, variant):
 def _get_prefix(position, odd=True):
     if position == "right":
         if odd:
-            return "\\oddrighttip"
-        return "\\evenrighttip"
+            return "\\pandoclatextipoddright"
+        return "\\pandoclatextipevenright"
     if position in ("left", ""):
         if odd:
-            return "\\oddlefttip"
-        return "\\evenlefttip"
+            return "\\pandoclatextipoddleft"
+        return "\\pandoclatextipevenleft"
     if position == "inner":
         if odd:
-            return "\\oddinnertip"
-        return "\\eveninnertip"
+            return "\\pandoclatextipoddinner"
+        return "\\pandoclatextipeveninner"
     if position == "outer":
         if odd:
-            return "\\oddoutertip"
-        return "\\evenoutertip"
+            return "\\pandoclatextipoddouter"
+        return "\\pandoclatextipevenouter"
     debug(
         "[WARNING] pandoc-latex-tip: "
         + position
         + " is not a correct position; using left"
     )
     if odd:
-        return "\\oddlefttip"
-    return "\\evenlefttip"
+        return "\\pandoclatextipoddleft"
+    return "\\pandoclatextipevenleft"
 
 
 def _get_size(size):
@@ -527,46 +527,28 @@ def _finalize(doc):
         MetaInlines(RawInline("\\usepackage{etoolbox}", "tex"))
     )
     doc.metadata["header-includes"].append(
-        MetaInlines(RawInline("\\usepackage{changepage}\n\\strictpagecheck", "tex"))
+        MetaInlines(RawInline("\\usepackage[strict]{changepage}", "tex"))
     )
     doc.metadata["header-includes"].append(
         MetaInlines(
             RawInline(
                 r"""
 \makeatletter%
-\@ifpackagelater{marginnote}{2018/04/12}%
-{%
-\newcommand{\oddinnertip}{\reversemarginpar}%
-\newcommand{\eveninnertip}{\reversemarginpar}%
-\newcommand{\oddoutertip}{\normalmarginpar}%
-\newcommand{\evenoutertip}{\normalmarginpar}%
-\newcommand{\oddlefttip}{\reversemarginpar}%
-\newcommand{\evenlefttip}{\reversemarginpar}%
-\newcommand{\oddrighttip}{\normalmarginpar}%
-\newcommand{\evenrighttip}{\normalmarginpar}%
-}%
-{%
+\newcommand{\pandoclatextipoddinner}{\reversemarginpar}%
+\newcommand{\pandoclatextipeveninner}{\reversemarginpar}%
+\newcommand{\pandoclatextipoddouter}{\normalmarginpar}%
+\newcommand{\pandoclatextipevenouter}{\normalmarginpar}%
+\newcommand{\pandoclatextipoddleft}{\reversemarginpar}%
+\newcommand{\pandoclatextipoddright}{\normalmarginpar}%
 \if@twoside%
-\newcommand{\oddinnertip}{\reversemarginpar}%
-\newcommand{\eveninnertip}{\reversemarginpar}%
-\newcommand{\oddoutertip}{\normalmarginpar}%
-\newcommand{\evenoutertip}{\normalmarginpar}%
-\newcommand{\oddlefttip}{\reversemarginpar}%
-\newcommand{\evenlefttip}{\normalmarginpar}%
-\newcommand{\oddrighttip}{\reversemarginpar}%
-\newcommand{\evenrighttip}{\normalmarginpar}%
+\newcommand{\pandoclatextipevenright}{\reversemarginpar}%
+\newcommand{\pandoclatextipevenleft}{\normalmarginpar}%
 \else%
-\newcommand{\oddinnertip}{\reversemarginpar}%
-\newcommand{\eveninnertip}{\reversemarginpar}%
-\newcommand{\oddoutertip}{\normalmarginpar}%
-\newcommand{\evenoutertip}{\normalmarginpar}%
-\newcommand{\oddlefttip}{\reversemarginpar}%
-\newcommand{\evenlefttip}{\reversemarginpar}%
-\newcommand{\oddrighttip}{\normalmarginpar}%
-\newcommand{\evenrighttip}{\normalmarginpar}%
+\newcommand{\pandoclatextipevenright}{\normalmarginpar}%
+\newcommand{\pandoclatextipevenleft}{\reversemarginpar}%
 \fi%
-}%
 \makeatother%
+\checkoddpage
     """,
                 "tex",
             )
