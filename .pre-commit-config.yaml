@@ -9,12 +9,12 @@ repos:
   rev: v1.0.0
   hooks:
   - id: check-poetry
-  - id: check-gitlab-ci
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.10.0
   hooks:
   - id: pretty-format-toml
+    exclude: ^poetry.lock$
     args: [--autofix, --no-sort]
   - id: pretty-format-yaml
     args: [--autofix]
@@ -29,7 +29,7 @@ repos:
   hooks:
   - id: slotscheck
     language: system
-    exclude: ^(?!pandoc_latex_tip.py)
+    exclude: ^(?!(pandoc_latex_tip.py|download.py))
 
 - repo: https://github.com/dosisod/refurb
   rev: v1.20.0
@@ -46,13 +46,13 @@ repos:
   hooks:
   - id: ruff
     language: system
-    exclude: ^(?!pandoc_latex_tip.py)
+    exclude: ^(?!(pandoc_latex_tip.py|download.py))
 
 - repo: https://github.com/psf/black
   rev: 23.7.0
   hooks:
   - id: black-jupyter
-    args: [--config=pyproject.toml, pandoc_latex_tip.py, tests]
+    args: [--config=pyproject.toml, pandoc_latex_tip.py, download.py, tests]
 
 - repo: https://github.com/PyCQA/doc8/
   rev: v1.1.1
@@ -65,18 +65,18 @@ repos:
   hooks:
   - id: mypy
     language: system
-    exclude: ^(?!pandoc_latex_tip.py)
+    exclude: ^(?!(pandoc_latex_tip.py|download.py))
 
 - repo: https://github.com/pycqa/flake8
   rev: 6.1.0
   hooks:
   - id: flake8
     language: system
-    exclude: ^(?!pandoc_latex_tip.py)
+    exclude: ^(?!(pandoc_latex_tip.py|download.py))
 
 - repo: https://github.com/pre-commit/mirrors-pylint
   rev: v3.0.0a5
   hooks:
   - id: pylint
     language: system
-    exclude: ^(?!pandoc_latex_tip.py)
+    exclude: ^(?!(pandoc_latex_tip.py|download.py))
