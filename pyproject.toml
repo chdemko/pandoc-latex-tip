@@ -47,6 +47,8 @@ python = "^3.9"
 poetry = "^1.7.1"
 
 [tool.poetry.group.dev.dependencies]
+# Types
+types-requests = "^2.31"
 # Formatter
 black = "^23.12.1"
 darglint = "^1.8.1"
