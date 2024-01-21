@@ -25,6 +25,7 @@ classifiers = [
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   # Natural language used
   "Natural Language :: English"
 ]
@@ -84,7 +85,7 @@ mypy = "^1.8.0"
 pep8-naming = "^0.13.3"
 pylint = {version = "^2.17.7", python = ">=3.9"}
 # test
-tox = "^4.11.4"
+tox = "^4.11"
 pytest = "^7.4.4"
 pytest-cov = "^4.1.0"
 refurb = {version = "^1.27.0", python = ">=3.10"}
