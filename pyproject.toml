@@ -169,7 +169,7 @@ ignore_missing_imports = true
 module = "panflute.*"
 
 [tool.poetry-dynamic-versioning]
-enable = false
+enable = true
 # tag regex
 pattern = """(?x)                                                (?# ignore whitespace)
     ^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)               (?# 1.2.3 or 1!2000.1.2)
