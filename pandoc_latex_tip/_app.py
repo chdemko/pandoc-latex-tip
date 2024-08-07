@@ -5,12 +5,14 @@ App module.
 import pathlib
 import shutil
 import sys
+from importlib.metadata import version
 
 from cleo.application import Application
 from cleo.commands.command import Command
 from cleo.helpers import argument, option
 
 import yaml
+
 
 from ._main import get_core_icons, main
 
@@ -426,7 +428,10 @@ def app() -> None:
     """
     Create a cleo application.
     """
-    application = Application("pandoc-latex-tip filter")
+    application = Application(
+        name="pandoc-latex-tip filter",
+        version=version("pandoc-latex-tip"),
+    )
     application.set_display_name("pandoc-latex-tip filter")
     application.add(CollectionsAddCommand())
     application.add(CollectionsDeleteCommand())
