@@ -28,10 +28,8 @@ pandoc-latex-tip:
     - name: fa-barcode
       color: aquamarine
     - name: fa-barcode
-      collection: glyphicons
       color: lightcoral
     - name: fa-barcode
-      collection: materialdesign
       color: gold
     size: 24
     position: left
