@@ -851,9 +851,6 @@ def finalize(doc: Doc) -> None:
         doc.metadata["header-includes"] = MetaList(doc.metadata["header-includes"])
 
     doc.metadata["header-includes"].append(
-        MetaInlines(RawInline("\\usepackage{needspace}", "tex"))
-    )
-    doc.metadata["header-includes"].append(
         MetaInlines(RawInline("\\usepackage{graphicx,grffile}", "tex"))
     )
     doc.metadata["header-includes"].append(
