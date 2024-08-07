@@ -14,6 +14,30 @@ import yaml
 
 from ._main import get_core_icons, main
 
+name_arg = argument(
+    "name",
+    description="Collection name",
+)
+file_arg = argument(
+    "file",
+    description="File name",
+)
+css_opt = option(
+    "css",
+    flag=False,
+    description="css filename from the collection",
+)
+ttf_opt = option(
+    "ttf",
+    flag=False,
+    description="ttf filename from the collection",
+)
+prefix_opt = option(
+    "prefix",
+    flag=False,
+    description="icon prefix used to replace the common prefix found in the css file",
+)
+
 
 class CollectionsAddCommand(Command):
     """
@@ -22,10 +46,7 @@ class CollectionsAddCommand(Command):
 
     name = "collections add"
     description = "Add a file to a collection"
-    arguments = [
-        argument("name", description="Collection name"),
-        argument("file", description="File name"),
-    ]
+    arguments = [name_arg, file_arg]
 
     def handle(self) -> int:
         """
@@ -68,9 +89,7 @@ class CollectionsDeleteCommand(Command):
 
     name = "collections delete"
     description = "Delete a collection"
-    arguments = [
-        argument("name", description="Collection name"),
-    ]
+    arguments = [name_arg]
 
     def handle(self) -> int:
         """
@@ -157,9 +176,7 @@ class CollectionsInfoCommand(Command):
 
     name = "collections info"
     description = "Display a collection"
-    arguments = [
-        argument("name", description="Collection name"),
-    ]
+    arguments = [name_arg]
 
     def handle(self) -> int:
         """
@@ -195,14 +212,8 @@ class IconsAddCommand(Command):
 
     name = "icons add"
     description = "Add a set of icons from a collection"
-    arguments = [
-        argument("name", description="Collection name"),
-    ]
-    options = [
-        option("css", flag=False, description="css filename from the collection"),
-        option("ttf", flag=False, description="ttf filename from the collection"),
-        option("prefix", flag=False, description="icon prefix"),
-    ]
+    arguments = [name_arg]
+    options = [css_opt, ttf_opt, prefix_opt]
 
     # pylint: disable=too-many-return-statements
     def handle(self) -> int:
@@ -287,9 +298,7 @@ class IconsDeleteCommand(Command):
 
     name = "icons delete"
     description = "Delete a set of icons"
-    options = [
-        option("prefix", flag=False, description="icon prefix"),
-    ]
+    options = [prefix_opt]
 
     def handle(self) -> int:
         """
@@ -417,7 +426,8 @@ def app() -> None:
     """
     Create a cleo application.
     """
-    application = Application("Pandoc LaTeX Tip Filter")
+    application = Application("pandoc-latex-tip filter")
+    application.set_display_name("pandoc-latex-tip filter")
     application.add(CollectionsAddCommand())
     application.add(CollectionsDeleteCommand())
     application.add(CollectionsListCommand())

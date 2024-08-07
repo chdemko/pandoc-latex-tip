@@ -51,7 +51,7 @@ cleo = "^2.1.0"
 # Types
 types-PyYAML = "^6.0.12.20240724"
 # Tests
-tox = "^4.17.0"
+tox = "^4.17.1"
 # pre-commit
 pre-commit = "^3.8.0"
 # pyupgrade
