@@ -2,7 +2,9 @@
 pandoc_latex_tip package.
 """
 
-from ._main import app, main
+from ._app import app
+from ._main import main
+
 
 __all__ = ("main", "app")
 
