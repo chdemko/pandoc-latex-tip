@@ -70,7 +70,7 @@ class CollectionsAddCommand(Command):
             If an error occurs.
         """
         if self.argument("name") == "fontawesome":
-            raise ValueError("<error>You cannot modify core collection</error>")
+            raise ValueError("You cannot modify core collection")
         dir_path = pathlib.Path(
             sys.prefix, "share", "pandoc_latex_tip", self.argument("name")
         )
@@ -114,11 +114,10 @@ class CollectionsDeleteCommand(Command):
         ValueError
             If an error occurs.
         """
-        if self.argument("name") == "fontawesome":
-            raise ValueError("<error>You cannot modify core collection</error>")
-        dir_path = pathlib.Path(
-            sys.prefix, "share", "pandoc_latex_tip", self.argument("name")
-        )
+        name = self.argument("name")
+        if name == "fontawesome":
+            raise ValueError("You cannot modify core collection")
+        dir_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip", name)
         config_path = pathlib.Path(
             sys.prefix,
             "share",
@@ -129,20 +128,14 @@ class CollectionsDeleteCommand(Command):
             with config_path.open(encoding="utf-8") as stream:
                 icons = yaml.safe_load(stream)
                 for definition in icons:
-                    if definition["collection"] == self.argument("name"):
-                        raise ValueError(
-                            f"<error>Collection '{self.argument('name')}' "
-                            f"is in use</error>"
-                        )
+                    if definition["collection"] == name:
+                        raise ValueError(f"Collection '{name}' is in use")
 
         if not dir_path.exists():
-            raise ValueError(
-                f"<error>Collection '{self.argument('name')}' "
-                f"does not exist</error>"
-            )
+            raise ValueError(f"Collection '{name}' does not exist")
 
         shutil.rmtree(dir_path)
-        self.line(f"Delete collection '{self.argument('name')}'")
+        self.line(f"Delete collection '{name}'")
         return 0
 
 
@@ -199,17 +192,15 @@ class CollectionsInfoCommand(Command):
         ValueError
             If an error occurs.
         """
+        name = self.argument("name")
         dir_path = pathlib.Path(
             sys.prefix,
             "share",
             "pandoc_latex_tip",
-            self.argument("name"),
+            name,
         )
         if not dir_path.exists():
-            raise ValueError(
-                f"<error>Collection '{self.argument('name')}' "
-                f"does not exist</error>"
-            )
+            raise ValueError(f"Collection '{name}' does not exist")
 
         for filename in dir_path.iterdir():
             self.line(filename.parts[-1])
@@ -246,8 +237,9 @@ class IconsAddCommand(Command):
         ValueError
             If an error occurs.
         """
-        if self.argument("name") == "fontawesome":
-            raise ValueError("<error>You cannot modify core collection</error>")
+        name = self.argument("name")
+        if name == "fontawesome":
+            raise ValueError("You cannot modify core collection")
         dir_path = pathlib.Path(
             sys.prefix,
             "share",
@@ -256,23 +248,20 @@ class IconsAddCommand(Command):
         )
         if dir_path.exists():
             if not self.option("CSS"):
-                raise ValueError("<error>CSS option is mandatory</error>")
-            css_file = pathlib.Path(dir_path, self.option("CSS"))
+                raise ValueError("CSS option is mandatory")
+            css = self.option("CSS")
+            css_file = pathlib.Path(dir_path, css)
             if not css_file.exists():
-                raise ValueError(
-                    f"<error>Collection '{self.argument('name')}' "
-                    f"does not contain '{self.option('CSS')}'</error>"
-                )
+                raise ValueError(f"Collection '{name}' does not contain '{css}'")
             if not self.option("TTF"):
-                raise ValueError("<error>TTF option is mandatory</error>")
-            ttf_file = pathlib.Path(dir_path, self.option("TTF"))
+                raise ValueError("TTF option is mandatory")
+            ttf = self.option("TTF")
+            ttf_file = pathlib.Path(dir_path, ttf)
             if not ttf_file.exists():
-                raise ValueError(
-                    f"<error>Collection '{self.argument('name')}' "
-                    f"does not contain '{self.option('TTF')}'</error>"
-                )
+                raise ValueError(f"Collection '{name}' does not contain '{ttf}'")
             if not self.option("prefix"):
-                raise ValueError("<error>prefix option is mandatory</error>")
+                raise ValueError("prefix option is mandatory")
+            prefix = self.option("prefix")
             config_path = pathlib.Path(
                 sys.prefix,
                 "share",
@@ -283,29 +272,23 @@ class IconsAddCommand(Command):
                 with config_path.open(encoding="utf-8") as stream:
                     icons = yaml.safe_load(stream)
                     for definition in icons:
-                        if definition["prefix"] == self.option("prefix"):
-                            raise ValueError(
-                                f"<error>Prefix '{self.option('prefix')}' "
-                                f"is already used</error>"
-                            )
+                        if definition["prefix"] == prefix:
+                            raise ValueError(f"Prefix '{prefix}' is already used")
             else:
                 icons = []
             icons.append(
                 {
-                    "collection": self.argument("name"),
-                    "CSS": self.option("CSS"),
-                    "TTF": self.option("TTF"),
-                    "prefix": self.option("prefix"),
+                    "collection": name,
+                    "CSS": css,
+                    "TTF": ttf,
+                    "prefix": prefix,
                 },
             )
             with config_path.open(mode="w", encoding="utf-8") as stream:
                 stream.write(yaml.dump(icons, sort_keys=False))
 
         else:
-            raise ValueError(
-                f"<error>Collection '{self.argument('name')}' "
-                f"does not exist</error>"
-            )
+            raise ValueError(f"Collection '{name}' does not exist")
         return 0
 
 
@@ -333,9 +316,10 @@ class IconsDeleteCommand(Command):
             If an error occurs.
         """
         if not self.option("prefix"):
-            raise ValueError("<error>prefix option is mandatory</error>")
-        if self.option("prefix") in ("fa-", "far-", "fab-"):
-            raise ValueError("<error>You cannot modify core icons</error>")
+            raise ValueError("prefix option is mandatory")
+        prefix = self.option("prefix")
+        if prefix in ("fa-", "far-", "fab-"):
+            raise ValueError("You cannot modify core icons")
         config_path = pathlib.Path(
             sys.prefix,
             "share",
@@ -346,17 +330,15 @@ class IconsDeleteCommand(Command):
             with config_path.open(encoding="utf-8") as stream:
                 icons = yaml.safe_load(stream)
             keep = [
-                definition
-                for definition in icons
-                if definition["prefix"] != self.option("prefix")
+                definition for definition in icons if definition["prefix"] != prefix
             ]
             if keep != icons:
                 with config_path.open(mode="w", encoding="utf-8") as stream:
                     stream.write(yaml.dump(keep, sort_keys=False))
             else:
-                raise ValueError("<error>Unexisting prefix</error>")
+                raise ValueError("Unexisting prefix")
         else:
-            raise ValueError("<error>Unexisting config file</error>")
+            raise ValueError("Unexisting config file")
         return 0
 
 
