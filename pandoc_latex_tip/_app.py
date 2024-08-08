@@ -63,29 +63,27 @@ class CollectionsAddCommand(Command):
         -------
         int
             status code
+
+        Raises
+        ------
+        ValueError
+            If an error occurs.
         """
         if self.argument("name") == "fontawesome":
-            self.line("<error>You cannot modify core collection</error>")
-            return 1
+            raise ValueError("<error>You cannot modify core collection</error>")
+        dir_path = pathlib.Path(
+            sys.prefix, "share", "pandoc_latex_tip", self.argument("name")
+        )
+        if not dir_path.exists():
+            dir_path.mkdir(parents=True)
+        file_path = pathlib.Path(self.argument("file"))
+        dest_path = pathlib.Path(dir_path, file_path.parts[-1])
+        shutil.copy(file_path, dest_path)
 
-        try:
-            dir_path = pathlib.Path(
-                sys.prefix, "share", "pandoc_latex_tip", self.argument("name")
-            )
-            if not dir_path.exists():
-                dir_path.mkdir(parents=True)
-            file_path = pathlib.Path(self.argument("file"))
-            dest_path = pathlib.Path(dir_path, file_path.parts[-1])
-            shutil.copy(file_path, dest_path)
-
-            self.line(
-                f"Add file '{self.argument('file')}' to "
-                f"collection '{self.argument('name')}'"
-            )
-
-        except PermissionError as error:
-            self.line(f"<error>{error}</error>")
-            return 1
+        self.line(
+            f"Add file '{self.argument('file')}' to "
+            f"collection '{self.argument('name')}'"
+        )
         return 0
 
 
@@ -110,47 +108,41 @@ class CollectionsDeleteCommand(Command):
         -------
         int
             status code
+
+        Raises
+        ------
+        ValueError
+            If an error occurs.
         """
         if self.argument("name") == "fontawesome":
-            self.line("<error>You cannot modify core collection</error>")
-            return 1
-        try:
-            dir_path = pathlib.Path(
-                sys.prefix, "share", "pandoc_latex_tip", self.argument("name")
-            )
-            config_path = pathlib.Path(
-                sys.prefix,
-                "share",
-                "pandoc_latex_tip",
-                "config.yml",
-            )
-            try:
-                if config_path.exists():
-                    with config_path.open(encoding="utf-8") as stream:
-                        icons = yaml.safe_load(stream)
-                        for definition in icons:
-                            if definition["collection"] == self.argument("name"):
-                                self.line(
-                                    f"<error>Collection '{self.argument('name')}' "
-                                    f"is in use</error>"
-                                )
-                                return 1
-            except PermissionError as error:
-                self.line(f"<error>{error}</error>")
-                return 1
+            raise ValueError("<error>You cannot modify core collection</error>")
+        dir_path = pathlib.Path(
+            sys.prefix, "share", "pandoc_latex_tip", self.argument("name")
+        )
+        config_path = pathlib.Path(
+            sys.prefix,
+            "share",
+            "pandoc_latex_tip",
+            "config.yml",
+        )
+        if config_path.exists():
+            with config_path.open(encoding="utf-8") as stream:
+                icons = yaml.safe_load(stream)
+                for definition in icons:
+                    if definition["collection"] == self.argument("name"):
+                        raise ValueError(
+                            f"<error>Collection '{self.argument('name')}' "
+                            f"is in use</error>"
+                        )
 
-            if dir_path.exists():
-                shutil.rmtree(dir_path)
-                self.line(f"Delete collection '{self.argument('name')}'")
-            else:
-                self.line(
-                    f"<error>Collection '{self.argument('name')}' "
-                    f"does not exist</error>"
-                )
-                return 1
-        except PermissionError as error:
-            self.line(f"<error>{error}</error>")
-            return 1
+        if not dir_path.exists():
+            raise ValueError(
+                f"<error>Collection '{self.argument('name')}' "
+                f"does not exist</error>"
+            )
+
+        shutil.rmtree(dir_path)
+        self.line(f"Delete collection '{self.argument('name')}'")
         return 0
 
 
@@ -174,7 +166,7 @@ class CollectionsListCommand(Command):
         dir_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip")
         for folder in dir_path.iterdir():
             if folder.parts[-1] == "fontawesome":
-                self.line("<info>fontawesome *</info>")
+                self.line("fontawesome *")
             elif folder.is_dir():
                 self.line(folder.parts[-1])
         return 0
@@ -201,6 +193,11 @@ class CollectionsInfoCommand(Command):
         -------
         int
             status code
+
+        Raises
+        ------
+        ValueError
+            If an error occurs.
         """
         dir_path = pathlib.Path(
             sys.prefix,
@@ -208,15 +205,14 @@ class CollectionsInfoCommand(Command):
             "pandoc_latex_tip",
             self.argument("name"),
         )
-        if dir_path.exists():
-            for filename in dir_path.iterdir():
-                self.line(filename.parts[-1])
-        else:
-            self.line(
+        if not dir_path.exists():
+            raise ValueError(
                 f"<error>Collection '{self.argument('name')}' "
                 f"does not exist</error>"
             )
-            return 1
+
+        for filename in dir_path.iterdir():
+            self.line(filename.parts[-1])
         return 0
 
 
@@ -244,10 +240,14 @@ class IconsAddCommand(Command):
         -------
         int
             status code
+
+        Raises
+        ------
+        ValueError
+            If an error occurs.
         """
         if self.argument("name") == "fontawesome":
-            self.line("<error>You cannot modify core collection</error>")
-            return 1
+            raise ValueError("<error>You cannot modify core collection</error>")
         dir_path = pathlib.Path(
             sys.prefix,
             "share",
@@ -256,67 +256,56 @@ class IconsAddCommand(Command):
         )
         if dir_path.exists():
             if not self.option("CSS"):
-                self.line("<error>CSS option is mandatory</error>")
-                return 1
+                raise ValueError("<error>CSS option is mandatory</error>")
             css_file = pathlib.Path(dir_path, self.option("CSS"))
             if not css_file.exists():
-                self.line(
+                raise ValueError(
                     f"<error>Collection '{self.argument('name')}' "
                     f"does not contain '{self.option('CSS')}'</error>"
                 )
-                return 1
             if not self.option("TTF"):
-                self.line("<error>TTF option is mandatory</error>")
-                return 1
+                raise ValueError("<error>TTF option is mandatory</error>")
             ttf_file = pathlib.Path(dir_path, self.option("TTF"))
             if not ttf_file.exists():
-                self.line(
+                raise ValueError(
                     f"<error>Collection '{self.argument('name')}' "
                     f"does not contain '{self.option('TTF')}'</error>"
                 )
-                return 1
             if not self.option("prefix"):
-                self.line("<error>prefix option is mandatory</error>")
-                return 1
+                raise ValueError("<error>prefix option is mandatory</error>")
             config_path = pathlib.Path(
                 sys.prefix,
                 "share",
                 "pandoc_latex_tip",
                 "config.yml",
             )
-            try:
-                if config_path.exists():
-                    with config_path.open(encoding="utf-8") as stream:
-                        icons = yaml.safe_load(stream)
-                        for definition in icons:
-                            if definition["prefix"] == self.option("prefix"):
-                                self.line(
-                                    f"<error>Prefix '{self.option('prefix')}' "
-                                    f"is already used</error>"
-                                )
-                                return 1
-                else:
-                    icons = []
-                icons.append(
-                    {
-                        "collection": self.argument("name"),
-                        "CSS": self.option("CSS"),
-                        "TTF": self.option("TTF"),
-                        "prefix": self.option("prefix"),
-                    },
-                )
-                with config_path.open(mode="w", encoding="utf-8") as stream:
-                    stream.write(yaml.dump(icons, sort_keys=False))
-            except PermissionError as error:
-                self.line(f"<error>{error}</error>")
-                return 1
+            if config_path.exists():
+                with config_path.open(encoding="utf-8") as stream:
+                    icons = yaml.safe_load(stream)
+                    for definition in icons:
+                        if definition["prefix"] == self.option("prefix"):
+                            raise ValueError(
+                                f"<error>Prefix '{self.option('prefix')}' "
+                                f"is already used</error>"
+                            )
+            else:
+                icons = []
+            icons.append(
+                {
+                    "collection": self.argument("name"),
+                    "CSS": self.option("CSS"),
+                    "TTF": self.option("TTF"),
+                    "prefix": self.option("prefix"),
+                },
+            )
+            with config_path.open(mode="w", encoding="utf-8") as stream:
+                stream.write(yaml.dump(icons, sort_keys=False))
 
         else:
-            self.line(
+            raise ValueError(
                 f"<error>Collection '{self.argument('name')}' "
                 f"does not exist</error>"
             )
-            return 1
         return 0
 
 
@@ -337,41 +326,37 @@ class IconsDeleteCommand(Command):
         -------
         int
             status code
+
+        Raises
+        ------
+        ValueError
+            If an error occurs.
         """
         if not self.option("prefix"):
-            self.line("<error>prefix option is mandatory</error>")
-            return 1
+            raise ValueError("<error>prefix option is mandatory</error>")
         if self.option("prefix") in ("fa-", "far-", "fab-"):
-            self.line("<error>You cannot modify core icons</error>")
-            return 1
+            raise ValueError("<error>You cannot modify core icons</error>")
         config_path = pathlib.Path(
             sys.prefix,
             "share",
             "pandoc_latex_tip",
             "config.yml",
         )
-        try:
-            if config_path.exists():
-                with config_path.open(encoding="utf-8") as stream:
-                    icons = yaml.safe_load(stream)
-                keep = [
-                    definition
-                    for definition in icons
-                    if definition["prefix"] != self.option("prefix")
-                ]
-                if keep != icons:
-                    with config_path.open(mode="w", encoding="utf-8") as stream:
-                        stream.write(yaml.dump(keep, sort_keys=False))
-                else:
-                    self.line("<error>Unexisting prefix</error>")
-                    return 1
+        if config_path.exists():
+            with config_path.open(encoding="utf-8") as stream:
+                icons = yaml.safe_load(stream)
+            keep = [
+                definition
+                for definition in icons
+                if definition["prefix"] != self.option("prefix")
+            ]
+            if keep != icons:
+                with config_path.open(mode="w", encoding="utf-8") as stream:
+                    stream.write(yaml.dump(keep, sort_keys=False))
             else:
-                self.line("<error>Unexisting config file</error>")
-                return 1
-
-        except PermissionError as error:
-            self.line(f"<error>{error}</error>")
-            return 1
+                raise ValueError("<error>Unexisting prefix</error>")
+        else:
+            raise ValueError("<error>Unexisting config file</error>")
         return 0
 
 
@@ -399,14 +384,9 @@ class IconsListCommand(Command):
             "pandoc_latex_tip",
             "config.yml",
         )
-        try:
-            if config_path.exists():
-                with config_path.open(encoding="utf-8") as stream:
-                    icons.extend(yaml.safe_load(stream))
-        except PermissionError as error:
-            self.line(f"<error>{error}</error>")
-            return 1
-
+        if config_path.exists():
+            with config_path.open(encoding="utf-8") as stream:
+                icons.extend(yaml.safe_load(stream))
         self.line(yaml.dump(icons, sort_keys=False))
 
         return 0
