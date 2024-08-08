@@ -232,7 +232,7 @@ class IconsAddCommand(Command):
     help = (  # noqa: A003, VNE003
         "A set of icons is created from a CSS file and a TTF file from a collection. "
         "The prefix ensures that the icons are unique. "
-        "If set, it replaces the common prefix detected in the CSS file."
+        "It replaces the common prefix detected in the CSS file."
     )
 
     # pylint: disable=too-many-return-statements, too-many-branches
