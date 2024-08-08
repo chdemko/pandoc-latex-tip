@@ -10,10 +10,12 @@ pandoc-latex-tip:
     position: outer
   - classes: [tip, discussion]
     icons:
-    - name: fa-comments
+    - fa-user
+    - far-user
+    - name: fab-facebook
       color: lightseagreen
       link: '#title'
-    size: 36
+    size: 24
     position: right
   - classes: [tip, listing]
     icons:

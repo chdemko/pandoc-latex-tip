@@ -14,7 +14,7 @@ In the metadata block, specific set of classes can be defined to
 decorate HTML ``span``, ``div``, ``code`` or ``codeblock`` elements by
 icons generated from popular icon collections:
 
-* Font-Awesome (4.7, 5.x)
+* Font-Awesome
   `Dave Gandy <https://fontawesome.com/>`__
   (`SIL OFL 1.1 <https://fontawesome.com/license/>`__)
 
@@ -31,7 +31,7 @@ by a list of definitions:
        icons: [fa-bug]
      - classes: [tip]
 
-The metadata block above is used to add a ``bug`` icon to ``span``,
+The metadata block above is used to add a ``fa-bug`` icon to ``span``,
 ``div``, ``code`` or ``codeblock`` elements which have ``tip`` and
 ``error`` classes and a generic icon to ``span``, ``div``, ``code`` or
 ``codeblock`` elements that have only a ``tip`` class.
@@ -53,7 +53,12 @@ Each entry of ``pandoc-latex-tip`` is a YAML dictionary containing:
 Each icon is either:
 
 -  an icon name taken from the `Font-Awesome icons collection
-   <https://fontawesome.com/>`__
+   <https://fontawesome.com/>`__ (use ``fa-`` prefix for the ``solid``
+   `icons <https://fontawesome.com/search?o=r&m=free&s=solid>`__,
+   ``far-`` prefix for the ``regular``
+   `icons <https://fontawesome.com/search?o=r&m=free&s=regular>`__
+   and ``fab-`` prefix for the ``brands``
+   `icons <https://fontawesome.com/search?o=r&m=free&f=brands>`__)
 -  a YAML object containing
 
    -  a ``name`` property (for the icon)
@@ -92,12 +97,45 @@ as input gives output file in
 Extensions
 ----------
 
-``pandoc-latex-tip`` can be extended by adding additional ``css`` and
-``ttf`` files.
+``pandoc-latex-tip`` can be extended by adding collections of
+``CSS`` and ``TTF`` files.
 
 Run ``pandoc-latex-tip`` for a complete explanation.
 
-.. code-block:: shell
+..  code-block:: shell
 
-   $ pandoc-latex-tip
+    $ pandoc-latex-tip
+    pandoc-latex-tip filter (version number)
+
+    Usage:
+      command [options] [arguments]
+
+    Options:
+      -h, --help            Display help for the given command. When no command
+    is given display help for the list command.
+      -q, --quiet           Do not output any message.
+      -V, --version         Display this application version.
+          --ansi            Force ANSI output.
+          --no-ansi         Disable ANSI output.
+      -n, --no-interaction  Do not ask any interactive question.
+      -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal
+    output, 2 for more verbose output and 3 for debug.
+
+    Available commands:
+      beamer              Run pandoc filter for Beamer document
+      collections         List the collections
+      help                Displays help for a command.
+      icons               List the set of icons
+      latex               Run pandoc filter for LaTeX document
+      list                Lists commands.
+
+     collections
+      collections add     Add a file to a collection
+      collections delete  Delete a collection
+      collections info    Display a collection
+
+     icons
+      icons add           Add a set of icons from a collection
+      icons delete        Delete a set of icons
+
 
