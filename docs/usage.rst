@@ -118,8 +118,8 @@ Run ``pandoc-latex-tip`` for a complete explanation.
           --ansi            Force ANSI output.
           --no-ansi         Disable ANSI output.
       -n, --no-interaction  Do not ask any interactive question.
-      -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal
-    output, 2 for more verbose output and 3 for debug.
+      -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal ou
+    tput, 2 for more verbose output and 3 for debug.
 
     Available commands:
       beamer              Run pandoc filter for Beamer document
