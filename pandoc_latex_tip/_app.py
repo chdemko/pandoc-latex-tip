@@ -25,19 +25,20 @@ file_arg = argument(
     description="File name",
 )
 css_opt = option(
-    "css",
+    "CSS",
+    description="CSS filename from the collection",
     flag=False,
-    description="css filename from the collection",
 )
 ttf_opt = option(
-    "ttf",
+    "TTF",
+    description="TTF filename from the collection",
     flag=False,
-    description="ttf filename from the collection",
 )
 prefix_opt = option(
     "prefix",
+    short_name="p",
+    description="Icon prefix used to replace the common prefix found in the css file",
     flag=False,
-    description="icon prefix used to replace the common prefix found in the css file",
 )
 
 
@@ -49,6 +50,10 @@ class CollectionsAddCommand(Command):
     name = "collections add"
     description = "Add a file to a collection"
     arguments = [name_arg, file_arg]
+    help = (  # noqa: A003, VNE003
+        "A collection is a space used to store all the CSS and TTF files "
+        "related to one or more sets of icons."
+    )
 
     def handle(self) -> int:
         """
@@ -92,6 +97,10 @@ class CollectionsDeleteCommand(Command):
     name = "collections delete"
     description = "Delete a collection"
     arguments = [name_arg]
+    help = (  # noqa: A003,VNE003
+        "Deleting a collection will erase the folder containing its files. "
+        "The operation cannot proceed if the collection is used by a set of icons."
+    )
 
     def handle(self) -> int:
         """
@@ -179,6 +188,10 @@ class CollectionsInfoCommand(Command):
     name = "collections info"
     description = "Display a collection"
     arguments = [name_arg]
+    help = (  # noqa: A003, VNE003
+        "Displaying a collection allows listing all the "
+        "CSS and TTF files it contains."
+    )
 
     def handle(self) -> int:
         """
@@ -216,8 +229,13 @@ class IconsAddCommand(Command):
     description = "Add a set of icons from a collection"
     arguments = [name_arg]
     options = [css_opt, ttf_opt, prefix_opt]
+    help = (  # noqa: A003, VNE003
+        "A set of icons is created from a CSS file and a TTF file from a collection. "
+        "The prefix ensures that the icons are unique. "
+        "If set, it replaces the common prefix detected in the CSS file."
+    )
 
-    # pylint: disable=too-many-return-statements
+    # pylint: disable=too-many-return-statements, too-many-branches
     def handle(self) -> int:
         """
         Handle icons add command.
@@ -237,19 +255,28 @@ class IconsAddCommand(Command):
             self.argument("name"),
         )
         if dir_path.exists():
-            css_file = pathlib.Path(dir_path, self.option("css"))
+            if not self.option("CSS"):
+                self.line("<error>CSS option is mandatory</error>")
+                return 1
+            css_file = pathlib.Path(dir_path, self.option("CSS"))
             if not css_file.exists():
                 self.line(
                     f"<error>Collection '{self.argument('name')}' "
-                    f"does not contain '{self.option('css')}'</error>"
+                    f"does not contain '{self.option('CSS')}'</error>"
                 )
                 return 1
-            ttf_file = pathlib.Path(dir_path, self.option("ttf"))
+            if not self.option("TTF"):
+                self.line("<error>TTF option is mandatory</error>")
+                return 1
+            ttf_file = pathlib.Path(dir_path, self.option("TTF"))
             if not ttf_file.exists():
                 self.line(
                     f"<error>Collection '{self.argument('name')}' "
-                    f"does not contain '{self.option('ttf')}'</error>"
+                    f"does not contain '{self.option('TTF')}'</error>"
                 )
+                return 1
+            if not self.option("prefix"):
+                self.line("<error>prefix option is mandatory</error>")
                 return 1
             config_path = pathlib.Path(
                 sys.prefix,
@@ -273,8 +300,8 @@ class IconsAddCommand(Command):
                 icons.append(
                     {
                         "collection": self.argument("name"),
-                        "css": self.option("css"),
-                        "ttf": self.option("ttf"),
+                        "CSS": self.option("CSS"),
+                        "TTF": self.option("TTF"),
                         "prefix": self.option("prefix"),
                     },
                 )
@@ -311,6 +338,9 @@ class IconsDeleteCommand(Command):
         int
             status code
         """
+        if not self.option("prefix"):
+            self.line("<error>prefix option is mandatory</error>")
+            return 1
         if self.option("prefix") in ("fa-", "far-", "fab-"):
             self.line("<error>You cannot modify core icons</error>")
             return 1

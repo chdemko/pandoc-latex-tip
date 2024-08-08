@@ -49,7 +49,7 @@ cleo = "^2.1.0"
 
 [tool.poetry.group.dev.dependencies]
 # Types
-types-PyYAML = "^6.0.12.20240724"
+types-PyYAML = "^6.0.12.20240808"
 # Tests
 tox = "^4.17.1"
 # pre-commit

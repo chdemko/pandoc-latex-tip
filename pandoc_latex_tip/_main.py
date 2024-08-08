@@ -275,20 +275,20 @@ def get_core_icons() -> list[dict[str, str]]:
     return [
         {
             "collection": "fontawesome",
-            "css": "fontawesome.css",
-            "ttf": "fa-solid-900.ttf",
+            "CSS": "fontawesome.css",
+            "TTF": "fa-solid-900.ttf",
             "prefix": "fa-",
         },
         {
             "collection": "fontawesome",
-            "css": "fontawesome.css",
-            "ttf": "fa-regular-400.ttf",
+            "CSS": "fontawesome.css",
+            "TTF": "fa-regular-400.ttf",
             "prefix": "far-",
         },
         {
             "collection": "fontawesome",
-            "css": "brands.css",
-            "ttf": "fa-brands-400.ttf",
+            "CSS": "brands.css",
+            "TTF": "fa-brands-400.ttf",
             "prefix": "fab-",
         },
     ]
@@ -311,14 +311,14 @@ def load_icons() -> dict[str, IconFont]:
                 "share",
                 "pandoc_latex_tip",
                 definition["collection"],
-                definition["css"],
+                definition["CSS"],
             ),
             ttf_file=pathlib.Path(
                 sys.prefix,
                 "share",
                 "pandoc_latex_tip",
                 definition["collection"],
-                definition["ttf"],
+                definition["TTF"],
             ),
             prefix=definition["prefix"],
         )
@@ -332,12 +332,12 @@ def load_icons() -> dict[str, IconFont]:
                 if "collection" not in definition:
                     break
                 collection = definition["collection"]
-                if "css" not in definition:
+                if "CSS" not in definition:
                     break
-                css_file = definition["css"]
-                if "ttf" not in definition:
+                css_file = definition["CSS"]
+                if "TTF" not in definition:
                     break
-                ttf_file = definition["ttf"]
+                ttf_file = definition["TTF"]
                 if "prefix" not in definition:
                     break
                 prefix = definition["prefix"]
