@@ -246,5 +246,5 @@ The original ``mdi-account`` unknown icon is now recognized by
     2 extra bytes in post.stringData array
     [WARNING] Could not fetch resource unexisting.png: replacing image with description
 
-The ``2 extra bytes in post.stringData array`` is due to an error in the
-``TTF`` file from *materialdesign*.
+The ``2 extra bytes in post.stringData array`` message is due to an error
+in the ``TTF`` file from *materialdesign*.
