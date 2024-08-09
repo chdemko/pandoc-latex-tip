@@ -96,7 +96,7 @@ Run ``pandoc-latex-tip`` for a complete explanation.
 
 .. prompt:: bash
 
-    $ pandoc-latex-tip
+    pandoc-latex-tip
 
 .. code-block:: console
 
