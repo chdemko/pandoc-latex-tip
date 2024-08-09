@@ -12,6 +12,7 @@ pandoc-latex-tip:
     icons:
     - fa-user
     - far-user
+    - mdi-account
     - name: fab-facebook
       color: lightseagreen
       link: '#title'

@@ -86,14 +86,6 @@ The following LaTeX packages are required:
 -  ``etoolbox``
 -  ``changepage``
 
-Example
--------
-
-Demonstration: Using
-`pandoc-latex-tip-sample.txt <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-sample.txt>`__
-as input gives output file in
-`pdf <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-sample.pdf>`__.
-
 Extensions
 ----------
 
@@ -137,5 +129,56 @@ Run ``pandoc-latex-tip`` for a complete explanation.
      icons
       icons add           Add a set of icons from a collection
       icons delete        Delete a set of icons
+
+Example
+-------
+
+Demonstration: Using
+`pandoc-latex-tip-sample.txt <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-sample.txt>`__
+as input gives output file in
+`pdf <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-sample.pdf>`__.
+
+..  code-block:: shell
+
+    $ pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
+    >    -o pandoc-latex-tip-sample.pdf
+    [WARNING] pandoc-latex-tip: mdi-account is not a correct icon name
+    [WARNING] Could not fetch resource unexisting.png: replacing image with description
+    $ wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
+    > css/materialdesignicons.css
+    $ wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
+    > fonts/materialdesignicons-webfont.ttf
+    $ pandoc-latex-tip collections add materialdesign materialdesignicons.css
+    Add file 'materialdesignicons.css' to collection 'materialdesign'
+    $ pandoc-latex-tip collections add materialdesign materialdesignicons-webfont.ttf
+    Add file 'materialdesignicons-webfont.ttf' to collection 'materialdesign'
+    $ pandoc-latex-tip icons add \
+    >     --CSS materialdesignicons.css \
+    >     --TTF materialdesignicons-webfont.ttf \
+    >     --prefix mdi- \
+    >     materialdesign
+    $ pandoc-latex-tip icons
+    - collection: fontawesome
+      CSS: fontawesome.css
+      TTF: fa-solid-900.ttf
+      prefix: fa-
+    - collection: fontawesome
+      CSS: fontawesome.css
+      TTF: fa-regular-400.ttf
+      prefix: far-
+    - collection: fontawesome
+      CSS: brands.css
+      TTF: fa-brands-400.ttf
+      prefix: fab-
+    - collection: materialdesign
+      CSS: materialdesignicons.css
+      TTF: materialdesignicons-webfont.ttf
+      prefix: mdi-
+    $ pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
+    >     -o pandoc-latex-tip-sample.pdf
+    2 extra bytes in post.stringData array
+    [WARNING] Could not fetch resource unexisting.png: replacing image with description
+
+
 
 

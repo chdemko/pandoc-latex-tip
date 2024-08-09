@@ -86,7 +86,7 @@ $ poetry install
 $ poetry shell
 $ poetry run python download.py
 $ poetry blixbuild
-$ poetry run pip install
+$ poetry run pip install \
 >   dist/pandoc_latex_tip-`poetry version -s`-py3-none-any.whl
 $ poetry shell
 ~~~
