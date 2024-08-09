@@ -54,8 +54,9 @@ using instructions given [here](https://pipx.pypa.io/stable/).
 
 Make sure you have required packages for
 [Pillow installation](https://pillow.readthedocs.io/en/stable/installation/index.html).
-On linux you have to install some extra libraries **before** *pandoc-latex-tip*.
-On a Debian-based system (including Ubuntu), you can install it as root using
+On linux you have to install some extra libraries
+**before** *pandoc-latex-tip*.  On a Debian-based system (including Ubuntu),
+you can install it as root using
 
 ~~~shell
 $ sudo apt-get install python3-pil
