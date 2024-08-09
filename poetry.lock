@@ -2182,6 +2182,22 @@ lint = ["flake8 (>=6.0)", "importlib-metadata (>=6.0)", "mypy (==1.10.1)", "pyte
 test = ["cython (>=3.0)", "defusedxml (>=0.7.1)", "pytest (>=8.0)", "setuptools (>=70.0)", "typing_extensions (>=4.9)"]
 
 [[package]]
+name = "sphinx-prompt"
+version = "1.8.0"
+description = "Sphinx directive to add unselectable prompt"
+optional = false
+python-versions = ">=3.9,<4.0"
+files = [
+    {file = "sphinx_prompt-1.8.0-py3-none-any.whl", hash = "sha256:369ecc633f0711886f9b3a078c83264245be1adf46abeeb9b88b5519e4b51007"},
+    {file = "sphinx_prompt-1.8.0.tar.gz", hash = "sha256:47482f86fcec29662fdfd23e7c04ef03582714195d01f5d565403320084372ed"},
+]
+
+[package.dependencies]
+docutils = "*"
+pygments = "*"
+Sphinx = ">=7.0.0,<8.0.0"
+
+[[package]]
 name = "sphinx-rtd-theme"
 version = "2.0.0"
 description = "Read the Docs theme for Sphinx"
@@ -2550,4 +2566,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.13"
-content-hash = "be39cafcaa7137cce73033f18df78d601b11862283c3786130bc415dcea770c1"
+content-hash = "3b4446e45d7e5c7d07a4ed76cc9abd6392a49d7b4e20c2490f3143faa64fef27"

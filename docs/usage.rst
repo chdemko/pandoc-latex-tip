@@ -3,9 +3,9 @@ Usage
 
 To apply the filter, use the following option with pandoc:
 
-.. code-block:: shell
+.. prompt:: bash
 
-   $ pandoc --filter pandoc-latex-tip
+    pandoc --filter pandoc-latex-tip
 
 Explanation
 -----------
@@ -94,9 +94,12 @@ Extensions
 
 Run ``pandoc-latex-tip`` for a complete explanation.
 
-..  code-block:: shell
+.. prompt:: bash
 
     $ pandoc-latex-tip
+
+.. code-block:: console
+
     pandoc-latex-tip filter (version number)
 
     Usage:
@@ -138,13 +141,22 @@ Demonstration: Using
 as input gives output file in
 `pdf <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-sample.pdf>`__.
 
-..  code-block:: shell
+.. prompt:: bash
 
-    $ pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
-    >    -o pandoc-latex-tip-sample.pdf
+    pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
+        -o pandoc-latex-tip-sample.pdf
+
+.. code-block:: console
+
     [WARNING] pandoc-latex-tip: mdi-account is not a correct icon name
     [WARNING] Could not fetch resource unexisting.png: replacing image with description
-    $ pandoc-latex-tip icons
+
+.. prompt:: bash
+
+    pandoc-latex-tip icons
+
+.. code-block:: console
+
     - collection: fontawesome
       CSS: fontawesome.css
       TTF: fa-solid-900.ttf
@@ -157,20 +169,41 @@ as input gives output file in
       CSS: brands.css
       TTF: fa-brands-400.ttf
       prefix: fab-
-    $ wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
-    > css/materialdesignicons.css
-    $ wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
-    > fonts/materialdesignicons-webfont.ttf
-    $ pandoc-latex-tip collections add materialdesign materialdesignicons.css
+
+.. prompt:: bash
+
+    wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
+    css/materialdesignicons.css
+    wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
+    fonts/materialdesignicons-webfont.ttf
+    pandoc-latex-tip collections add materialdesign materialdesignicons.css
+
+.. code-block:: console
+
     Add file 'materialdesignicons.css' to collection 'materialdesign'
-    $ pandoc-latex-tip collections add materialdesign materialdesignicons-webfont.ttf
+
+.. prompt:: bash
+
+    pandoc-latex-tip collections add materialdesign materialdesignicons-webfont.ttf
+
+.. code-block:: console
+
     Add file 'materialdesignicons-webfont.ttf' to collection 'materialdesign'
-    $ pandoc-latex-tip icons add \
-    >     --CSS materialdesignicons.css \
-    >     --TTF materialdesignicons-webfont.ttf \
-    >     --prefix mdi- \
-    >     materialdesign
-    $ pandoc-latex-tip icons
+
+.. prompt:: bash
+
+    pandoc-latex-tip icons add \
+        --CSS materialdesignicons.css \
+        --TTF materialdesignicons-webfont.ttf \
+        --prefix mdi- \
+        materialdesign
+
+.. prompt:: bash
+
+    pandoc-latex-tip icons
+
+.. code-block:: console
+
     - collection: fontawesome
       CSS: fontawesome.css
       TTF: fa-solid-900.ttf
@@ -187,11 +220,13 @@ as input gives output file in
       CSS: materialdesignicons.css
       TTF: materialdesignicons-webfont.ttf
       prefix: mdi-
-    $ pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
-    >     -o pandoc-latex-tip-sample.pdf
+
+.. prompt:: bash
+
+    pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
+        -o pandoc-latex-tip-sample.pdf
+
+.. code-block:: console
+
     2 extra bytes in post.stringData array
     [WARNING] Could not fetch resource unexisting.png: replacing image with description
-
-
-
-
