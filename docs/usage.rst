@@ -185,7 +185,7 @@ containing ``CSS`` and ``TTF`` files:
 
 .. prompt:: bash
 
-    pandoc-latex-tip collections add materialdesign materialdesignicons.css
+        pandoc-latex-tip collections add materialdesign materialdesignicons.css
 
 .. code-block:: console
 
@@ -245,3 +245,6 @@ The original ``mdi-account`` unknown icon is now recognized by
 
     2 extra bytes in post.stringData array
     [WARNING] Could not fetch resource unexisting.png: replacing image with description
+
+The ``2 extra bytes in post.stringData array`` is due to an error in the
+``TTF`` file from *materialdesign*.
