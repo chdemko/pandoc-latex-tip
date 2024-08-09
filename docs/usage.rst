@@ -144,6 +144,19 @@ as input gives output file in
     >    -o pandoc-latex-tip-sample.pdf
     [WARNING] pandoc-latex-tip: mdi-account is not a correct icon name
     [WARNING] Could not fetch resource unexisting.png: replacing image with description
+    $ pandoc-latex-tip icons
+    - collection: fontawesome
+      CSS: fontawesome.css
+      TTF: fa-solid-900.ttf
+      prefix: fa-
+    - collection: fontawesome
+      CSS: fontawesome.css
+      TTF: fa-regular-400.ttf
+      prefix: far-
+    - collection: fontawesome
+      CSS: brands.css
+      TTF: fa-brands-400.ttf
+      prefix: fab-
     $ wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
     > css/materialdesignicons.css
     $ wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
