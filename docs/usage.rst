@@ -146,10 +146,16 @@ as input gives output file in
     pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
         -o pandoc-latex-tip-sample.pdf
 
+This command produces a PDF file with a warning since the icon named
+``mdi-account`` is not recognized.
+
 .. code-block:: console
 
     [WARNING] pandoc-latex-tip: mdi-account is not a correct icon name
     [WARNING] Could not fetch resource unexisting.png: replacing image with description
+
+It's possible to extend ``pandoc-latex-tip`` by defining a new collection
+containing ``CSS`` and ``TTF`` files:
 
 .. prompt:: bash
 
@@ -176,6 +182,9 @@ as input gives output file in
     css/materialdesignicons.css
     wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
     fonts/materialdesignicons-webfont.ttf
+
+.. prompt:: bash
+
     pandoc-latex-tip collections add materialdesign materialdesignicons.css
 
 .. code-block:: console
@@ -189,6 +198,9 @@ as input gives output file in
 .. code-block:: console
 
     Add file 'materialdesignicons-webfont.ttf' to collection 'materialdesign'
+
+And by creating a new set of icons using a ``CSS`` file and a ``TTF`` file
+from a collection and by setting a prefix:
 
 .. prompt:: bash
 
@@ -220,6 +232,9 @@ as input gives output file in
       CSS: materialdesignicons.css
       TTF: materialdesignicons-webfont.ttf
       prefix: mdi-
+
+The original ``mdi-account`` unknown icon is now recognized by
+``pandoc-latex-tip``:
 
 .. prompt:: bash
 
