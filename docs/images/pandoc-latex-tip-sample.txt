@@ -3,43 +3,38 @@ documentclass: book
 pandoc-latex-tip:
   - classes: [tip, bug, warning]
     icons:
-    - bug
-    - name: warning
+    - fa-bug
+    - name: fa-warning
       color: firebrick
       link: 'http://google.fr'
     position: outer
   - classes: [tip, discussion]
     icons:
-    - name: comments
+    - fa-user
+    - far-user
+    - mdi-account
+    - name: fab-facebook
       color: lightseagreen
       link: '#title'
-    size: 36
+    size: 24
     position: right
   - classes: [tip, listing]
     icons:
-    - name: file-text
+    - name: fa-file-text
       color: darksalmon
-    - name: balance-scale
+    - name: fa-balance-scale
       color: orange
-      version: 5.x
-      variant: solid
     size: 36
     position: inner
   - classes: [barcode]
     icons:
-    - name: barcode
+    - name: fa-barcode
       color: aquamarine
-    - name: barcode
-      collection: glyphicons
+    - name: fa-barcode
       color: lightcoral
-      version: 3.3
-      variant: regular
-    - name: barcode
-      collection: materialdesign
+    - name: fa-barcode
       color: gold
-      version: 2.x
-      variant: regular
-    size: 18
+    size: 24
     position: left
   - classes: [tip]
 ---
@@ -93,7 +88,7 @@ in culpa qui officia deserunt mollit anim id est laborum.
 
 
 ::: {
-  latex-tip-icon=address-book
+  latex-tip-icon=fa-address-book
   latex-tip-size=24
   latex-tip-position=right
   latex-tip-color=lightskyblue
@@ -133,7 +128,7 @@ fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
 sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 
-`Lorem`{.tip .discussion} ipsum dolor sit amet, consectetur adipiscing elit,
+[Lorem]{.tip .discussion} ipsum dolor sit amet, consectetur adipiscing elit,
 sed do eiusmod tempor
 incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
 quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
@@ -176,7 +171,7 @@ sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 
 ::: {
-  latex-tip-icon=address-book
+  latex-tip-icon=fa-address-book
   latex-tip-size=24
   latex-tip-position=right
   latex-tip-color=lightskyblue
@@ -236,7 +231,7 @@ in culpa qui officia deserunt mollit anim id est laborum.
 
 
 ::: {
-  latex-tip-icon=address-book
+  latex-tip-icon=fa-address-book
   latex-tip-size=24
   latex-tip-position=right
   latex-tip-color=lightskyblue} :::
@@ -247,3 +242,84 @@ Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
 eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
 sunt in culpa qui officia deserunt mollit anim id est laborum.
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+::: barcode :::
+| The limerick packs laughs anatomical
+| In space that is quite economical.
+|    But the good ones I've seen
+|    So seldom are clean
+| And the clean ones so seldom are comical
+:::::::::::
+
+::: barcode :::
+---------------
+:::::::::::
+
+::: barcode :::
+~~~
+Raw block
+~~~
+:::::::::::
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+::: barcode :::
+~~~python
+def fact(x):
+    if x == 0:
+        return 1
+    else
+        return x * fact(x - 1)
+~~~
+:::::::::::
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+::: barcode :::
+![Figure](unexisting.png "Voyage to the moon")
+
+Test figure
+:::::::::::
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+::: barcode :::
+* a
+* b
+:::::::::::
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,
+sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+::: barcode :::
+1. a
+2. b
+:::::::::::
+
+::: barcode :::
+:::::::::::
+
+::: barcode :::
+Term
+
+:   Definition
+:::::::::::
