@@ -124,9 +124,10 @@ class CollectionsAddCommand(Command):
         dest_path = pathlib.Path(dir_path, file_path.parts[-1])
         shutil.copy(file_path, dest_path)
 
+        self.add_style("warning", fg="yellow")
         self.line(
             f"Add file <comment>'{self.argument('file')}'</> to "
-            f"collection <comment>'{self.argument('name')}'</>"
+            f"collection <warning>'{self.argument('name')}'</>"
         )
         return 0
 
@@ -179,7 +180,8 @@ class CollectionsDeleteCommand(Command):
             raise ValueError(f"Collection '{name}' does not exist")
 
         shutil.rmtree(dir_path)
-        self.line(f"Delete collection <comment>'{name}'</>")
+        self.add_style("warning", fg="yellow")
+        self.line(f"Delete collection <warning>'{name}'</>")
         return 0
 
 
@@ -202,11 +204,12 @@ class CollectionsListCommand(Command):
         """
         dir_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip")
         self.line("<b>Collections</>")
+        self.add_style("warning", fg="yellow")
         for folder in dir_path.iterdir():
             if folder.parts[-1] == "fontawesome":
                 self.line("<error>fontawesome</>")
             elif folder.is_dir():
-                self.line(f"<comment>{folder.parts[-1]}</>")
+                self.line(f"<warning>{folder.parts[-1]}</>")
         return 0
 
 
@@ -247,20 +250,28 @@ class CollectionsInfoCommand(Command):
         if not dir_path.exists():
             raise ValueError(f"Collection '{name}' does not exist")
 
-        self.line("<b>Name</>")
-        self.line(f"<comment>{name}</>")
+        self.add_style("warning", fg="yellow")
+        self.line("<b>Information</>")
+        if name == "fontawesome":
+            self.line(f"<info>Name</>: <error>{name}</>")
+        else:
+            self.line(f"<info>Name</>: <warning>{name}</>")
+        if name == "fontawesome":
+            self.line("<info>Type</>: <error>core</>")
+        else:
+            self.line("<info>Type</>: <comment>additional</>")
 
         self.line("")
         self.line("<b>CSS files</>")
         for filename in dir_path.iterdir():
             if filename.suffix == ".css":
-                self.line(f"<comment>{filename.parts[-1]}</>")
+                self.line(f"- <comment>{filename.parts[-1]}</>")
 
         self.line("")
         self.line("<b>TTF files</>")
         for filename in dir_path.iterdir():
             if filename.suffix == ".ttf":
-                self.line(f"<comment>{filename.parts[-1]}</>")
+                self.line(f"- <comment>{filename.parts[-1]}</>")
 
         return 0
 
@@ -427,8 +438,15 @@ class IconsListCommand(Command):
         if config_path.exists():
             with config_path.open(encoding="utf-8") as stream:
                 icons.extend(yaml.safe_load(stream))
-        self.line(yaml.dump(icons, sort_keys=False))
-
+        self.add_style("warning", fg="yellow")
+        for element in icons:
+            if element["collection"] == "fontawesome":
+                self.line("- <info>collection</>: <error>fontawesome</>")
+            else:
+                self.line(f"- <info>collection</>: <warning>{element['collection']}</>")
+            self.line(f"  <info>CSS</>: <comment>{element['CSS']}</>")
+            self.line(f"  <info>TTF</>: <comment>{element['TTF']}</>")
+            self.line(f"  <info>prefix</>: <comment>{element['prefix']}</>")
         return 0
 
 
@@ -483,7 +501,6 @@ def app() -> None:
         version=version("pandoc-latex-tip"),
     )
     application.set_display_name("pandoc-latex-tip filter")
-    application.add(InfoCommand())
     application.add(CollectionsAddCommand())
     application.add(CollectionsDeleteCommand())
     application.add(CollectionsListCommand())
