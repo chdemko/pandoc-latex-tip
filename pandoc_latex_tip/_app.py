@@ -111,6 +111,7 @@ class CollectionsAddCommand(Command):
         ValueError
             If an error occurs.
         """
+        self.add_style("warning", fg="yellow")
         if self.argument("name") == "fontawesome":
             raise ValueError("You cannot modify core collection")
         dir_path = pathlib.Path(
@@ -124,7 +125,6 @@ class CollectionsAddCommand(Command):
         dest_path = pathlib.Path(dir_path, file_path.parts[-1])
         shutil.copy(file_path, dest_path)
 
-        self.add_style("warning", fg="yellow")
         self.line(
             f"Add file <comment>'{self.argument('file')}'</> to "
             f"collection <warning>'{self.argument('name')}'</>"
@@ -159,6 +159,7 @@ class CollectionsDeleteCommand(Command):
         ValueError
             If an error occurs.
         """
+        self.add_style("warning", fg="yellow")
         name = self.argument("name")
         if name == "fontawesome":
             raise ValueError("You cannot modify core collection")
@@ -180,7 +181,6 @@ class CollectionsDeleteCommand(Command):
             raise ValueError(f"Collection '{name}' does not exist")
 
         shutil.rmtree(dir_path)
-        self.add_style("warning", fg="yellow")
         self.line(f"Delete collection <warning>'{name}'</>")
         return 0
 
@@ -202,9 +202,9 @@ class CollectionsListCommand(Command):
         int
             status code
         """
+        self.add_style("warning", fg="yellow")
         dir_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip")
         self.line("<b>Collections</>")
-        self.add_style("warning", fg="yellow")
         for folder in dir_path.iterdir():
             if folder.parts[-1] == "fontawesome":
                 self.line("<error>fontawesome</>")
@@ -240,6 +240,7 @@ class CollectionsInfoCommand(Command):
         ValueError
             If an error occurs.
         """
+        self.add_style("warning", fg="yellow")
         name = self.argument("name")
         dir_path = pathlib.Path(
             sys.prefix,
@@ -250,7 +251,6 @@ class CollectionsInfoCommand(Command):
         if not dir_path.exists():
             raise ValueError(f"Collection '{name}' does not exist")
 
-        self.add_style("warning", fg="yellow")
         self.line("<b>Information</>")
         if name == "fontawesome":
             self.line(f"<info>Name</>: <error>{name}</>")
