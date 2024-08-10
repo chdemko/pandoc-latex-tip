@@ -11,6 +11,8 @@ from cleo.application import Application
 from cleo.commands.command import Command
 from cleo.helpers import argument, option
 
+import platformdirs
+
 import yaml
 
 
@@ -40,6 +42,46 @@ prefix_opt = option(
     description="Icon prefix used to replace the common prefix found in the css file",
     flag=False,
 )
+
+
+class InfoCommand(Command):
+    """
+    InfoCommand.
+    """
+
+    name = "info"
+    description = "Give information about pandoc-latex-tip"
+
+    def handle(self) -> int:
+        """
+        Handle info command.
+
+        Returns
+        -------
+        int
+            status code
+        """
+        self.line("<b>Installation</>")
+        self.line(
+            f"<info>Version</>:        <comment>" f"{version('pandoc-latex-tip')}"
+        )
+        self.line("")
+        self.line("<b>Environment</>")
+        self.line(
+            f"<info>Collection dir</>: <comment>"
+            f"{pathlib.Path(sys.prefix, 'share', 'pandoc_latex_tip')}</>"
+        )
+        self.line(
+            f"<info>Config file</>:    <comment>"
+            f"{pathlib.Path(sys.prefix, 'share', 'pandoc_latex_tip', 'config.yml')}</>"
+        )
+        self.line("")
+        self.line("<b>Cache</>")
+        self.line(
+            f"<info>Cache dir</>:      <comment>"
+            f"{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}</>"
+        )
+        return 0
 
 
 class CollectionsAddCommand(Command):
@@ -77,12 +119,14 @@ class CollectionsAddCommand(Command):
         if not dir_path.exists():
             dir_path.mkdir(parents=True)
         file_path = pathlib.Path(self.argument("file"))
+        if file_path.suffix not in (".css", ".ttf"):
+            raise ValueError("The added file must be a CSS or TTF file")
         dest_path = pathlib.Path(dir_path, file_path.parts[-1])
         shutil.copy(file_path, dest_path)
 
         self.line(
-            f"Add file '{self.argument('file')}' to "
-            f"collection '{self.argument('name')}'"
+            f"Add file <comment>'{self.argument('file')}'</> to "
+            f"collection <comment>'{self.argument('name')}'</>"
         )
         return 0
 
@@ -135,7 +179,7 @@ class CollectionsDeleteCommand(Command):
             raise ValueError(f"Collection '{name}' does not exist")
 
         shutil.rmtree(dir_path)
-        self.line(f"Delete collection '{name}'")
+        self.line(f"Delete collection <comment>'{name}'</>")
         return 0
 
 
@@ -157,11 +201,12 @@ class CollectionsListCommand(Command):
             status code
         """
         dir_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip")
+        self.line("<b>Collections</>")
         for folder in dir_path.iterdir():
             if folder.parts[-1] == "fontawesome":
-                self.line("fontawesome *")
+                self.line("<error>fontawesome</>")
             elif folder.is_dir():
-                self.line(folder.parts[-1])
+                self.line(f"<comment>{folder.parts[-1]}</>")
         return 0
 
 
@@ -202,8 +247,21 @@ class CollectionsInfoCommand(Command):
         if not dir_path.exists():
             raise ValueError(f"Collection '{name}' does not exist")
 
+        self.line("<b>Name</>")
+        self.line(f"<comment>{name}</>")
+
+        self.line("")
+        self.line("<b>CSS files</>")
         for filename in dir_path.iterdir():
-            self.line(filename.parts[-1])
+            if filename.suffix == ".css":
+                self.line(f"<comment>{filename.parts[-1]}</>")
+
+        self.line("")
+        self.line("<b>TTF files</>")
+        for filename in dir_path.iterdir():
+            if filename.suffix == ".ttf":
+                self.line(f"<comment>{filename.parts[-1]}</>")
+
         return 0
 
 
@@ -425,6 +483,7 @@ def app() -> None:
         version=version("pandoc-latex-tip"),
     )
     application.set_display_name("pandoc-latex-tip filter")
+    application.add(InfoCommand())
     application.add(CollectionsAddCommand())
     application.add(CollectionsDeleteCommand())
     application.add(CollectionsListCommand())

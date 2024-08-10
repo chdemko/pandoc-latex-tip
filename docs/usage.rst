@@ -121,6 +121,7 @@ Run ``pandoc-latex-tip`` for a complete explanation.
       collections         List the collections
       help                Displays help for a command.
       icons               List the set of icons
+      info                Give information about pandoc-latex-tip
       latex               Run pandoc filter for LaTeX document
       list                Lists commands.
 
