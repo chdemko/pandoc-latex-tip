@@ -58,7 +58,7 @@ class IconFont:
     """
     Base class that represents web icon font.
 
-    This class has been gratly inspired by the code found
+    This class has been greatly inspired by the code found
     in https://github.com/Pythonity/icon-font-to-png
 
     Arguments
