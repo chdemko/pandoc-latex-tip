@@ -38,14 +38,14 @@ pre-installed on linux and Mac OS X, and which is easily installed
 
 Install *pandoc-latex-tip* using the bash command
 
-~~~shell
-$ pipx install pandoc-latex-tip
+~~~{prompt} bash
+pipx install pandoc-latex-tip
 ~~~
 
 To upgrade to the most recent release, use
 
-~~~shell
-$ pipx upgrade pandoc-latex-tip
+~~~{prompt} bash
+pipx upgrade pandoc-latex-tip
 ~~~
 
 `pipx` is a script to install and run python applications in isolated
@@ -58,8 +58,8 @@ On linux you have to install some extra libraries
 **before** *pandoc-latex-tip*.  On a Debian-based system (including Ubuntu),
 you can install it as root using
 
-~~~shell
-$ sudo apt-get install python3-pil
+~~~{prompt} bash
+sudo apt-get install python3-pil
 ~~~
 
 [python]: https://www.python.org
@@ -83,15 +83,15 @@ Instructions
 
 Install `poetry`, then run
 
-~~~shell
-$ poetry self add poeblix
-$ poetry install
-$ poetry shell
-$ poetry run python download.py
-$ poetry blixbuild
-$ poetry run pip install \
->   dist/pandoc_latex_tip-`poetry version -s`-py3-none-any.whl
-$ poetry shell
+~~~{prompt} bash
+poetry self add poeblix
+poetry install
+poetry shell
+poetry run python download.py
+poetry blixbuild
+poetry run pip install \
+   dist/pandoc_latex_tip-`poetry version -s`-py3-none-any.whl
+poetry shell
 ~~~
 
 And submit your changes. When you commit, hooks will be executed
