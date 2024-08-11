@@ -111,7 +111,7 @@ class CollectionsAddCommand(Command):
         ValueError
             If an error occurs.
         """
-        self.add_style("warning", fg="yellow")
+        self.add_style("warning", fg="yellow", options=["bold"])
         if self.argument("name") == "fontawesome":
             raise ValueError("You cannot modify core collection")
         dir_path = pathlib.Path(
@@ -159,7 +159,7 @@ class CollectionsDeleteCommand(Command):
         ValueError
             If an error occurs.
         """
-        self.add_style("warning", fg="yellow")
+        self.add_style("warning", fg="yellow", options=["bold"])
         name = self.argument("name")
         if name == "fontawesome":
             raise ValueError("You cannot modify core collection")
@@ -202,7 +202,7 @@ class CollectionsListCommand(Command):
         int
             status code
         """
-        self.add_style("warning", fg="yellow")
+        self.add_style("warning", fg="yellow", options=["bold"])
         dir_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip")
         self.line("<b>Collections</>")
         for folder in dir_path.iterdir():
@@ -240,7 +240,7 @@ class CollectionsInfoCommand(Command):
         ValueError
             If an error occurs.
         """
-        self.add_style("warning", fg="yellow")
+        self.add_style("warning", fg="yellow", options=["bold"])
         name = self.argument("name")
         dir_path = pathlib.Path(
             sys.prefix,
@@ -254,12 +254,10 @@ class CollectionsInfoCommand(Command):
         self.line("<b>Information</>")
         if name == "fontawesome":
             self.line(f"<info>Name</>: <error>{name}</>")
-        else:
-            self.line(f"<info>Name</>: <warning>{name}</>")
-        if name == "fontawesome":
             self.line("<info>Type</>: <error>core</>")
         else:
-            self.line("<info>Type</>: <comment>additional</>")
+            self.line(f"<info>Name</>: <warning>{name}</>")
+            self.line("<info>Type</>: <warning>additional</>")
 
         self.line("")
         self.line("<b>CSS files</>")
@@ -428,6 +426,7 @@ class IconsListCommand(Command):
         int
             status code
         """
+        self.add_style("warning", fg="yellow", options=["bold"])
         icons = get_core_icons()
         config_path = pathlib.Path(
             sys.prefix,
@@ -438,7 +437,6 @@ class IconsListCommand(Command):
         if config_path.exists():
             with config_path.open(encoding="utf-8") as stream:
                 icons.extend(yaml.safe_load(stream))
-        self.add_style("warning", fg="yellow")
         for element in icons:
             if element["collection"] == "fontawesome":
                 self.line("- <info>collection</>: <error>fontawesome</>")
@@ -501,6 +499,7 @@ def app() -> None:
         version=version("pandoc-latex-tip"),
     )
     application.set_display_name("pandoc-latex-tip filter")
+    application.add(InfoCommand())
     application.add(CollectionsAddCommand())
     application.add(CollectionsDeleteCommand())
     application.add(CollectionsListCommand())
