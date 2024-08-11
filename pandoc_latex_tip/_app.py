@@ -11,6 +11,8 @@ from cleo.application import Application
 from cleo.commands.command import Command
 from cleo.helpers import argument, option
 
+import platformdirs
+
 import yaml
 
 
@@ -42,6 +44,46 @@ prefix_opt = option(
 )
 
 
+class InfoCommand(Command):
+    """
+    InfoCommand.
+    """
+
+    name = "info"
+    description = "Give information about pandoc-latex-tip"
+
+    def handle(self) -> int:
+        """
+        Handle info command.
+
+        Returns
+        -------
+        int
+            status code
+        """
+        self.line("<b>Installation</>")
+        self.line(
+            f"<info>Version</>:        <comment>" f"{version('pandoc-latex-tip')}"
+        )
+        self.line("")
+        self.line("<b>Environment</>")
+        self.line(
+            f"<info>Collection dir</>: <comment>"
+            f"{pathlib.Path(sys.prefix, 'share', 'pandoc_latex_tip')}</>"
+        )
+        self.line(
+            f"<info>Config file</>:    <comment>"
+            f"{pathlib.Path(sys.prefix, 'share', 'pandoc_latex_tip', 'config.yml')}</>"
+        )
+        self.line("")
+        self.line("<b>Cache</>")
+        self.line(
+            f"<info>Cache dir</>:      <comment>"
+            f"{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}</>"
+        )
+        return 0
+
+
 class CollectionsAddCommand(Command):
     """
     CollectionsAddCommand.
@@ -69,6 +111,7 @@ class CollectionsAddCommand(Command):
         ValueError
             If an error occurs.
         """
+        self.add_style("warning", fg="yellow", options=["bold"])
         if self.argument("name") == "fontawesome":
             raise ValueError("You cannot modify core collection")
         dir_path = pathlib.Path(
@@ -77,12 +120,14 @@ class CollectionsAddCommand(Command):
         if not dir_path.exists():
             dir_path.mkdir(parents=True)
         file_path = pathlib.Path(self.argument("file"))
+        if file_path.suffix not in (".css", ".ttf"):
+            raise ValueError("The added file must be a CSS or TTF file")
         dest_path = pathlib.Path(dir_path, file_path.parts[-1])
         shutil.copy(file_path, dest_path)
 
         self.line(
-            f"Add file '{self.argument('file')}' to "
-            f"collection '{self.argument('name')}'"
+            f"Add file <comment>'{self.argument('file')}'</> to "
+            f"collection <warning>'{self.argument('name')}'</>"
         )
         return 0
 
@@ -114,6 +159,7 @@ class CollectionsDeleteCommand(Command):
         ValueError
             If an error occurs.
         """
+        self.add_style("warning", fg="yellow", options=["bold"])
         name = self.argument("name")
         if name == "fontawesome":
             raise ValueError("You cannot modify core collection")
@@ -135,7 +181,7 @@ class CollectionsDeleteCommand(Command):
             raise ValueError(f"Collection '{name}' does not exist")
 
         shutil.rmtree(dir_path)
-        self.line(f"Delete collection '{name}'")
+        self.line(f"Delete collection <warning>'{name}'</>")
         return 0
 
 
@@ -156,12 +202,14 @@ class CollectionsListCommand(Command):
         int
             status code
         """
+        self.add_style("warning", fg="yellow", options=["bold"])
         dir_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip")
+        self.line("<b>Collections</>")
         for folder in dir_path.iterdir():
             if folder.parts[-1] == "fontawesome":
-                self.line("fontawesome *")
+                self.line("<error>fontawesome</>")
             elif folder.is_dir():
-                self.line(folder.parts[-1])
+                self.line(f"<warning>{folder.parts[-1]}</>")
         return 0
 
 
@@ -192,6 +240,7 @@ class CollectionsInfoCommand(Command):
         ValueError
             If an error occurs.
         """
+        self.add_style("warning", fg="yellow", options=["bold"])
         name = self.argument("name")
         dir_path = pathlib.Path(
             sys.prefix,
@@ -202,8 +251,26 @@ class CollectionsInfoCommand(Command):
         if not dir_path.exists():
             raise ValueError(f"Collection '{name}' does not exist")
 
+        self.line("<b>Information</>")
+        if name == "fontawesome":
+            self.line(f"<info>Name</>: <error>{name}</>")
+            self.line("<info>Type</>: <error>core</>")
+        else:
+            self.line(f"<info>Name</>: <warning>{name}</>")
+            self.line("<info>Type</>: <warning>additional</>")
+
+        self.line("")
+        self.line("<b>CSS files</>")
         for filename in dir_path.iterdir():
-            self.line(filename.parts[-1])
+            if filename.suffix == ".css":
+                self.line(f"- <comment>{filename.parts[-1]}</>")
+
+        self.line("")
+        self.line("<b>TTF files</>")
+        for filename in dir_path.iterdir():
+            if filename.suffix == ".ttf":
+                self.line(f"- <comment>{filename.parts[-1]}</>")
+
         return 0
 
 
@@ -359,6 +426,7 @@ class IconsListCommand(Command):
         int
             status code
         """
+        self.add_style("warning", fg="yellow", options=["bold"])
         icons = get_core_icons()
         config_path = pathlib.Path(
             sys.prefix,
@@ -369,8 +437,14 @@ class IconsListCommand(Command):
         if config_path.exists():
             with config_path.open(encoding="utf-8") as stream:
                 icons.extend(yaml.safe_load(stream))
-        self.line(yaml.dump(icons, sort_keys=False))
-
+        for element in icons:
+            if element["collection"] == "fontawesome":
+                self.line("- <info>collection</>: <error>fontawesome</>")
+            else:
+                self.line(f"- <info>collection</>: <warning>{element['collection']}</>")
+            self.line(f"  <info>CSS</>: <comment>{element['CSS']}</>")
+            self.line(f"  <info>TTF</>: <comment>{element['TTF']}</>")
+            self.line(f"  <info>prefix</>: <comment>{element['prefix']}</>")
         return 0
 
 
@@ -425,6 +499,7 @@ def app() -> None:
         version=version("pandoc-latex-tip"),
     )
     application.set_display_name("pandoc-latex-tip filter")
+    application.add(InfoCommand())
     application.add(CollectionsAddCommand())
     application.add(CollectionsDeleteCommand())
     application.add(CollectionsListCommand())

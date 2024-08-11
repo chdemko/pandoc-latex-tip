@@ -3,9 +3,9 @@ Usage
 
 To apply the filter, use the following option with pandoc:
 
-.. code-block:: shell
+.. prompt:: bash
 
-   $ pandoc --filter pandoc-latex-tip
+    pandoc --filter pandoc-latex-tip
 
 Explanation
 -----------
@@ -94,9 +94,12 @@ Extensions
 
 Run ``pandoc-latex-tip`` for a complete explanation.
 
-..  code-block:: shell
+.. prompt:: bash
 
-    $ pandoc-latex-tip
+    pandoc-latex-tip
+
+.. code-block:: console
+
     pandoc-latex-tip filter (version number)
 
     Usage:
@@ -118,6 +121,7 @@ Run ``pandoc-latex-tip`` for a complete explanation.
       collections         List the collections
       help                Displays help for a command.
       icons               List the set of icons
+      info                Give information about pandoc-latex-tip
       latex               Run pandoc filter for LaTeX document
       list                Lists commands.
 
@@ -138,13 +142,28 @@ Demonstration: Using
 as input gives output file in
 `pdf <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-sample.pdf>`__.
 
-..  code-block:: shell
+.. prompt:: bash
 
-    $ pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
-    >    -o pandoc-latex-tip-sample.pdf
+    pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
+        -o pandoc-latex-tip-sample.pdf
+
+This command produces a PDF file with a warning since the icon named
+``mdi-account`` is not recognized.
+
+.. code-block:: console
+
     [WARNING] pandoc-latex-tip: mdi-account is not a correct icon name
     [WARNING] Could not fetch resource unexisting.png: replacing image with description
-    $ pandoc-latex-tip icons
+
+It's possible to extend ``pandoc-latex-tip`` by defining a new collection
+containing ``CSS`` and ``TTF`` files:
+
+.. prompt:: bash
+
+    pandoc-latex-tip icons
+
+.. code-block:: console
+
     - collection: fontawesome
       CSS: fontawesome.css
       TTF: fa-solid-900.ttf
@@ -157,20 +176,47 @@ as input gives output file in
       CSS: brands.css
       TTF: fa-brands-400.ttf
       prefix: fab-
-    $ wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
-    > css/materialdesignicons.css
-    $ wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
-    > fonts/materialdesignicons-webfont.ttf
-    $ pandoc-latex-tip collections add materialdesign materialdesignicons.css
+
+.. prompt:: bash
+
+    wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
+    css/materialdesignicons.css
+    wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
+    fonts/materialdesignicons-webfont.ttf
+
+.. prompt:: bash
+
+        pandoc-latex-tip collections add materialdesign materialdesignicons.css
+
+.. code-block:: console
+
     Add file 'materialdesignicons.css' to collection 'materialdesign'
-    $ pandoc-latex-tip collections add materialdesign materialdesignicons-webfont.ttf
+
+.. prompt:: bash
+
+    pandoc-latex-tip collections add materialdesign materialdesignicons-webfont.ttf
+
+.. code-block:: console
+
     Add file 'materialdesignicons-webfont.ttf' to collection 'materialdesign'
-    $ pandoc-latex-tip icons add \
-    >     --CSS materialdesignicons.css \
-    >     --TTF materialdesignicons-webfont.ttf \
-    >     --prefix mdi- \
-    >     materialdesign
-    $ pandoc-latex-tip icons
+
+And by creating a new set of icons using a ``CSS`` file and a ``TTF`` file
+from a collection and by setting a prefix:
+
+.. prompt:: bash
+
+    pandoc-latex-tip icons add \
+        --CSS materialdesignicons.css \
+        --TTF materialdesignicons-webfont.ttf \
+        --prefix mdi- \
+        materialdesign
+
+.. prompt:: bash
+
+    pandoc-latex-tip icons
+
+.. code-block:: console
+
     - collection: fontawesome
       CSS: fontawesome.css
       TTF: fa-solid-900.ttf
@@ -187,11 +233,19 @@ as input gives output file in
       CSS: materialdesignicons.css
       TTF: materialdesignicons-webfont.ttf
       prefix: mdi-
-    $ pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
-    >     -o pandoc-latex-tip-sample.pdf
+
+The original ``mdi-account`` unknown icon is now recognized by
+``pandoc-latex-tip``:
+
+.. prompt:: bash
+
+    pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
+        -o pandoc-latex-tip-sample.pdf
+
+.. code-block:: console
+
     2 extra bytes in post.stringData array
     [WARNING] Could not fetch resource unexisting.png: replacing image with description
 
-
-
-
+The ``2 extra bytes in post.stringData array`` message is due to an error
+in the ``TTF`` file from *materialdesign*.
