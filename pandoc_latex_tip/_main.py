@@ -213,6 +213,7 @@ class IconFont:
             self.css_icons[icon],
             font=font,
             fill=color,
+            anchor="lt",
         )
 
         # Get bounding box
@@ -228,6 +229,7 @@ class IconFont:
             self.css_icons[icon],
             font=font,
             fill=255,
+            anchor="lt",
         )
 
         # Create a solid color image and apply the mask
