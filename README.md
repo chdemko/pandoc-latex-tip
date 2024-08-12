@@ -26,7 +26,9 @@ Installation
 
 ![Standard conversion](https://github.com/chdemko/pandoc-latex-tip/blob/develop/docs/images/pandoc-latex-tip-standard.png?raw=true)
 
-*pandoc-latex-tip* is a [pandoc] filter for adding icon tooltips in the margin
+*pandoc-latex-tip*, designed to used in conjuction with
+[*pandoc-latex-admonition*](https://github.com/chdemko/pandoc-latex-admonition)
+is a [pandoc] filter for adding icon tooltips in the margin
 using popular icon collections.
 
 [pandoc]: http://pandoc.org/
