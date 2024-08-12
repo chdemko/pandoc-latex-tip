@@ -26,7 +26,7 @@ Installation
 
 ![Standard conversion](https://github.com/chdemko/pandoc-latex-tip/blob/develop/docs/images/pandoc-latex-tip-standard.png?raw=true)
 
-*pandoc-latex-tip*, designed to used in conjuction with
+*pandoc-latex-tip*[^1][^2][^3][^4][^5][^6], designed to used in conjuction with
 [*pandoc-latex-admonition*](https://github.com/chdemko/pandoc-latex-admonition)
 is a [pandoc] filter for adding icon tooltips in the margin
 using popular icon collections.
@@ -102,13 +102,10 @@ poetry shell
 And submit your changes. When you commit, hooks will be executed
 to check your code.
 
-Notes
-=====
-
-* format icon by [Picol](https://www.iconfinder.com/icons/103509/document_text_icon)
-* license icon by [Icooon Mono](https://www.svgrepo.com/svg/479891/balance-1)
-* download icon by [zest](https://www.svgrepo.com/svg/509901/download)
-* status icon by [Just Icon](https://www.iconfinder.com/icons/2672768/app_battery_essential_object_status_ui_ux_icon)
-* code style icon by [Google Material Design icons](https://www.iconfinder.com/icons/352148/style_icon)
-* size icon by [Iconscout](https://www.svgrepo.com/svg/358408/weight)
+[^1]: format icon by [Picol](https://www.iconfinder.com/icons/103509/document_text_icon)
+[^2]: license icon by [Icooon Mono](https://www.svgrepo.com/svg/479891/balance-1)
+[^3]: download icon by [zest](https://www.svgrepo.com/svg/509901/download)
+[^4]: status icon by [Just Icon](https://www.iconfinder.com/icons/2672768/app_battery_essential_object_status_ui_ux_icon)
+[^5]: code style icon by [Google Material Design icons](https://www.iconfinder.com/icons/352148/style_icon)
+[^6]: size icon by [Iconscout](https://www.svgrepo.com/svg/358408/weight)
 
