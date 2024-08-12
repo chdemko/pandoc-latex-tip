@@ -86,8 +86,25 @@ The following LaTeX packages are required:
 -  ``etoolbox``
 -  ``changepage``
 
+Example
+-------
+
+Demonstration: Using
+`pandoc-latex-tip-standard.txt <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-standard.txt>`__
+as input gives output file in
+`pdf <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-standard.pdf>`__.
+
+.. prompt:: bash
+
+    pandoc --filter pandoc-latex-tip pandoc-latex-tip-standard.txt \
+        -o pandoc-latex-tip-standard.pdf
+
+
 Extensions
-----------
+==========
+
+Introduction
+------------
 
 ``pandoc-latex-tip`` can be extended by adding collections of
 ``CSS`` and ``TTF`` files.
