@@ -100,8 +100,8 @@ as input gives output file in
         -o pandoc-latex-tip-standard.pdf
 
 
-Extensions
-==========
+Extension
+=========
 
 Introduction
 ------------
