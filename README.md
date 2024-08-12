@@ -87,6 +87,7 @@ Install `poetry`, then run
 
 ~~~{prompt} bash
 poetry self add poeblix
+poetry self add "poetry-dynamic-versioning[plugin]"
 poetry install
 poetry shell
 poetry run python download.py
