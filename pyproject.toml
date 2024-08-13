@@ -28,7 +28,7 @@ classifiers = [
   # Natural language used
   "Natural Language :: English"
 ]
-description = "A pandoc filter for adding beamer block on specific div"
+description = "A pandoc filter for adding icons on specific elements"
 homepage = "https://github.com/chdemko/pandoc-latex-tip"
 keywords = ["pandoc", "filters", "latex", "tip", "Font-Awesome", "icon"]
 license = "BSD-3-Clause"
