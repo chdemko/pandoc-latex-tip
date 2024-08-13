@@ -24,7 +24,7 @@ Installation
 [![Source Rank](https://img.shields.io/librariesio/sourcerank/pypi/pandoc-latex-tip.svg?logo=libraries.io&logoColor=white)](https://libraries.io/pypi/pandoc-latex-tip)
 [![Docs](https://img.shields.io/readthedocs/pandoc-latex-tip.svg?logo=read-the-docs&logoColor=white)](http://pandoc-latex-tip.readthedocs.io/en/latest/)
 
-![Standard conversion](https://github.com/chdemko/pandoc-latex-tip/blob/develop/docs/images/pandoc-latex-tip-standard.png?raw=true)
+![Standard conversion](https://github.com/chdemko/pandoc-latex-tip/blob/develop/docs/images/help.png?raw=true)
 
 *pandoc-latex-tip*, designed to used in conjuction with
 [*pandoc-latex-admonition*](https://github.com/chdemko/pandoc-latex-admonition)
