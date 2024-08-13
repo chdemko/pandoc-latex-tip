@@ -1,0 +1,62 @@
+---
+pandoc-latex-tip:
+  - classes: [note]
+    icons: [fa-circle-info]
+    color: royalblue
+  - classes: [tip]
+    icons: [far-lightbulb]
+  - classes: [warning]
+    icons: [fa-triangle-exclamation]
+    color: darkorange
+  - classes: [caution]
+    icons: [fa-fire-flame-curved]
+    color: orangered
+  - classes: [important]
+    icons: [fa-circle-exclamation]
+    color: darkred
+---
+
+::: note
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam aliquet libero
+quis lectus elementum fermentum.
+
+Fusce aliquet augue sapien, non efficitur mi ornare sed. Morbi at dictum
+felis. Pellentesque tortor lacus, semper et neque vitae, egestas commodo
+nisl.
+:::
+
+::: tip
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam aliquet libero
+quis lectus elementum fermentum.
+
+Fusce aliquet augue sapien, non efficitur mi ornare sed. Morbi at dictum
+felis. Pellentesque tortor lacus, semper et neque vitae, egestas commodo
+nisl.
+:::
+
+::: warning
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam aliquet libero
+quis lectus elementum fermentum.
+
+Fusce aliquet augue sapien, non efficitur mi ornare sed. Morbi at dictum
+felis. Pellentesque tortor lacus, semper et neque vitae, egestas commodo
+nisl.
+:::
+
+::: caution
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam aliquet libero
+quis lectus elementum fermentum.
+
+Fusce aliquet augue sapien, non efficitur mi ornare sed. Morbi at dictum
+felis. Pellentesque tortor lacus, semper et neque vitae, egestas commodo
+nisl.
+:::
+
+::: important
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam aliquet libero
+quis lectus elementum fermentum.
+
+Fusce aliquet augue sapien, non efficitur mi ornare sed. Morbi at dictum
+felis. Pellentesque tortor lacus, semper et neque vitae, egestas commodo
+nisl.
+:::
