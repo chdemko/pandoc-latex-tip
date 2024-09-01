@@ -102,7 +102,7 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
-        hatch test
+        hatch test --cover
         hatch run pip install coveralls
         hatch run coveralls
 
