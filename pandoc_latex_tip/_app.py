@@ -15,8 +15,7 @@ import platformdirs
 
 import yaml
 
-
-from ._main import get_core_icons, main
+from ._main import get_core_icons, main  # noqa: TID252
 
 name_arg = argument(
     "name",
@@ -44,7 +43,7 @@ prefix_opt = option(
 )
 
 
-class InfoCommand(Command):
+class InfoCommand(Command):  # type: ignore[misc]
     """
     InfoCommand.
     """
@@ -84,15 +83,15 @@ class InfoCommand(Command):
         return 0
 
 
-class CollectionsAddCommand(Command):
+class CollectionsAddCommand(Command):  # type: ignore[misc]
     """
     CollectionsAddCommand.
     """
 
     name = "collections add"
     description = "Add a file to a collection"
-    arguments = [name_arg, file_arg]
-    help = (  # noqa: A003, VNE003
+    arguments = (name_arg, file_arg)
+    help = (
         "A collection is a space used to store all the CSS and TTF files "
         "related to one or more sets of icons."
     )
@@ -113,7 +112,8 @@ class CollectionsAddCommand(Command):
         """
         self.add_style("warning", fg="yellow", options=["bold"])
         if self.argument("name") == "fontawesome":
-            raise ValueError("You cannot modify core collection")
+            message = "You cannot modify core collection"
+            raise ValueError(message)
         dir_path = pathlib.Path(
             sys.prefix, "share", "pandoc_latex_tip", self.argument("name")
         )
@@ -121,7 +121,8 @@ class CollectionsAddCommand(Command):
             dir_path.mkdir(parents=True)
         file_path = pathlib.Path(self.argument("file"))
         if file_path.suffix not in (".css", ".ttf"):
-            raise ValueError("The added file must be a CSS or TTF file")
+            message = "The added file must be a CSS or TTF file"
+            raise ValueError(message)
         dest_path = pathlib.Path(dir_path, file_path.parts[-1])
         shutil.copy(file_path, dest_path)
 
@@ -132,15 +133,15 @@ class CollectionsAddCommand(Command):
         return 0
 
 
-class CollectionsDeleteCommand(Command):
+class CollectionsDeleteCommand(Command):  # type: ignore[misc]
     """
     CollectionDeleteCommand.
     """
 
     name = "collections delete"
     description = "Delete a collection"
-    arguments = [name_arg]
-    help = (  # noqa: A003,VNE003
+    arguments = (name_arg,)
+    help = (
         "Deleting a collection will erase the folder containing its files. "
         "The operation cannot proceed if the collection is used by a set of icons."
     )
@@ -162,7 +163,8 @@ class CollectionsDeleteCommand(Command):
         self.add_style("warning", fg="yellow", options=["bold"])
         name = self.argument("name")
         if name == "fontawesome":
-            raise ValueError("You cannot modify core collection")
+            message = "You cannot modify core collection"
+            raise ValueError(message)
         dir_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip", name)
         config_path = pathlib.Path(
             sys.prefix,
@@ -175,17 +177,19 @@ class CollectionsDeleteCommand(Command):
                 icons = yaml.safe_load(stream)
                 for definition in icons:
                     if definition["collection"] == name:
-                        raise ValueError(f"Collection '{name}' is in use")
+                        message = f"Collection '{name}' is in use"
+                        raise ValueError(message)
 
         if not dir_path.exists():
-            raise ValueError(f"Collection '{name}' does not exist")
+            message = f"Collection '{name}' does not exist"
+            raise ValueError(message)
 
         shutil.rmtree(dir_path)
         self.line(f"Delete collection <warning>'{name}'</>")
         return 0
 
 
-class CollectionsListCommand(Command):
+class CollectionsListCommand(Command):  # type: ignore[misc]
     """
     CollectionsListCommand.
     """
@@ -213,15 +217,15 @@ class CollectionsListCommand(Command):
         return 0
 
 
-class CollectionsInfoCommand(Command):
+class CollectionsInfoCommand(Command):  # type: ignore[misc]
     """
     CollectionsInfoCommand.
     """
 
     name = "collections info"
     description = "Display a collection"
-    arguments = [name_arg]
-    help = (  # noqa: A003, VNE003
+    arguments = (name_arg,)
+    help = (
         "Displaying a collection allows listing all the "
         "CSS and TTF files it contains."
     )
@@ -249,7 +253,8 @@ class CollectionsInfoCommand(Command):
             name,
         )
         if not dir_path.exists():
-            raise ValueError(f"Collection '{name}' does not exist")
+            message = f"Collection '{name}' does not exist"
+            raise ValueError(message)
 
         self.line("<b>Information</>")
         if name == "fontawesome":
@@ -274,16 +279,16 @@ class CollectionsInfoCommand(Command):
         return 0
 
 
-class IconsAddCommand(Command):
+class IconsAddCommand(Command):  # type: ignore[misc]
     """
     IconsAddCommand.
     """
 
     name = "icons add"
     description = "Add a set of icons from a collection"
-    arguments = [name_arg]
-    options = [css_opt, ttf_opt, prefix_opt]
-    help = (  # noqa: A003, VNE003
+    arguments = (name_arg,)
+    options = (css_opt, ttf_opt, prefix_opt)
+    help = (
         "A set of icons is created from a CSS file and a TTF file from a collection. "
         "The prefix ensures that the icons are unique. "
         "It replaces the common prefix detected in the CSS file."
@@ -306,7 +311,8 @@ class IconsAddCommand(Command):
         """
         name = self.argument("name")
         if name == "fontawesome":
-            raise ValueError("You cannot modify core collection")
+            message = "You cannot modify core collection"
+            raise ValueError(message)
         dir_path = pathlib.Path(
             sys.prefix,
             "share",
@@ -315,19 +321,24 @@ class IconsAddCommand(Command):
         )
         if dir_path.exists():
             if not self.option("CSS"):
-                raise ValueError("CSS option is mandatory")
+                message = "CSS option is mandatory"
+                raise ValueError(message)
             css = self.option("CSS")
             css_file = pathlib.Path(dir_path, css)
             if not css_file.exists():
-                raise ValueError(f"Collection '{name}' does not contain '{css}'")
+                message = f"Collection '{name}' does not contain '{css}'"
+                raise ValueError(message)
             if not self.option("TTF"):
-                raise ValueError("TTF option is mandatory")
+                message = "TTF option is mandatory"
+                raise ValueError(message)
             ttf = self.option("TTF")
             ttf_file = pathlib.Path(dir_path, ttf)
             if not ttf_file.exists():
-                raise ValueError(f"Collection '{name}' does not contain '{ttf}'")
+                message = f"Collection '{name}' does not contain '{ttf}'"
+                raise ValueError(message)
             if not self.option("prefix"):
-                raise ValueError("prefix option is mandatory")
+                message = "prefix option is mandatory"
+                raise ValueError(message)
             prefix = self.option("prefix")
             config_path = pathlib.Path(
                 sys.prefix,
@@ -340,7 +351,8 @@ class IconsAddCommand(Command):
                     icons = yaml.safe_load(stream)
                     for definition in icons:
                         if definition["prefix"] == prefix:
-                            raise ValueError(f"Prefix '{prefix}' is already used")
+                            message = f"Prefix '{prefix}' is already used"
+                            raise ValueError(message)
             else:
                 icons = []
             icons.append(
@@ -355,18 +367,19 @@ class IconsAddCommand(Command):
                 stream.write(yaml.dump(icons, sort_keys=False))
 
         else:
-            raise ValueError(f"Collection '{name}' does not exist")
+            message = f"Collection '{name}' does not exist"
+            raise ValueError(message)
         return 0
 
 
-class IconsDeleteCommand(Command):
+class IconsDeleteCommand(Command):  # type: ignore[misc]
     """
     IconsDeleteCommand.
     """
 
     name = "icons delete"
     description = "Delete a set of icons"
-    options = [prefix_opt]
+    options = (prefix_opt,)
 
     def handle(self) -> int:
         """
@@ -383,10 +396,12 @@ class IconsDeleteCommand(Command):
             If an error occurs.
         """
         if not self.option("prefix"):
-            raise ValueError("prefix option is mandatory")
+            message = "prefix option is mandatory"
+            raise ValueError(message)
         prefix = self.option("prefix")
         if prefix in ("fa-", "far-", "fab-"):
-            raise ValueError("You cannot modify core icons")
+            message = "You cannot modify core icons"
+            raise ValueError(message)
         config_path = pathlib.Path(
             sys.prefix,
             "share",
@@ -403,13 +418,15 @@ class IconsDeleteCommand(Command):
                 with config_path.open(mode="w", encoding="utf-8") as stream:
                     stream.write(yaml.dump(keep, sort_keys=False))
             else:
-                raise ValueError("Unexisting prefix")
+                message = "Unexisting prefix"
+                raise ValueError(message)
         else:
-            raise ValueError("Unexisting config file")
+            message = "Unexisting config file"
+            raise ValueError(message)
         return 0
 
 
-class IconsListCommand(Command):
+class IconsListCommand(Command):  # type: ignore[misc]
     """
     IconsListCommand.
     """
@@ -448,7 +465,7 @@ class IconsListCommand(Command):
         return 0
 
 
-class PandocLaTeXFilterCommand(Command):
+class PandocLaTeXFilterCommand(Command):  # type: ignore[misc]
     """
     PandocLaTeXFilterCommand.
     """
@@ -469,7 +486,7 @@ class PandocLaTeXFilterCommand(Command):
         return 0
 
 
-class PandocBeamerFilterCommand(Command):
+class PandocBeamerFilterCommand(Command):  # type: ignore[misc]
     """
     PandocBeamerFilterCommand.
     """

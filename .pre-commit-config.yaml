@@ -5,16 +5,10 @@ repos:
   - id: check-toml
   - id: check-yaml
 
-- repo: https://gitlab.com/smop/pre-commit-hooks
-  rev: v1.0.0
-  hooks:
-  - id: check-poetry
-
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.14.0
   hooks:
   - id: pretty-format-toml
-    exclude: ^poetry.lock$
     args: [--autofix, --no-sort]
   - id: pretty-format-yaml
     args: [--autofix]
@@ -24,17 +18,11 @@ repos:
   hooks:
   - id: tox-ini-fmt
 
-- repo: https://github.com/ariebovenberg/slotscheck
-  rev: v0.19.0
-  hooks:
-  - id: slotscheck
-    language: system
-    exclude: ^(?!(pandoc_latex_tip/|download.py))
-
 - repo: https://github.com/dosisod/refurb
   rev: v2.0.0
   hooks:
   - id: refurb
+    language: system
 
 - repo: https://github.com/isidentical/teyit
   rev: 0.4.3
@@ -58,14 +46,8 @@ repos:
   rev: v1.1.1
   hooks:
   - id: doc8
-    files: \.(rst|md)$
-
-- repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.11.2
-  hooks:
-  - id: mypy
     language: system
-    exclude: ^(?!(pandoc_latex_tip/|download.py))
+    files: \.(rst|md)$
 
 - repo: https://github.com/pycqa/flake8
   rev: 7.1.1

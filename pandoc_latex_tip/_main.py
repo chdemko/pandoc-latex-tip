@@ -3,21 +3,21 @@
 """
 Pandoc filter for adding tip in LaTeX.
 """
+
 from __future__ import annotations
 
 import operator
-import os
 import pathlib
 import re
 import sys
 import tempfile
+from os import path
 from typing import Any
 
 import PIL.Image
 import PIL.ImageColor
 import PIL.ImageDraw
 import PIL.ImageFont
-
 
 import fontTools.ttLib
 
@@ -116,10 +116,11 @@ class IconFont:
                     character = content_result.group(1)[1:-1]
                     for cmap in font["cmap"].tables:
                         if cmap.isUnicode() and ord(character) in cmap.cmap:
-                            if common is None:
-                                common = name
-                            else:
-                                common = os.path.commonprefix((common, name))
+                            common = (
+                                name
+                                if common is None
+                                else path.commonprefix((common, name))  # type: ignore
+                            )
                             icons[name] = character
                             break
 
@@ -171,10 +172,7 @@ class IconFont:
         image = PIL.Image.new("RGBA", (size, size), color=(0, 0, 0, 0))
         draw = PIL.ImageDraw.Draw(image)
 
-        if scale == "auto":
-            scale_factor = 1.0
-        else:
-            scale_factor = float(scale)
+        scale_factor = 1.0 if scale == "auto" else float(scale)
 
         font_size = int(size * scale_factor)
         font = PIL.ImageFont.truetype(self.ttf_file, font_size)
@@ -239,8 +237,8 @@ class IconFont:
         if bbox:
             icon_image = icon_image.crop(bbox)
 
-        border_w = int((size - (bbox[2] - bbox[0])) / 2)  # type: ignore
-        border_h = int((size - (bbox[3] - bbox[1])) / 2)  # type: ignore
+        border_w = int((size - (bbox[2] - bbox[0])) / 2)
+        border_h = int((size - (bbox[3] - bbox[1])) / 2)
 
         # Create output image
         out_image = PIL.Image.new("RGBA", (size, size), (0, 0, 0, 0))
@@ -262,7 +260,7 @@ class IconFont:
             filename = icon + ".png"
 
         # Save file
-        out_image.save(os.path.join(export_dir, filename))
+        out_image.save(path.join(export_dir, filename))
 
 
 def get_core_icons() -> list[dict[str, str]]:
@@ -383,7 +381,7 @@ def tip(elem: Element, doc: Doc) -> list[Element] | None:
     """
     # Is it in the right format and is it a Span, Div?
     if doc.format in ("latex", "beamer") and isinstance(
-        elem, (Span, Div, Code, CodeBlock)
+        elem, Span | Div | Code | CodeBlock
     ):
         # Is there a latex-tip-icon attribute?
         if "latex-tip-icon" in elem.attributes:
@@ -434,7 +432,7 @@ def add_latex(elem: Element, latex: str) -> list[Element] | None:
     # pylint: disable=too-many-return-statements
     if bool(latex):
         # Is it a Span or a Code?
-        if isinstance(elem, (Span, Code)):
+        if isinstance(elem, Span | Code):
             return [elem, RawInline(latex, "tex")]
 
         # It is a CodeBlock: create a minipage to ensure the
@@ -450,11 +448,11 @@ def add_latex(elem: Element, latex: str) -> list[Element] | None:
             elem = elem.content[0]
 
         if not elem.content or isinstance(
-            elem.content[0], (HorizontalRule, Figure, RawBlock, DefinitionList)
+            elem.content[0], HorizontalRule | Figure | RawBlock | DefinitionList
         ):
             elem.content.insert(0, RawBlock(latex, "tex"))
             return None
-        if isinstance(elem.content[0], (Plain, Para)):
+        if isinstance(elem.content[0], Plain | Para):
             elem.content[0].content.insert(1, RawInline(latex, "tex"))
             return None
         if isinstance(elem.content[0], LineBlock):
@@ -467,8 +465,8 @@ def add_latex(elem: Element, latex: str) -> list[Element] | None:
             )
             elem.content.insert(2, RawBlock("\\end{minipage}", "tex"))
             return None
-        if isinstance(elem.content[0], (BulletList, OrderedList)):
-            elem.content[0].content[0].content[0].content.insert(  # noqa: ECE001
+        if isinstance(elem.content[0], BulletList | OrderedList):
+            elem.content[0].content[0].content[0].content.insert(
                 1,
                 RawInline(latex, "tex"),
             )
@@ -504,8 +502,8 @@ def latex_code(doc: Doc, definition: dict[str, Any], keys: dict[str, str]) -> st
 
     # Get the prefixes
     # noinspection PyArgumentEqualDefault
-    prefix_odd = get_prefix(str(definition.get(keys["position"], "")), odd=True)
-    prefix_even = get_prefix(str(definition.get(keys["position"], "")), odd=False)
+    prefix_odd = get_prefix_odd(str(definition.get(keys["position"], "")))
+    prefix_even = get_prefix_even(str(definition.get(keys["position"], "")))
 
     # Get the link
     link = str(definition.get(keys["link"], ""))
@@ -568,26 +566,27 @@ def get_icons(
                 try:
                     icon["color"] = icon.get("color", color)
                     icon["link"] = icon.get("link", link)
+                    add_icon(doc, icons, icon)
                 except AttributeError:
-                    icon = {
-                        "name": icon,
-                        "color": color,
-                        "link": link,
-                    }
-
-                add_icon(doc, icons, icon)
+                    add_icon(
+                        doc,
+                        icons,
+                        {
+                            "name": icon,
+                            "color": color,
+                            "link": link,
+                        },
+                    )
+        elif definition[key_icons] in doc.icons:
+            icons = [
+                {
+                    "name": definition[key_icons],
+                    "color": color,
+                    "link": link,
+                }
+            ]
         else:
-            # noinspection PyUnresolvedReferences
-            if definition[key_icons] in doc.icons:
-                icons = [
-                    {
-                        "name": definition[key_icons],
-                        "color": color,
-                        "link": link,
-                    }
-                ]
-            else:
-                icons = []
+            icons = []
     else:
         icons = [
             {
@@ -652,7 +651,7 @@ def add_icon(doc: Doc, icons: list[dict[str, str]], icon: dict[str, str]) -> Non
 
 
 # pylint:disable=too-many-return-statements
-def get_prefix(position: str, odd: bool = True) -> str:
+def get_prefix_odd(position: str) -> str:
     """
     Get the latex prefix.
 
@@ -660,8 +659,6 @@ def get_prefix(position: str, odd: bool = True) -> str:
     ----------
     position
         The icon position
-    odd
-        Is the page is odd ?
 
     Returns
     -------
@@ -669,27 +666,46 @@ def get_prefix(position: str, odd: bool = True) -> str:
         The latex prefix.
     """
     if position == "right":
-        if odd:
-            return "\\pandoclatextipoddright"
+        return "\\pandoclatextipoddright"
+    if position in ("left", ""):
+        return "\\pandoclatextipoddleft"
+    if position == "inner":
+        return "\\pandoclatextipoddinner"
+    if position == "outer":
+        return "\\pandoclatextipoddouter"
+    debug(
+        f"[WARNING] pandoc-latex-tip: {position}"
+        " is not a correct position; using left"
+    )
+    return "\\pandoclatextipoddleft"
+
+
+def get_prefix_even(position: str) -> str:
+    """
+    Get the latex prefix.
+
+    Parameters
+    ----------
+    position
+        The icon position
+
+    Returns
+    -------
+    str
+        The latex prefix.
+    """
+    if position == "right":
         return "\\pandoclatextipevenright"
     if position in ("left", ""):
-        if odd:
-            return "\\pandoclatextipoddleft"
         return "\\pandoclatextipevenleft"
     if position == "inner":
-        if odd:
-            return "\\pandoclatextipoddinner"
         return "\\pandoclatextipeveninner"
     if position == "outer":
-        if odd:
-            return "\\pandoclatextipoddouter"
         return "\\pandoclatextipevenouter"
     debug(
         f"[WARNING] pandoc-latex-tip: {position}"
         " is not a correct position; using left"
     )
-    if odd:
-        return "\\pandoclatextipoddleft"
     return "\\pandoclatextipevenleft"
 
 
@@ -744,28 +760,25 @@ def create_images(doc: Doc, icons: list[dict[str, Any]], size: str) -> list[str]
     for icon in icons:
         # Get the image from the App cache folder
         # noinspection PyUnresolvedReferences
-        image = os.path.join(doc.folder, icon["color"], icon["name"] + ".png")
+        image = path.join(doc.folder, icon["color"], icon["name"] + ".png")
 
         # Create the image if not existing in the cache
         try:
-            if not os.path.isfile(image):
+            if not path.isfile(image):
                 # Create the image in the cache
                 # noinspection PyUnresolvedReferences
                 doc.icons[icon["name"]].export_icon(
                     icon["name"],
                     512,
                     color=icon["color"],
-                    export_dir=os.path.join(doc.folder, icon["color"]),
+                    export_dir=path.join(doc.folder, icon["color"]),
                 )
 
             # Add the LaTeX image
             image = Image(
                 url=str(image), attributes={"width": size + "pt", "height": size + "pt"}
             )
-            if icon["link"] == "":
-                elem = image
-            else:
-                elem = Link(image, url=icon["link"])
+            elem = image if icon["link"] == "" else Link(image, url=icon["link"])
             images.append(
                 convert_text(
                     Plain(elem), input_format="panflute", output_format="latex"

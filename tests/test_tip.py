@@ -1,11 +1,9 @@
-import os.path
 from unittest import TestCase
 
+import platformdirs
 from panflute import convert_text
 
 import pandoc_latex_tip
-
-import platformdirs
 
 
 class TipTest(TestCase):
@@ -16,7 +14,7 @@ class TipTest(TestCase):
         transform,
         input_format="markdown",
         output_format="latex",
-        standalone=False,
+        standalone=False,  # noqa: FBT002
     ) -> None:
         """
         Verify the conversion.
@@ -46,7 +44,7 @@ class TipTest(TestCase):
             extra_args=["--wrap=none"],
             standalone=standalone,
         )
-        self.assertEqual(converted.strip(), expected.strip())
+        self.assertEqual(converted.strip(), expected.strip())  # noqa: PT009
 
     def test_span(self):
         self.verify_conversion(
