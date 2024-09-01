@@ -26,9 +26,7 @@ on_rtd = os.environ.get("READTHEDOCS") == "True"
 with open("../pyproject.toml", "rb") as f:
     data = tomllib.load(f)
     project = data["project"]["name"]
-    author = ",".join(
-        f"{author['name']} <{author['email']}>" for author in data["project"]["authors"]
-    )
+    author = ",".join(author["name"] for author in data["project"]["authors"])
 release = os.popen("hatch version").readline().strip()  # noqa: S605, S607
 year = datetime.datetime.now(tz=datetime.UTC).date().year
 copyright = f"2016-{year}, {author}"  # noqa: A001
