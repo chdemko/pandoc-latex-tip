@@ -147,7 +147,7 @@ dependencies = [
 ]
 
 [tool.hatch.envs.docs.scripts]
-build = "sphinx-build docs build/sphinx/html"
+build = "sphinx-build docs {args:build/sphinx/html}"
 
 [tool.ruff]
 # Allow lines to be as long as 88.
