@@ -234,3 +234,6 @@ module = "panflute.*"
 
 [tool.pydocstyle]
 convention = "numpy"
+
+[tool.coverage.run]
+source = ["pandoc_latex_tip"]
