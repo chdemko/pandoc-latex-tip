@@ -69,10 +69,20 @@ share = "share"
 [[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.10", "3.11", "3.12"]
 
+[tool.hatch.envs.dynamic-lint]
+dependencies = [
+  "slotscheck~=0.19",
+  "pylint~=3.2"
+]
+
+[tool.hatch.envs.dynamic-lint.scripts]
+check = [
+  "slotscheck {args:pandoc_latex_tip}",
+  "pylint {args:pandoc_latex_tip download.py}"
+]
+
 [tool.hatch.envs.hatch-static-analysis]
 dependencies = [
-  "pre-commit~=3.8",
-  "pyupgrade~=3.17",
   # Types
   "types-PyYAML~=6.0",
   # Formatter
@@ -80,7 +90,6 @@ dependencies = [
   # Style checkers
   "doc8~=1.1",
   "mypy~=1.11",
-  "slotscheck~=0.19",
   "flake8~=7.1",
   "flake8-pyproject~=1.2",
   "flake8-annotations-complexity~=0.0",
@@ -104,11 +113,9 @@ dependencies = [
   "flake8-use-fstring~=1.4",
   "flake8-variables-names~=0.0",
   "pep8-naming~=0.13",
-  "pylint~=3.2",
   "darglint~=1.8.1",
   "pydoclint[flake8]~=0.5",
   "teyit~=0.4",
-  "slotscheck~=0.17",
   "refurb~=2.0",
   "ruff~=0.6"
 ]
@@ -122,12 +129,10 @@ format-fix = [
   "black {args:pandoc_latex_tip download.py docs}"
 ]
 lint-check = [
-  # "slotscheck {args:-m pandoc_latex_tip._app}",
   "refurb {args:pandoc_latex_tip download.py docs}",
   "ruff check {args:pandoc_latex_tip download.py docs}",
   "teyit --show-stats --fail-on-change {args:tests}",
-  "flake8 {args:pandoc_latex_tip download.py docs}",
-  "pylint {args:pandoc_latex_tip download.py}"
+  "flake8 {args:pandoc_latex_tip download.py docs}"
 ]
 lint-fix = [
   "ruff check --fix {args:pandoc_latex_tip download.py docs}"
@@ -229,6 +234,3 @@ module = "panflute.*"
 
 [tool.pydocstyle]
 convention = "numpy"
-
-[tool.pylint.'MESSAGES CONTROL']
-disable = "too-few-public-methods,import-error"

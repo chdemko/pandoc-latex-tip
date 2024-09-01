@@ -13,59 +13,22 @@ repos:
   - id: pretty-format-yaml
     args: [--autofix]
 
-- repo: https://github.com/tox-dev/tox-ini-fmt
-  rev: 1.3.1
-  hooks:
-  - id: tox-ini-fmt
-
-- repo: https://github.com/dosisod/refurb
-  rev: v2.0.0
-  hooks:
-  - id: refurb
-    language: system
-
-- repo: https://github.com/isidentical/teyit
-  rev: 0.4.3
-  hooks:
-  - id: teyit
-
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.6.3
-  hooks:
-  - id: ruff
-    language: system
-    exclude: ^(?!(pandoc_latex_tip/|download.py))
-
-- repo: https://github.com/psf/black
-  rev: 24.8.0
-  hooks:
-  - id: black-jupyter
-    args: [--config=pyproject.toml, pandoc_latex_tip/, download.py, tests]
-
-- repo: https://github.com/PyCQA/doc8/
-  rev: v1.1.1
-  hooks:
-  - id: doc8
-    language: system
-    files: \.(rst|md)$
-
-- repo: https://github.com/pycqa/flake8
-  rev: 7.1.1
-  hooks:
-  - id: flake8
-    language: system
-    exclude: ^(?!(pandoc_latex_tip/|download.py))
-
-- repo: https://github.com/pre-commit/mirrors-pylint
-  rev: v3.0.0a5
-  hooks:
-  - id: pylint
-    language: system
-    exclude: ^(?!(pandoc_latex_tip/|download.py))
-
 - repo: https://github.com/asottile/pyupgrade
   rev: v3.17.0
   hooks:
   - id: pyupgrade
-    language: system
     args: [--py310-plus]
+
+- repo: local
+  hooks:
+  - id: format
+    name: format
+    entry: hatch fmt --check
+    language: python
+    pass_filenames: false
+  - id: dynamic-lint
+    name: dynamic-lint
+    entry: hatch run dynamic-lint:check
+    language: system
+    pass_filenames: false
+
