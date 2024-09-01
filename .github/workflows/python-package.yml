@@ -58,12 +58,16 @@ jobs:
 
   style:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.12']
+        pandoc-version: ['3.3']
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.12'
+        python-version: ${{ matrix.python-version }}
     - name: Install Hatch
       run: pipx install hatch
     - name: Install dependencies
@@ -77,18 +81,22 @@ jobs:
 
   cov:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.12']
+        pandoc-version: ['3.3']
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.12'
+        python-version: ${{ matrix.python-version }}
     - name: Install Hatch
       run: pipx install hatch
     - name: Install dependencies
       run: |
-        wget https://github.com/jgm/pandoc/releases/download/3.3/pandoc-3.3-1-amd64.deb
-        sudo dpkg -i ./pandoc-3.3-1-amd64.deb
+        wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc-version }}/pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
+        sudo dpkg -i ./pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
         hatch run python download.py
     - name: Test
       env:
