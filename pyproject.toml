@@ -69,18 +69,6 @@ share = "share"
 [[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.10", "3.11", "3.12"]
 
-[tool.hatch.envs.dynamic-lint]
-dependencies = [
-  "slotscheck~=0.19",
-  "pylint~=3.2"
-]
-
-[tool.hatch.envs.dynamic-lint.scripts]
-check = [
-  "slotscheck {args:pandoc_latex_tip}",
-  "pylint {args:pandoc_latex_tip download.py}"
-]
-
 [tool.hatch.envs.hatch-static-analysis]
 dependencies = [
   # Types
@@ -136,6 +124,18 @@ lint-check = [
 ]
 lint-fix = [
   "ruff check --fix {args:pandoc_latex_tip download.py docs}"
+]
+
+[tool.hatch.envs.dynamic-lint]
+dependencies = [
+  "slotscheck~=0.19",
+  "pylint~=3.2"
+]
+
+[tool.hatch.envs.dynamic-lint.scripts]
+check = [
+  "slotscheck {args:pandoc_latex_tip}",
+  "pylint {args:pandoc_latex_tip download.py}"
 ]
 
 [tool.hatch.envs.docs]
