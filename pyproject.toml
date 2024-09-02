@@ -59,6 +59,7 @@ source = "vcs"
 
 [tool.hatch.version.raw-options]
 version_scheme = "no-guess-dev"
+local_scheme = "node-and-date"
 
 [tool.hatch.build.targets.wheel]
 packages = ["pandoc_latex_tip"]
