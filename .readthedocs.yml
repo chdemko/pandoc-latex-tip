@@ -10,7 +10,6 @@ build:
   tools:
     python: '3.11'
   commands:
-  - git fetch --all --tags || true
   - pip install hatch
   - hatch run docs:build $READTHEDOCS_OUTPUT/html/
 
