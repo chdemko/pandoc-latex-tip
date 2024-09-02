@@ -88,12 +88,35 @@ Instructions
 Install `hatch`, then run
 
 ~~~shell-session
+$ hatch run pip install pre-commit
+$ hatch run pre-commit install
+~~~
+
+to install `pre-commit` before working on your changes.
+
+Download font files
+-------------------
+
+Run
+
+~~~shell-session
 $ hatch run python download.py
+~~~
+
+to download font files.
+
+Tests
+-----
+
+When your changes are ready, run
+
+~~~shell-session
 $ hatch test
 $ hatch fmt --check
 $ hatch run docs:build
 $ hatch build -t wheel
 ~~~
 
-And submit your changes.
+for running the tests, checking the style, building the documentation
+and building the wheel.
 

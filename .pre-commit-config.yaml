@@ -24,11 +24,16 @@ repos:
   - id: format
     name: format
     entry: hatch fmt --check
-    language: python
+    language: system
     pass_filenames: false
   - id: dynamic-lint
     name: dynamic-lint
     entry: hatch run dynamic-lint:check
+    language: system
+    pass_filenames: false
+  - id: test
+    name: test
+    entry: hatch test
     language: system
     pass_filenames: false
 
