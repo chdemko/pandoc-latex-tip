@@ -3,9 +3,9 @@ Usage
 
 To apply the filter, use the following option with pandoc:
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-    pandoc --filter pandoc-latex-tip
+    $ pandoc --filter pandoc-latex-tip
 
 Explanation
 -----------
@@ -94,9 +94,9 @@ Demonstration: Using
 as input gives output file in
 `pdf <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-standard.pdf>`__.
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-    pandoc --filter pandoc-latex-tip pandoc-latex-tip-standard.txt \
+    $ pandoc --filter pandoc-latex-tip pandoc-latex-tip-standard.txt \
         -o pandoc-latex-tip-standard.pdf
 
 
@@ -111,9 +111,9 @@ Introduction
 
 Run ``pandoc-latex-tip`` for a complete explanation.
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-    pandoc-latex-tip
+    $ pandoc-latex-tip
 
 .. code-block:: console
 
@@ -159,9 +159,9 @@ Demonstration: Using
 as input gives output file in
 `pdf <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-sample.pdf>`__.
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-    pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
+    $ pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
         -o pandoc-latex-tip-sample.pdf
 
 This command produces a PDF file with a warning since the icon named
@@ -175,9 +175,9 @@ This command produces a PDF file with a warning since the icon named
 It's possible to extend ``pandoc-latex-tip`` by defining a new collection
 containing ``CSS`` and ``TTF`` files:
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-    pandoc-latex-tip icons
+    $ pandoc-latex-tip icons
 
 .. code-block:: console
 
@@ -194,24 +194,24 @@ containing ``CSS`` and ``TTF`` files:
       TTF: fa-brands-400.ttf
       prefix: fab-
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-    wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
+    $ wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
     css/materialdesignicons.css
-    wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
+    $ wget https://github.com/Templarian/MaterialDesign-Webfont/raw/v7.4.47/\
     fonts/materialdesignicons-webfont.ttf
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-        pandoc-latex-tip collections add materialdesign materialdesignicons.css
+        $ pandoc-latex-tip collections add materialdesign materialdesignicons.css
 
 .. code-block:: console
 
     Add file 'materialdesignicons.css' to collection 'materialdesign'
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-    pandoc-latex-tip collections add materialdesign materialdesignicons-webfont.ttf
+    $ pandoc-latex-tip collections add materialdesign materialdesignicons-webfont.ttf
 
 .. code-block:: console
 
@@ -220,17 +220,17 @@ containing ``CSS`` and ``TTF`` files:
 And by creating a new set of icons using a ``CSS`` file and a ``TTF`` file
 from a collection and by setting a prefix:
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-    pandoc-latex-tip icons add \
+    $ pandoc-latex-tip icons add \
         --CSS materialdesignicons.css \
         --TTF materialdesignicons-webfont.ttf \
         --prefix mdi- \
         materialdesign
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-    pandoc-latex-tip icons
+    $ pandoc-latex-tip icons
 
 .. code-block:: console
 
@@ -254,9 +254,9 @@ from a collection and by setting a prefix:
 The original ``mdi-account`` unknown icon is now recognized by
 ``pandoc-latex-tip``:
 
-.. prompt:: bash
+.. code-block:: shell-session
 
-    pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
+    $ pandoc --filter pandoc-latex-tip pandoc-latex-tip-sample.txt \
         -o pandoc-latex-tip-sample.pdf
 
 .. code-block:: console

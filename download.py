@@ -66,11 +66,12 @@ def download(url: str, folder: pathlib.Path, filename: str) -> None:
     filename
         A filename
     """
-    print(f"Download '{url}' to {folder}/{filename}")
+    print(f"Download '{url}' to {folder}/{filename}")  # noqa: T201
     try:
-        with urllib.request.urlopen(url) as response, pathlib.Path(
-            folder, filename
-        ).open("wb") as out_file:
+        with (
+            urllib.request.urlopen(url) as response,  # noqa: S310
+            pathlib.Path(folder, filename).open("wb") as out_file,
+        ):
             shutil.copyfileobj(response, out_file)
     except urllib.error.HTTPError as exception:
         sys.stderr.write(str(exception))

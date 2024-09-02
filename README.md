@@ -2,6 +2,7 @@ Installation
 ============
 
 [![Python package](https://github.com/chdemko/pandoc-latex-tip/workflows/Python%20package/badge.svg?branch=develop)](https://github.com/chdemko/pandoc-latex-tip/actions/workflows/python-package.yml)
+[![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
 [![Coveralls](https://img.shields.io/coveralls/github/chdemko/pandoc-latex-tip/develop.svg?logo=Codecov&logoColor=white)](https://coveralls.io/github/chdemko/pandoc-latex-tip?branch=develop)
@@ -15,7 +16,6 @@ Installation
 [![Downloads](https://img.shields.io/pypi/dm/pandoc-latex-tip?logo=pypi&logoColor=white)](https://pepy.tech/project/pandoc-latex-tip)
 [![Development Status](https://img.shields.io/pypi/status/pandoc-latex-tip.svg?logo=pypi&logoColor=white)](https://pypi.org/project/pandoc-numbering/)
 [![Python version](https://img.shields.io/pypi/pyversions/pandoc-latex-tip.svg?logo=Python&logoColor=white)](https://pypi.org/project/pandoc-latex-tip/)
-[![Poetry version](https://img.shields.io/badge/poetry-1.5%20|%201.6%20|%201.7%20|%201.8-blue.svg?logo=poetry)](https://python-poetry.org/)
 [![Pandoc version](https://img.shields.io/badge/pandoc-2.11%20|%202.12%20|%202.13%20|%202.14%20|%202.15%20|%202.16%20|%202.17%20|%202.18%20|%202.19%20|%203.0%20|%203.1%20|%203.2%20|%203.3-blue.svg?logo=markdown)](https://pandoc.org/)
 [![Latest release](https://img.shields.io/github/release-date/chdemko/pandoc-latex-tip.svg?logo=github)](https://github.com/chdemko/pandoc-latex-tip/releases)
 [![Last commit](https://img.shields.io/github/last-commit/chdemko/pandoc-latex-tip/develop?logo=github)](https://github.com/chdemko/pandoc-latex-tip/commit/develop/)
@@ -42,14 +42,14 @@ pre-installed on linux and Mac OS X, and which is easily installed
 
 Install *pandoc-latex-tip* using the bash command
 
-~~~{prompt} bash
-pipx install pandoc-latex-tip
+~~~shell-session
+$ pipx install pandoc-latex-tip
 ~~~
 
 To upgrade to the most recent release, use
 
-~~~{prompt} bash
-pipx upgrade pandoc-latex-tip
+~~~shell-session
+$ pipx upgrade pandoc-latex-tip
 ~~~
 
 `pipx` is a script to install and run python applications in isolated
@@ -62,8 +62,8 @@ On linux you have to install some extra libraries
 **before** *pandoc-latex-tip*.  On a Debian-based system (including Ubuntu),
 you can install it as root using
 
-~~~{prompt} bash
-sudo apt-get install python3-pil
+~~~shell-session
+$ sudo apt-get install python3-pil
 ~~~
 
 [python]: https://www.python.org
@@ -85,20 +85,38 @@ Contribute
 Instructions
 ------------
 
-Install `poetry`, then run
+Install `hatch`, then run
 
-~~~{prompt} bash
-poetry self add poeblix
-poetry self add "poetry-dynamic-versioning[plugin]"
-poetry install
-poetry shell
-poetry run python download.py
-poetry blixbuild
-poetry run pip install \
-   dist/pandoc_latex_tip-`poetry version -s`-py3-none-any.whl
-poetry shell
+~~~shell-session
+$ hatch run pip install pre-commit
+$ hatch run pre-commit install
 ~~~
 
-And submit your changes. When you commit, hooks will be executed
-to check your code.
+to install `pre-commit` before working on your changes.
+
+Download font files
+-------------------
+
+Run
+
+~~~shell-session
+$ hatch run python download.py
+~~~
+
+to download font files.
+
+Tests
+-----
+
+When your changes are ready, run
+
+~~~shell-session
+$ hatch test
+$ hatch fmt --check
+$ hatch run docs:build
+$ hatch build -t wheel
+~~~
+
+for running the tests, checking the style, building the documentation
+and building the wheel.
 
