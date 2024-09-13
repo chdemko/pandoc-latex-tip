@@ -8,7 +8,8 @@ name = "pandoc-latex-tip"
 description = "A pandoc filter for adding icons on specific elements"
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
-license = "BSD-3-Clause"
+license = {text = "BSD-3-Clause"}
+license-files = {paths = ["LICENSE"]}
 authors = [{name = "Christophe Demko", email = "chdemko@gmail.com"}]
 maintainers = [{name = "Christophe Demko", email = "chdemko@gmail.com"}]
 keywords = ["pandoc", "filters", "latex", "tip", "Font-Awesome", "icon"]
@@ -59,6 +60,7 @@ source = "vcs"
 
 [tool.hatch.version.raw-options]
 version_scheme = "no-guess-dev"
+local_scheme = "node-and-date"
 
 [tool.hatch.build.targets.wheel]
 packages = ["pandoc_latex_tip"]
