@@ -75,9 +75,12 @@ jobs:
         wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc-version }}/pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
         sudo dpkg -i ./pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
         hatch run python download.py
-    - name: Test
+    - name: Static check
       run: |
         hatch fmt --check
+    - name: Dynamic check
+      run: |
+        hatch run dynamic-lint:check
 
   cov:
     runs-on: ubuntu-latest
