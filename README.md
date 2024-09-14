@@ -16,7 +16,7 @@ Installation
 [![Downloads](https://img.shields.io/pypi/dm/pandoc-latex-tip?logo=pypi&logoColor=white)](https://pepy.tech/project/pandoc-latex-tip)
 [![Development Status](https://img.shields.io/pypi/status/pandoc-latex-tip.svg?logo=pypi&logoColor=white)](https://pypi.org/project/pandoc-numbering/)
 [![Python version](https://img.shields.io/pypi/pyversions/pandoc-latex-tip.svg?logo=Python&logoColor=white)](https://pypi.org/project/pandoc-latex-tip/)
-[![Pandoc version](https://img.shields.io/badge/pandoc-2.11%20|%202.12%20|%202.13%20|%202.14%20|%202.15%20|%202.16%20|%202.17%20|%202.18%20|%202.19%20|%203.0%20|%203.1%20|%203.2%20|%203.3-blue.svg?logo=markdown)](https://pandoc.org/)
+[![Pandoc version](https://img.shields.io/badge/pandoc-2.11%20|%202.12%20|%202.13%20|%202.14%20|%202.15%20|%202.16%20|%202.17%20|%202.18%20|%202.19%20|%203.0%20|%203.1%20|%203.2%20|%203.3%20|%203.4-blue.svg?logo=markdown)](https://pandoc.org/)
 [![Latest release](https://img.shields.io/github/release-date/chdemko/pandoc-latex-tip.svg?logo=github)](https://github.com/chdemko/pandoc-latex-tip/releases)
 [![Last commit](https://img.shields.io/github/last-commit/chdemko/pandoc-latex-tip/develop?logo=github)](https://github.com/chdemko/pandoc-latex-tip/commit/develop/)
 [![Repo Size](https://img.shields.io/github/repo-size/chdemko/pandoc-latex-tip.svg?logo=github)](http://pandoc-latex-tip.readthedocs.io/en/latest/)
