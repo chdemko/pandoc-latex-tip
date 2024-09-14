@@ -113,6 +113,7 @@ When your changes are ready, run
 ~~~shell-session
 $ hatch test
 $ hatch fmt --check
+$ hatch run dynamic-lint:check
 $ hatch run docs:build
 $ hatch build -t wheel
 ~~~
