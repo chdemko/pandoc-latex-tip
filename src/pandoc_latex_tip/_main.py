@@ -134,7 +134,7 @@ class IconFont:
 
         return dict(sorted(icons.items(), key=operator.itemgetter(0)))
 
-    # pylint: disable=too-many-arguments,too-many-locals
+    # pylint: disable=too-many-arguments,too-many-locals,too-many-positional-arguments
     def export_icon(
         self,
         icon: str,

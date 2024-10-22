@@ -7,7 +7,7 @@ dynamic = ["version"]
 name = "pandoc-latex-tip"
 description = "A pandoc filter for adding icons on specific elements"
 readme = "README.md"
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.10,<3.14"
 license = {text = "BSD-3-Clause"}
 license-files = {paths = ["LICENSE"]}
 authors = [{name = "Christophe Demko", email = "chdemko@gmail.com"}]
@@ -33,14 +33,15 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   # Natural language used
   "Natural Language :: English"
 ]
 dependencies = [
   "panflute~=2.3",
-  "pillow~=10.4",
-  "fonttools~=4.53",
-  "platformdirs~=4.2",
+  "pillow~=11.0",
+  "fonttools~=4.54",
+  "platformdirs~=4.3",
   "PyYAML~=6.0",
   "tinycss2~=1.3",
   "cleo~=2.1"
@@ -60,26 +61,26 @@ source = "vcs"
 
 [tool.hatch.version.raw-options]
 version_scheme = "no-guess-dev"
-local_scheme = "node-and-date"
+local_scheme = "no-local-version"
 
 [tool.hatch.build.targets.wheel]
-packages = ["pandoc_latex_tip"]
+packages = ["src/pandoc_latex_tip"]
 
 [tool.hatch.build.targets.wheel.shared-data]
 share = "share"
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.10", "3.11", "3.12"]
+python = ["3.10", "3.11", "3.12", "3.13"]
 
 [tool.hatch.envs.hatch-static-analysis]
 dependencies = [
   # Types
   "types-PyYAML~=6.0",
   # Formatter
-  "black[jupyter]~=24.8",
+  "black[jupyter]~=24.10",
   # Style checkers
   "doc8~=1.1",
-  "mypy~=1.11",
+  "mypy~=1.12",
   "flake8~=7.1",
   "flake8-pyproject~=1.2",
   "flake8-annotations-complexity~=0.0",
@@ -95,56 +96,56 @@ dependencies = [
   "flake8-functions~=0.0",
   "flake8-import-order~=0.18",
   "flake8-mypy~=17.8",
-  "flake8-pyi~=24.6",
+  "flake8-pyi~=24.9",
   "flake8-pydocstyle~=0.2",
   "flake8-return~=1.2",
   "flake8-simplify~=0.21",
   "flake8-spellcheck~=0.28",
   "flake8-use-fstring~=1.4",
   "flake8-variables-names~=0.0",
-  "pep8-naming~=0.13",
+  "pep8-naming~=0.14",
   "darglint~=1.8.1",
   "pydoclint[flake8]~=0.5",
   "teyit~=0.4",
   "refurb~=2.0",
-  "ruff~=0.6"
+  "ruff~=0.7"
 ]
 
 [tool.hatch.envs.hatch-static-analysis.scripts]
 format-check = [
-  "black --check --diff {args:pandoc_latex_tip download.py docs}",
+  "black --check --diff {args:src download.py docs}",
   "doc8 -q {args:docs README.md} -e .rst -e .md"
 ]
 format-fix = [
-  "black {args:pandoc_latex_tip download.py docs}"
+  "black {args:src download.py docs}"
 ]
 lint-check = [
-  "refurb {args:pandoc_latex_tip download.py docs}",
-  "ruff check {args:pandoc_latex_tip download.py docs}",
+  "refurb {args:src download.py docs}",
+  "ruff check {args:src download.py docs}",
   "teyit --show-stats --fail-on-change {args:tests}",
-  "flake8 {args:pandoc_latex_tip download.py docs}"
+  "flake8 {args:src download.py docs}"
 ]
 lint-fix = [
-  "ruff check --fix {args:pandoc_latex_tip download.py docs}"
+  "ruff check --fix {args:src download.py docs}"
 ]
 
-[tool.hatch.envs.dynamic-lint]
+[tool.hatch.envs.lint]
 dependencies = [
   "slotscheck~=0.19",
-  "pylint~=3.2"
+  "pylint~=3.3"
 ]
 
-[tool.hatch.envs.dynamic-lint.scripts]
+[tool.hatch.envs.lint.scripts]
 check = [
-  "slotscheck {args:pandoc_latex_tip}",
-  "pylint {args:pandoc_latex_tip download.py}"
+  "slotscheck {args:src}",
+  "pylint {args:src download.py}"
 ]
 
 [tool.hatch.envs.docs]
 dependencies = [
-  "myst-parser~=2.0",
-  "Sphinx~=7.2",
-  "sphinx-rtd-theme~=2.0",
+  "myst-parser~=4.0",
+  "Sphinx~=8.1",
+  "sphinx-rtd-theme~=3.0",
   "sphinx-copybutton~=0.5"
 ]
 
@@ -238,4 +239,4 @@ module = "panflute.*"
 convention = "numpy"
 
 [tool.coverage.run]
-source = ["pandoc_latex_tip"]
+source = ["src"]
