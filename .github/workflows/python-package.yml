@@ -28,6 +28,7 @@ jobs:
       run: |
         wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc-version }}/pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
         sudo dpkg -i ./pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
+        hatch run python download.py
     - name: Test
       run: |
         hatch test -py ${{ matrix.python-version }}
@@ -50,6 +51,7 @@ jobs:
       run: |
         wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc-version }}/pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
         sudo dpkg -i ./pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
+        hatch run python download.py
     - name: Test
       run: |
         hatch test
@@ -72,6 +74,7 @@ jobs:
       run: |
         wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc-version }}/pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
         sudo dpkg -i ./pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
+        hatch run python download.py
     - name: Static check
       run: |
         hatch fmt --check
@@ -97,6 +100,7 @@ jobs:
       run: |
         wget https://github.com/jgm/pandoc/releases/download/${{ matrix.pandoc-version }}/pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
         sudo dpkg -i ./pandoc-${{ matrix.pandoc-version }}-1-amd64.deb
+        hatch run python download.py
     - name: Test
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
