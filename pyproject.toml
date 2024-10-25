@@ -43,7 +43,7 @@ dependencies = [
   "fonttools~=4.54",
   "platformdirs~=4.3",
   "PyYAML~=6.0",
-  "tinycss2~=1.3",
+  "tinycss2~=1.4",
   "cleo~=2.1"
 ]
 
