@@ -52,6 +52,7 @@ Homepage = "https://github.com/chdemko/pandoc-latex-tip"
 Documentation = "https://pandoc-latex-tip.readthedocs.io/"
 Repository = "https://github.com/chdemko/pandoc-latex-tip"
 Issues = "https://github.com/chdemko/pandoc-latex-tip/issues"
+Coverage = "https://coveralls.io/github/chdemko/pandoc-latex-tip"
 
 [project.scripts]
 pandoc-latex-tip = "pandoc_latex_tip:app"
