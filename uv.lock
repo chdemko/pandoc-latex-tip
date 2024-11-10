@@ -85,7 +85,7 @@ wheels = [
 
 [[package]]
 name = "pandoc-latex-tip"
-version = "3.0.0.4.post1.dev11"
+version = "3.0.0.4.post1.dev12"
 source = { editable = "." }
 dependencies = [
     { name = "cleo" },
