@@ -44,6 +44,10 @@ class TipTest(TestCase):
             extra_args=["--wrap=none"],
             standalone=standalone,
         )
+        print("-----------------------------------")
+        print(converted)
+        print()
+        print(expected)
         self.assertEqual(converted.strip(), expected.strip())  # noqa: PT009
 
     def test_span(self):
@@ -55,6 +59,7 @@ pandoc-latex-tip:
     icons:
       - {name: fa-file-text, color: darksalmon, link: http://www.google.fr}
       - fa-comments
+      - image: Tux.pdf
     size: 36
     position: right
 
@@ -80,7 +85,7 @@ pandoc-latex-tip:
 \\else%%
 \\pandoclatextipevenright%%
 \\fi%%
-\\marginnote{{\\href{{http://www.google.fr}}{{\\includegraphics[width=0.5in,height=0.5in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/darksalmon/fa-file-text.png}}}}\\includegraphics[width=0.5in,height=0.5in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\href{{http://www.google.fr}}{{\\includegraphics[width=\\linewidth,height=0.5in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/darksalmon/fa-file-text.png}}}}\\includegraphics[width=\\linewidth,height=0.5in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}\\includegraphics[width=\\linewidth,height=0.5in,keepaspectratio]{{Tux.pdf}}}}[0pt]\\vspace{{0cm}}%%
 {{}}
 \\checkoddpage%%
 \\ifoddpage%%
@@ -88,7 +93,7 @@ pandoc-latex-tip:
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
-\\marginnote{{\\includegraphics[width=0.25in,height=0.25in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-exclamation-circle.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.25in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-exclamation-circle.png}}}}[0pt]\\vspace{{0cm}}%%
 {{}}
 \\checkoddpage%%
 \\ifoddpage%%
@@ -96,7 +101,7 @@ pandoc-latex-tip:
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
-\\marginnote{{\\includegraphics[width=0.25in,height=0.25in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.25in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
 {{}}
 \\checkoddpage%%
 \\ifoddpage%%
@@ -104,7 +109,7 @@ pandoc-latex-tip:
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
-\\marginnote{{\\includegraphics[width=0.25in,height=0.25in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/orange/far-user.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.25in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/orange/far-user.png}}}}[0pt]\\vspace{{0cm}}%%
             """,
             pandoc_latex_tip.main,
         )
@@ -146,7 +151,7 @@ main()
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
-\\marginnote{{\\includegraphics[width=0.25in,height=0.25in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.25in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
 
 \\begin{{Shaded}}
 \\begin{{Highlighting}}[]
@@ -196,7 +201,7 @@ Division
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
-\\marginnote{{\\includegraphics[width=0.25in,height=0.25in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.25in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
             """,
             pandoc_latex_tip.main,
         )
@@ -218,8 +223,29 @@ Division
 \\else%%
 \\pandoclatextipevenright%%
 \\fi%%
-\\marginnote{{\\includegraphics[width=0.33333in,height=0.33333in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/lightskyblue/fa-address-book.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.33333in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/lightskyblue/fa-address-book.png}}}}[0pt]\\vspace{{0cm}}%%
             """,
+            pandoc_latex_tip.main,
+        )
+        self.verify_conversion(
+            """
+::: {
+  latex-tip-image=Tux.pdf
+  latex-tip-size=24
+  latex-tip-position=right} :::
+Division
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+            """,
+            f"""
+Division
+\\checkoddpage%%
+\\ifoddpage%%
+\\pandoclatextipoddright%%
+\\else%%
+\\pandoclatextipevenright%%
+\\fi%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.33333in,keepaspectratio]{{Tux.pdf}}}}[0pt]\\vspace{{0cm}}%%
+                """,
             pandoc_latex_tip.main,
         )
 
@@ -261,7 +287,7 @@ Division
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
-\\marginnote{{\\includegraphics[width=0.25in,height=0.25in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.25in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
             """,
             pandoc_latex_tip.main,
         )
@@ -301,7 +327,7 @@ pandoc-latex-tip:
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
-\\marginnote{{\\includegraphics[width=0.25in,height=0.25in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.25in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
 
 \\begin{{center}}\\rule{{0.5\\linewidth}}{{0.5pt}}\\end{{center}}
             """,
@@ -345,7 +371,7 @@ Lineblock
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
-\\marginnote{{\\includegraphics[width=0.25in,height=0.25in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.25in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
 \\\\
 continue
             """,
@@ -390,7 +416,7 @@ main()
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
-\\marginnote{{\\includegraphics[width=0.25in,height=0.25in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\includegraphics[width=\\linewidth,height=0.25in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
 
 \\begin{{Shaded}}
 \\begin{{Highlighting}}[]
@@ -443,7 +469,7 @@ pandoc-latex-tip:
   \\else%%
   \\pandoclatextipevenleft%%
   \\fi%%
-  \\marginnote{{\\includegraphics[width=0.25in,height=0.25in]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
+  \\marginnote{{\\includegraphics[width=\\linewidth,height=0.25in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}}}[0pt]\\vspace{{0cm}}%%
 \\item
   b
 \\end{{itemize}}
