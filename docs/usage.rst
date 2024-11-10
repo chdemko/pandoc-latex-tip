@@ -61,7 +61,8 @@ Each icon is either:
    `icons <https://fontawesome.com/search?o=r&m=free&f=brands>`__)
 -  a YAML object containing
 
-   -  a ``name`` property (for the icon)
+   -  a ``name`` property (for the icon) or an ``image`` property denoting
+      an image path
    -  a ``color`` property taken from the `X11 color
       collection <https://www.w3.org/TR/css3-color/#svg-color>`__
    -  a ``link`` property to make the icon clickable
@@ -74,6 +75,7 @@ It’s also possible to specify a tip for individual elements using
 attribute description:
 
 -  ``latex-tip-icon``: the name of the icon
+-  ``latex-tip-image``: the file path of the image
 -  ``latex-tip-size``: the size of the rendered icon (``18`` by default)
 -  ``latex-tip-position``: the position of the icon (``left`` by default
    or ``right`` or ``inner`` or ``outer``)
@@ -158,6 +160,10 @@ Demonstration: Using
 `pandoc-latex-tip-sample.txt <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-sample.txt>`__
 as input gives output file in
 `pdf <https://raw.githubusercontent.com/chdemko/pandoc-latex-tip/develop/docs/images/pandoc-latex-tip-sample.pdf>`__.
+
+The `Tux` image is made available under the `Creative Commons CC0 1.0 Universal
+Public Domain Dedication <https://creativecommons.org/publicdomain/zero/1.0/deed.en>`__
+(https://commons.wikimedia.org/wiki/File:Tux.svg).
 
 .. code-block:: shell-session
 

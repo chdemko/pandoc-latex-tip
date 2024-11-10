@@ -384,7 +384,7 @@ def tip(elem: Element, doc: Doc) -> list[Element] | None:
         elem, Span | Div | Code | CodeBlock
     ):
         # Is there a latex-tip-icon attribute?
-        if "latex-tip-icon" in elem.attributes:
+        if "latex-tip-icon" in elem.attributes or "latex-tip-image" in elem.attributes:
             return add_latex(
                 elem,
                 latex_code(
@@ -392,6 +392,7 @@ def tip(elem: Element, doc: Doc) -> list[Element] | None:
                     elem.attributes,
                     {
                         "icon": "latex-tip-icon",
+                        "image": "latex-tip-image",
                         "position": "latex-tip-position",
                         "size": "latex-tip-size",
                         "color": "latex-tip-color",
@@ -494,9 +495,6 @@ def latex_code(doc: Doc, definition: dict[str, Any], keys: dict[str, str]) -> st
     str
         The latex code.
     """
-    # Get the default color
-    color = str(definition.get(keys["color"], "black"))
-
     # Get the size
     size = get_size(str(definition.get(keys["size"], "18")))
 
@@ -505,11 +503,8 @@ def latex_code(doc: Doc, definition: dict[str, Any], keys: dict[str, str]) -> st
     prefix_odd = get_prefix_odd(str(definition.get(keys["position"], "")))
     prefix_even = get_prefix_even(str(definition.get(keys["position"], "")))
 
-    # Get the link
-    link = str(definition.get(keys["link"], ""))
-
     # Get the icons
-    icons = get_icons(doc, definition, keys["icon"], color, link)
+    icons = get_icons(doc, definition, keys)
 
     # Get the images
     images = create_images(doc, icons, size)
@@ -532,9 +527,7 @@ def latex_code(doc: Doc, definition: dict[str, Any], keys: dict[str, str]) -> st
 def get_icons(
     doc: Doc,
     definition: dict[str, Any],
-    key_icons: str,
-    color: str,
-    link: str,
+    keys: dict[str, str],
 ) -> list[dict[str, Any]]:
     """
     Get tge icons.
@@ -545,29 +538,32 @@ def get_icons(
         The original document
     definition
         The definition
-    key_icons
-        A key mapping
-    color
-        The color
-    link
-        The link
+    keys
+        Key mapping
 
     Returns
     -------
     list[dict[str, Any]]
         A list of icon definitions.
     """
+    # Get the link
+    link = str(definition.get(keys["link"], ""))
+
+    # Get the default color
+    color = str(definition.get(keys["color"], "black"))
+
     # Test the icons definition
-    if key_icons in definition:
+    if keys["icon"] in definition:
         icons: list[dict[str, str]] = []
         # pylint: disable=invalid-name
-        if isinstance(definition[key_icons], list):
-            for icon in definition[key_icons]:
-                try:
-                    icon["color"] = icon.get("color", color)
+        if isinstance(definition[keys["icon"]], list):
+            for icon in definition[keys["icon"]]:
+                if isinstance(icon, dict):
                     icon["link"] = icon.get("link", link)
+                    if not icon.get("image"):
+                        icon["color"] = icon.get("color", color)
                     add_icon(doc, icons, icon)
-                except AttributeError:
+                else:
                     add_icon(
                         doc,
                         icons,
@@ -577,16 +573,30 @@ def get_icons(
                             "link": link,
                         },
                     )
-        elif definition[key_icons] in doc.icons:
+        elif definition[keys["icon"]] in doc.icons:
             icons = [
                 {
-                    "name": definition[key_icons],
+                    "name": definition[keys["icon"]],
                     "color": color,
+                    "link": link,
+                }
+            ]
+        elif definition.get(keys["image"]):
+            icons = [
+                {
+                    "image": definition[keys["image"]],
                     "link": link,
                 }
             ]
         else:
             icons = []
+    elif keys.get("image") and keys.get("image") in definition:
+        icons = [
+            {
+                "image": definition[keys["image"]],
+                "link": link,
+            }
+        ]
     else:
         icons = [
             {
@@ -612,42 +622,50 @@ def add_icon(doc: Doc, icons: list[dict[str, str]], icon: dict[str, str]) -> Non
     icon
         A potential new icon
     """
-    if "name" not in icon:
-        # Bad formed icon
-        debug("[WARNING] pandoc-latex-tip: Bad formed icon")
-        return
-
-    # Lower the color
-    lower_color = icon["color"].lower()
-
-    # Convert the color to black if unexisting
-    # pylint: disable=import-outside-toplevel
-
-    if lower_color not in PIL.ImageColor.colormap:
-        debug(
-            f"[WARNING] pandoc-latex-tip: {lower_color}"
-            " is not a correct color name; using black"
+    if "image" in icon:
+        icons.append(
+            {
+                "image": icon["image"],
+                "link": icon["link"],
+            }
         )
-        lower_color = "black"
+    else:
+        if "name" not in icon:
+            # Bad formed icon
+            debug("[WARNING] pandoc-latex-tip: Bad formed icon")
+            return
 
-    # Is the icon correct?
-    try:
-        # noinspection PyUnresolvedReferences
-        if icon["name"] in doc.icons:
-            icons.append(
-                {
-                    "name": icon["name"],
-                    "color": lower_color,
-                    "link": icon["link"],
-                }
-            )
-        else:
+        # Lower the color
+        lower_color = icon["color"].lower()
+
+        # Convert the color to black if unexisting
+        # pylint: disable=import-outside-toplevel
+
+        if lower_color not in PIL.ImageColor.colormap:
             debug(
-                f"[WARNING] pandoc-latex-tip: {icon['name']}"
-                " is not a correct icon name"
+                f"[WARNING] pandoc-latex-tip: {lower_color}"
+                " is not a correct color name; using black"
             )
-    except FileNotFoundError:
-        debug("[WARNING] pandoc-latex-tip: error in accessing to icons definition")
+            lower_color = "black"
+
+        # Is the icon correct?
+        try:
+            # noinspection PyUnresolvedReferences
+            if icon["name"] in doc.icons:
+                icons.append(
+                    {
+                        "name": icon["name"],
+                        "color": lower_color,
+                        "link": icon["link"],
+                    }
+                )
+            else:
+                debug(
+                    f"[WARNING] pandoc-latex-tip: {icon['name']}"
+                    " is not a correct icon name"
+                )
+        except FileNotFoundError:
+            debug("[WARNING] pandoc-latex-tip: error in accessing to icons definition")
 
 
 # pylint:disable=too-many-return-statements
@@ -760,23 +778,12 @@ def create_images(doc: Doc, icons: list[dict[str, Any]], size: str) -> list[str]
     for icon in icons:
         # Get the image from the App cache folder
         # noinspection PyUnresolvedReferences
-        image = path.join(doc.folder, icon["color"], icon["name"] + ".png")
-
-        # Create the image if not existing in the cache
-        try:
-            if not path.isfile(image):
-                # Create the image in the cache
-                # noinspection PyUnresolvedReferences
-                doc.icons[icon["name"]].export_icon(
-                    icon["name"],
-                    512,
-                    color=icon["color"],
-                    export_dir=path.join(doc.folder, icon["color"]),
-                )
-
-            # Add the LaTeX image
+        if size.isdigit():
+            size += "pt"
+        if icon.get("image"):
             image = Image(
-                url=str(image), attributes={"width": size + "pt", "height": size + "pt"}
+                url=str(icon.get("image")),
+                attributes={"height": size},
             )
             elem = image if icon["link"] == "" else Link(image, url=icon["link"])
             images.append(
@@ -784,13 +791,39 @@ def create_images(doc: Doc, icons: list[dict[str, Any]], size: str) -> list[str]
                     Plain(elem), input_format="panflute", output_format="latex"
                 )
             )
-        except TypeError:
-            debug(
-                f"[WARNING] pandoc-latex-tip: icon name "
-                f"{icon['name']} does not exist"
-            )
-        except FileNotFoundError:
-            debug("[WARNING] pandoc-latex-tip: error in generating image")
+        else:
+            image_path = path.join(doc.folder, icon["color"], icon["name"] + ".png")
+
+            # Create the image if not existing in the cache
+            try:
+                if not path.isfile(image_path):
+                    # Create the image in the cache
+                    # noinspection PyUnresolvedReferences
+                    doc.icons[icon["name"]].export_icon(
+                        icon["name"],
+                        512,
+                        color=icon["color"],
+                        export_dir=path.join(doc.folder, icon["color"]),
+                    )
+
+                # Add the LaTeX image
+                image = Image(
+                    url=str(image_path),
+                    attributes={"height": size},
+                )
+                elem = image if icon["link"] == "" else Link(image, url=icon["link"])
+                images.append(
+                    convert_text(
+                        Plain(elem), input_format="panflute", output_format="latex"
+                    )
+                )
+            except TypeError:
+                debug(
+                    f"[WARNING] pandoc-latex-tip: icon name "
+                    f"{icon['name']} does not exist"
+                )
+            except FileNotFoundError:
+                debug("[WARNING] pandoc-latex-tip: error in generating image")
 
     return images
 
