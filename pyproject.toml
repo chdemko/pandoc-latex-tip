@@ -9,7 +9,7 @@ description = "A pandoc filter for adding icons on specific elements"
 readme = "README.md"
 requires-python = ">=3.10,<3.14"
 license = {text = "BSD-3-Clause"}
-license-files = {paths = ["LICENSE"]}
+license-files = ["LICENSE"]
 authors = [{name = "Christophe Demko", email = "chdemko@gmail.com"}]
 maintainers = [{name = "Christophe Demko", email = "chdemko@gmail.com"}]
 keywords = ["pandoc", "filters", "latex", "tip", "Font-Awesome", "icon"]
