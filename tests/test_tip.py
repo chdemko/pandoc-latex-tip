@@ -60,7 +60,7 @@ pandoc-latex-tip:
       - {name: fa-file-text, color: darksalmon, link: http://www.google.fr}
       - fa-comments
       - image: Tux.pdf
-    size: 36
+    size: 2em
     position: right
 
   - classes: [warning]
@@ -85,7 +85,7 @@ pandoc-latex-tip:
 \\else%%
 \\pandoclatextipevenright%%
 \\fi%%
-\\marginnote{{\\href{{http://www.google.fr}}{{\\includegraphics[width=\\linewidth,height=0.5in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/darksalmon/fa-file-text.png}}}}\\includegraphics[width=\\linewidth,height=0.5in,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}\\includegraphics[width=\\linewidth,height=0.5in,keepaspectratio]{{Tux.pdf}}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{\\href{{http://www.google.fr}}{{\\includegraphics[width=\\linewidth,height=2em,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/darksalmon/fa-file-text.png}}}}\\includegraphics[width=\\linewidth,height=2em,keepaspectratio]{{{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}/black/fa-comments.png}}\\includegraphics[width=\\linewidth,height=2em,keepaspectratio]{{Tux.pdf}}}}[0pt]\\vspace{{0cm}}%%
 {{}}
 \\checkoddpage%%
 \\ifoddpage%%

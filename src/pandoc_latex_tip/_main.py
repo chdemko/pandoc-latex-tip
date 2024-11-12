@@ -741,16 +741,17 @@ def get_size(size: str) -> str:
     str
         The correct size.
     """
-    try:
-        int_value = int(size)
-        if int_value > 0:
-            size = str(int_value)
-        else:
-            debug(
-                f"[WARNING] pandoc-latex-tip: size must be greater than 0; using {size}"
-            )
-    except ValueError:
-        debug(f"[WARNING] pandoc-latex-tip: size must be a number; using {size}")
+    regex = re.compile("^(?P<length>\\d+(\\.\\d*)?)(pt|mm|cm|in|ex|em|mu|sp)?$")
+    if regex.match(size):
+        length = float(regex.match(size).group("length"))
+        if length <= 0:
+            debug("[WARNING] pandoc-latex-tip: size must be greater than 0; using 18")
+            return "18"
+    else:
+        debug(
+            "[WARNING] pandoc-latex-tip: size must be a correct LaTeX length; using 18"
+        )
+        return "18"
     return size
 
 
