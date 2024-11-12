@@ -713,18 +713,18 @@ def get_prefix_even(position: str) -> str:
         The latex prefix.
     """
     if position == "right":
-        return "\\pandoclatextipevenright"
+        return "\\PandocLatexTipEvenRight"
     if position in ("left", ""):
-        return "\\pandoclatextipevenleft"
+        return "\\PandocLatexTipEvenLeft"
     if position == "inner":
-        return "\\pandoclatextipeveninner"
+        return "\\PandocLatexTipEvenInner"
     if position == "outer":
-        return "\\pandoclatextipevenouter"
+        return "\\PandocLatexTipEvenOuter"
     debug(
         f"[WARNING] pandoc-latex-tip: {position}"
         " is not a correct position; using left"
     )
-    return "\\pandoclatextipevenleft"
+    return "\\PandocLatexTipEvenLeft"
 
 
 def get_size(size: str) -> str:
@@ -941,20 +941,20 @@ def finalize(doc: Doc) -> None:
                 r"""
 \makeatletter%
 \newcommand{\PandocLatexTipOddInner}{\reversemarginpar}%
-\newcommand{\pandoclatextipeveninner}{\reversemarginpar}%
+\newcommand{\PandocLatexTipEvenInner}{\reversemarginpar}%
 \newcommand{\PandocLatexTipOddOuter}{\normalmarginpar}%
-\newcommand{\pandoclatextipevenouter}{\normalmarginpar}%
+\newcommand{\PandocLatexTipEvenOuter}{\normalmarginpar}%
 \newcommand{\PandocLatexTipOddLeft}{\reversemarginpar}%
 \newcommand{\PandocLatexTipOddRight}{\normalmarginpar}%
 \if@twoside%
-\newcommand{\pandoclatextipevenright}{\reversemarginpar}%
-\newcommand{\pandoclatextipevenleft}{\normalmarginpar}%
+\newcommand{\PandocLatexTipEvenRight}{\reversemarginpar}%
+\newcommand{\PandocLatexTipEvenLeft}{\normalmarginpar}%
 \else%
-\newcommand{\pandoclatextipevenright}{\normalmarginpar}%
-\newcommand{\pandoclatextipevenleft}{\reversemarginpar}%
+\newcommand{\PandocLatexTipEvenRight}{\normalmarginpar}%
+\newcommand{\PandocLatexTipEvenLeft}{\reversemarginpar}%
 \fi%
 \makeatother%
-\checkoddpage
+\checkoddpage%
     """,
                 "tex",
             )
