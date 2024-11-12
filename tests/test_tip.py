@@ -81,7 +81,7 @@ pandoc-latex-tip:
 {{}}
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddright%%
+\\PandocLatexTipOddRight%%
 \\else%%
 \\pandoclatextipevenright%%
 \\fi%%
@@ -89,7 +89,7 @@ pandoc-latex-tip:
 {{}}
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddleft%%
+\\PandocLatexTipOddLeft%%
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
@@ -97,7 +97,7 @@ pandoc-latex-tip:
 {{}}
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddleft%%
+\\PandocLatexTipOddLeft%%
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
@@ -105,7 +105,7 @@ pandoc-latex-tip:
 {{}}
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddleft%%
+\\PandocLatexTipOddLeft%%
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
@@ -147,7 +147,7 @@ main()
 \\begin{{minipage}}{{\\textwidth}}
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddleft%%
+\\PandocLatexTipOddLeft%%
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
@@ -197,7 +197,7 @@ Division
 Division
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddleft%%
+\\PandocLatexTipOddLeft%%
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
@@ -219,7 +219,7 @@ Division
 Division
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddright%%
+\\PandocLatexTipOddRight%%
 \\else%%
 \\pandoclatextipevenright%%
 \\fi%%
@@ -240,7 +240,7 @@ Division
 Division
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddright%%
+\\PandocLatexTipOddRight%%
 \\else%%
 \\pandoclatextipevenright%%
 \\fi%%
@@ -283,7 +283,7 @@ Division
 Division
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddleft%%
+\\PandocLatexTipOddLeft%%
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
@@ -323,7 +323,7 @@ pandoc-latex-tip:
             f"""
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddleft%%
+\\PandocLatexTipOddLeft%%
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
@@ -367,7 +367,7 @@ pandoc-latex-tip:
 Lineblock
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddleft%%
+\\PandocLatexTipOddLeft%%
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
@@ -412,7 +412,7 @@ main()
 \\begin{{minipage}}{{\\textwidth}}
 \\checkoddpage%%
 \\ifoddpage%%
-\\pandoclatextipoddleft%%
+\\PandocLatexTipOddLeft%%
 \\else%%
 \\pandoclatextipevenleft%%
 \\fi%%
@@ -465,7 +465,7 @@ pandoc-latex-tip:
   a
   \\checkoddpage%%
   \\ifoddpage%%
-  \\pandoclatextipoddleft%%
+  \\PandocLatexTipOddLeft%%
   \\else%%
   \\pandoclatextipevenleft%%
   \\fi%%

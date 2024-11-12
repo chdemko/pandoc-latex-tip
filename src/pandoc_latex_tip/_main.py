@@ -684,18 +684,18 @@ def get_prefix_odd(position: str) -> str:
         The latex prefix.
     """
     if position == "right":
-        return "\\pandoclatextipoddright"
+        return "\\PandocLatexTipOddRight"
     if position in ("left", ""):
-        return "\\pandoclatextipoddleft"
+        return "\\PandocLatexTipOddLeft"
     if position == "inner":
-        return "\\pandoclatextipoddinner"
+        return "\\PandocLatexTipOddInner"
     if position == "outer":
-        return "\\pandoclatextipoddouter"
+        return "\\PandocLatexTipOddOuter"
     debug(
         f"[WARNING] pandoc-latex-tip: {position}"
         " is not a correct position; using left"
     )
-    return "\\pandoclatextipoddleft"
+    return "\\PandocLatexTipOddLeft"
 
 
 def get_prefix_even(position: str) -> str:
@@ -940,12 +940,12 @@ def finalize(doc: Doc) -> None:
             RawInline(
                 r"""
 \makeatletter%
-\newcommand{\pandoclatextipoddinner}{\reversemarginpar}%
+\newcommand{\PandocLatexTipOddInner}{\reversemarginpar}%
 \newcommand{\pandoclatextipeveninner}{\reversemarginpar}%
-\newcommand{\pandoclatextipoddouter}{\normalmarginpar}%
+\newcommand{\PandocLatexTipOddOuter}{\normalmarginpar}%
 \newcommand{\pandoclatextipevenouter}{\normalmarginpar}%
-\newcommand{\pandoclatextipoddleft}{\reversemarginpar}%
-\newcommand{\pandoclatextipoddright}{\normalmarginpar}%
+\newcommand{\PandocLatexTipOddLeft}{\reversemarginpar}%
+\newcommand{\PandocLatexTipOddRight}{\normalmarginpar}%
 \if@twoside%
 \newcommand{\pandoclatextipevenright}{\reversemarginpar}%
 \newcommand{\pandoclatextipevenleft}{\normalmarginpar}%
