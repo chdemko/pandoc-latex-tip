@@ -11,7 +11,6 @@ build:
     python: '3.11'
   commands:
   - git fetch --unshallow || true
-  - pip install hatchling==1.25.0
   - pip install hatch
   - hatch run docs:build $READTHEDOCS_OUTPUT/html/
 

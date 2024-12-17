@@ -684,18 +684,18 @@ def get_prefix_odd(position: str) -> str:
         The latex prefix.
     """
     if position == "right":
-        return "\\pandoclatextipoddright"
+        return "\\PandocLatexTipOddRight"
     if position in ("left", ""):
-        return "\\pandoclatextipoddleft"
+        return "\\PandocLatexTipOddLeft"
     if position == "inner":
-        return "\\pandoclatextipoddinner"
+        return "\\PandocLatexTipOddInner"
     if position == "outer":
-        return "\\pandoclatextipoddouter"
+        return "\\PandocLatexTipOddOuter"
     debug(
         f"[WARNING] pandoc-latex-tip: {position}"
         " is not a correct position; using left"
     )
-    return "\\pandoclatextipoddleft"
+    return "\\PandocLatexTipOddLeft"
 
 
 def get_prefix_even(position: str) -> str:
@@ -713,18 +713,18 @@ def get_prefix_even(position: str) -> str:
         The latex prefix.
     """
     if position == "right":
-        return "\\pandoclatextipevenright"
+        return "\\PandocLatexTipEvenRight"
     if position in ("left", ""):
-        return "\\pandoclatextipevenleft"
+        return "\\PandocLatexTipEvenLeft"
     if position == "inner":
-        return "\\pandoclatextipeveninner"
+        return "\\PandocLatexTipEvenInner"
     if position == "outer":
-        return "\\pandoclatextipevenouter"
+        return "\\PandocLatexTipEvenOuter"
     debug(
         f"[WARNING] pandoc-latex-tip: {position}"
         " is not a correct position; using left"
     )
-    return "\\pandoclatextipevenleft"
+    return "\\PandocLatexTipEvenLeft"
 
 
 def get_size(size: str) -> str:
@@ -741,16 +741,17 @@ def get_size(size: str) -> str:
     str
         The correct size.
     """
-    try:
-        int_value = int(size)
-        if int_value > 0:
-            size = str(int_value)
-        else:
-            debug(
-                f"[WARNING] pandoc-latex-tip: size must be greater than 0; using {size}"
-            )
-    except ValueError:
-        debug(f"[WARNING] pandoc-latex-tip: size must be a number; using {size}")
+    regex = re.compile("^(?P<length>\\d+(\\.\\d*)?)(pt|mm|cm|in|ex|em|mu|sp)?$")
+    if regex.match(size):
+        length = float(regex.match(size).group("length"))
+        if length <= 0:
+            debug("[WARNING] pandoc-latex-tip: size must be greater than 0; using 18")
+            return "18"
+    else:
+        debug(
+            "[WARNING] pandoc-latex-tip: size must be a correct LaTeX length; using 18"
+        )
+        return "18"
     return size
 
 
@@ -939,21 +940,21 @@ def finalize(doc: Doc) -> None:
             RawInline(
                 r"""
 \makeatletter%
-\newcommand{\pandoclatextipoddinner}{\reversemarginpar}%
-\newcommand{\pandoclatextipeveninner}{\reversemarginpar}%
-\newcommand{\pandoclatextipoddouter}{\normalmarginpar}%
-\newcommand{\pandoclatextipevenouter}{\normalmarginpar}%
-\newcommand{\pandoclatextipoddleft}{\reversemarginpar}%
-\newcommand{\pandoclatextipoddright}{\normalmarginpar}%
+\newcommand{\PandocLatexTipOddInner}{\reversemarginpar}%
+\newcommand{\PandocLatexTipEvenInner}{\reversemarginpar}%
+\newcommand{\PandocLatexTipOddOuter}{\normalmarginpar}%
+\newcommand{\PandocLatexTipEvenOuter}{\normalmarginpar}%
+\newcommand{\PandocLatexTipOddLeft}{\reversemarginpar}%
+\newcommand{\PandocLatexTipOddRight}{\normalmarginpar}%
 \if@twoside%
-\newcommand{\pandoclatextipevenright}{\reversemarginpar}%
-\newcommand{\pandoclatextipevenleft}{\normalmarginpar}%
+\newcommand{\PandocLatexTipEvenRight}{\reversemarginpar}%
+\newcommand{\PandocLatexTipEvenLeft}{\normalmarginpar}%
 \else%
-\newcommand{\pandoclatextipevenright}{\normalmarginpar}%
-\newcommand{\pandoclatextipevenleft}{\reversemarginpar}%
+\newcommand{\PandocLatexTipEvenRight}{\normalmarginpar}%
+\newcommand{\PandocLatexTipEvenLeft}{\reversemarginpar}%
 \fi%
 \makeatother%
-\checkoddpage
+\checkoddpage%
     """,
                 "tex",
             )
