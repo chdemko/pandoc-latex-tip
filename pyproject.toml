@@ -39,8 +39,8 @@ classifiers = [
 ]
 dependencies = [
   "panflute~=2.3",
-  "pillow~=11.0",
-  "fonttools~=4.54",
+  "pillow~=11.1",
+  "fonttools~=4.56",
   "platformdirs~=4.3",
   "PyYAML~=6.0",
   "tinycss2~=1.4",
@@ -78,16 +78,16 @@ dependencies = [
   # Types
   "types-PyYAML~=6.0",
   # Formatter
-  "black[jupyter]~=24.10",
+  "black[jupyter]~=25.1",
   # Style checkers
   "doc8~=1.1",
-  "mypy~=1.13",
+  "mypy~=1.15",
   "flake8~=7.1",
   "flake8-pyproject~=1.2",
   "flake8-annotations-complexity~=0.0",
   "flake8-black~=0.3",
   "flake8-blind-except~=0.2",
-  "flake8-bugbear~=24.10",
+  "flake8-bugbear~=24.12",
   "flake8-builtins~=2.5",
   "flake8-cognitive-complexity~=0.1",
   "flake8-comprehensions~=3.16",
@@ -106,10 +106,10 @@ dependencies = [
   "flake8-variables-names~=0.0",
   "pep8-naming~=0.14",
   "darglint~=1.8.1",
-  "pydoclint[flake8]~=0.5",
+  "pydoclint[flake8]~=0.6",
   "teyit~=0.4",
   "refurb~=2.0",
-  "ruff~=0.8"
+  "ruff~=0.9"
 ]
 
 [tool.hatch.envs.hatch-static-analysis.scripts]
@@ -145,7 +145,7 @@ check = [
 [tool.hatch.envs.docs]
 dependencies = [
   "myst-parser~=4.0",
-  "Sphinx~=8.1",
+  "Sphinx~=8.2",
   "sphinx-rtd-theme~=3.0",
   "sphinx-copybutton~=0.5"
 ]
