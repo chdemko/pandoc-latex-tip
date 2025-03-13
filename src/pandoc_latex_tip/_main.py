@@ -435,21 +435,13 @@ def add_latex(elem: Element, latex: str) -> list[Element] | None:
         # Is it a Span or a Code?
         if isinstance(elem, Span | Code):
             return [elem, RawInline(latex, "tex")]
-
-        # It is a CodeBlock: create a minipage to ensure the
-        # _tip to be on the same page as the codeblock
         if isinstance(elem, CodeBlock):
-            return [
-                RawBlock(f"\\begin{{minipage}}{{\\textwidth}}{latex}", "tex"),
-                elem,
-                RawBlock("\\end{minipage}", "tex"),
-            ]
-
+            return [RawBlock(latex, "tex"), elem]
         while elem.content and isinstance(elem.content[0], Div):
             elem = elem.content[0]
-
         if not elem.content or isinstance(
-            elem.content[0], HorizontalRule | Figure | RawBlock | DefinitionList
+            elem.content[0],
+            HorizontalRule | Figure | RawBlock | DefinitionList | CodeBlock,
         ):
             elem.content.insert(0, RawBlock(latex, "tex"))
             return None
@@ -458,13 +450,6 @@ def add_latex(elem: Element, latex: str) -> list[Element] | None:
             return None
         if isinstance(elem.content[0], LineBlock):
             elem.content[0].content[0].content.insert(1, RawInline(latex, "tex"))
-            return None
-        if isinstance(elem.content[0], CodeBlock):
-            elem.content.insert(
-                0,
-                RawBlock(f"\\begin{{minipage}}{{\\textwidth}}{latex}", "tex"),
-            )
-            elem.content.insert(2, RawBlock("\\end{minipage}", "tex"))
             return None
         if isinstance(elem.content[0], BulletList | OrderedList):
             elem.content[0].content[0].content[0].content.insert(

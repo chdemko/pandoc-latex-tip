@@ -144,7 +144,6 @@ main()
 
             """,
             f"""
-\\begin{{minipage}}{{\\textwidth}}
 \\checkoddpage%%
 \\ifoddpage%%
 \\PandocLatexTipOddLeft%%
@@ -158,8 +157,6 @@ main()
 \\NormalTok{{main()}}
 \\end{{Highlighting}}
 \\end{{Shaded}}
-
-\\end{{minipage}}
 
             """,
             pandoc_latex_tip.main,
@@ -409,7 +406,6 @@ main()
 :::
             """,
             f"""
-\\begin{{minipage}}{{\\textwidth}}
 \\checkoddpage%%
 \\ifoddpage%%
 \\PandocLatexTipOddLeft%%
@@ -423,8 +419,6 @@ main()
 \\NormalTok{{main()}}
 \\end{{Highlighting}}
 \\end{{Shaded}}
-
-\\end{{minipage}}
             """,
             pandoc_latex_tip.main,
         )
