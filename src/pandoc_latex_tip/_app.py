@@ -7,13 +7,11 @@ import shutil
 import sys
 from importlib.metadata import version
 
+import platformdirs
+import yaml
 from cleo.application import Application
 from cleo.commands.command import Command
 from cleo.helpers import argument, option
-
-import platformdirs
-
-import yaml
 
 from ._main import get_core_icons, main  # noqa: TID252
 
@@ -61,9 +59,7 @@ class InfoCommand(Command):  # type: ignore[misc]
             status code
         """
         self.line("<b>Installation</>")
-        self.line(
-            f"<info>Version</>:        <comment>" f"{version('pandoc-latex-tip')}"
-        )
+        self.line(f"<info>Version</>:        <comment>{version('pandoc-latex-tip')}")
         self.line("")
         self.line("<b>Environment</>")
         self.line(
@@ -90,7 +86,7 @@ class CollectionsAddCommand(Command):  # type: ignore[misc]
 
     name = "collections add"
     description = "Add a file to a collection"
-    arguments = (name_arg, file_arg)
+    arguments = (name_arg, file_arg)  # type: ignore[bad-assignment]
     help = (
         "A collection is a space used to store all the CSS and TTF files "
         "related to one or more sets of icons."
@@ -140,7 +136,7 @@ class CollectionsDeleteCommand(Command):  # type: ignore[misc]
 
     name = "collections delete"
     description = "Delete a collection"
-    arguments = (name_arg,)
+    arguments = (name_arg,)  # type: ignore[bad-assignment]
     help = (
         "Deleting a collection will erase the folder containing its files. "
         "The operation cannot proceed if the collection is used by a set of icons."
@@ -224,10 +220,9 @@ class CollectionsInfoCommand(Command):  # type: ignore[misc]
 
     name = "collections info"
     description = "Display a collection"
-    arguments = (name_arg,)
+    arguments = (name_arg,)  # type: ignore[bad-assignment]
     help = (
-        "Displaying a collection allows listing all the "
-        "CSS and TTF files it contains."
+        "Displaying a collection allows listing all the CSS and TTF files it contains."
     )
 
     def handle(self) -> int:
@@ -286,8 +281,8 @@ class IconsAddCommand(Command):  # type: ignore[misc]
 
     name = "icons add"
     description = "Add a set of icons from a collection"
-    arguments = (name_arg,)
-    options = (css_opt, ttf_opt, prefix_opt)
+    arguments = (name_arg,)  # type: ignore[bad-assignment]
+    options = (css_opt, ttf_opt, prefix_opt)  # type: ignore[bad-assignment]
     help = (
         "A set of icons is created from a CSS file and a TTF file from a collection. "
         "The prefix ensures that the icons are unique. "
@@ -379,7 +374,7 @@ class IconsDeleteCommand(Command):  # type: ignore[misc]
 
     name = "icons delete"
     description = "Delete a set of icons"
-    options = (prefix_opt,)
+    options = (prefix_opt,)  # type: ignore[bad-assignment]
 
     def handle(self) -> int:
         """

@@ -14,13 +14,14 @@ import tempfile
 from os import path
 from typing import Any
 
+import fontTools.ttLib
 import PIL.Image
 import PIL.ImageColor
 import PIL.ImageDraw
 import PIL.ImageFont
-
-import fontTools.ttLib
-
+import platformdirs
+import tinycss2
+import yaml
 from panflute import (
     BulletList,
     Code,
@@ -46,12 +47,6 @@ from panflute import (
     debug,
     run_filter,
 )
-
-import platformdirs
-
-import tinycss2
-
-import yaml
 
 
 class IconFont:
@@ -237,8 +232,8 @@ class IconFont:
         if bbox:
             icon_image = icon_image.crop(bbox)
 
-        border_w = int((size - (bbox[2] - bbox[0])) / 2)
-        border_h = int((size - (bbox[3] - bbox[1])) / 2)
+        border_w = int((size - (bbox[2] - bbox[0])) / 2)  # type: ignore[unsupported-operation]
+        border_h = int((size - (bbox[3] - bbox[1])) / 2)  # type: ignore[unsupported-operation]
 
         # Create output image
         out_image = PIL.Image.new("RGBA", (size, size), (0, 0, 0, 0))
@@ -322,7 +317,7 @@ def load_icons() -> dict[str, IconFont]:
             ),
             prefix=definition["prefix"],
         )
-        icons.update({key: icon_font for key in icon_font.css_icons})
+        icons.update(dict.fromkeys(icon_font.css_icons, icon_font))
 
     config_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip", "config.yml")
     if config_path.exists():
@@ -358,7 +353,7 @@ def load_icons() -> dict[str, IconFont]:
                     ),
                     prefix=prefix,
                 )
-                icons.update({key: icon_font for key in icon_font.css_icons})
+                icons.update(dict.fromkeys(icon_font.css_icons, icon_font))
 
     return icons
 
@@ -406,7 +401,7 @@ def tip(elem: Element, doc: Doc) -> list[Element] | None:
 
         # Loop on all font size definition
         # noinspection PyUnresolvedReferences
-        for definition in doc.defined:
+        for definition in doc.defined:  # type: ignore[missing-attribute]
             # Are the classes correct?
             if classes >= definition["classes"]:
                 return add_latex(elem, definition["latex"])
@@ -503,7 +498,7 @@ def latex_code(doc: Doc, definition: dict[str, Any], keys: dict[str, str]) -> st
 \\else%%
 {prefix_even}%%
 \\fi%%
-\\marginnote{{{''.join(images)}}}[0pt]\\vspace{{0cm}}%%
+\\marginnote{{{"".join(images)}}}[0pt]\\vspace{{0cm}}%%
 """
 
     return ""
@@ -558,7 +553,7 @@ def get_icons(
                             "link": link,
                         },
                     )
-        elif definition[keys["icon"]] in doc.icons:
+        elif definition[keys["icon"]] in doc.icons:  # type: ignore[missing-attribute]
             icons = [
                 {
                     "name": definition[keys["icon"]],
@@ -636,7 +631,7 @@ def add_icon(doc: Doc, icons: list[dict[str, str]], icon: dict[str, str]) -> Non
         # Is the icon correct?
         try:
             # noinspection PyUnresolvedReferences
-            if icon["name"] in doc.icons:
+            if icon["name"] in doc.icons:  # type: ignore[missing-attribute]
                 icons.append(
                     {
                         "name": icon["name"],
@@ -677,8 +672,7 @@ def get_prefix_odd(position: str) -> str:
     if position == "outer":
         return "\\PandocLatexTipOddOuter"
     debug(
-        f"[WARNING] pandoc-latex-tip: {position}"
-        " is not a correct position; using left"
+        f"[WARNING] pandoc-latex-tip: {position} is not a correct position; using left"
     )
     return "\\PandocLatexTipOddLeft"
 
@@ -706,8 +700,7 @@ def get_prefix_even(position: str) -> str:
     if position == "outer":
         return "\\PandocLatexTipEvenOuter"
     debug(
-        f"[WARNING] pandoc-latex-tip: {position}"
-        " is not a correct position; using left"
+        f"[WARNING] pandoc-latex-tip: {position} is not a correct position; using left"
     )
     return "\\PandocLatexTipEvenLeft"
 
@@ -728,7 +721,7 @@ def get_size(size: str) -> str:
     """
     regex = re.compile("^(?P<length>\\d+(\\.\\d*)?)(pt|mm|cm|in|ex|em|mu|sp)?$")
     if regex.match(size):
-        length = float(regex.match(size).group("length"))
+        length = float(regex.match(size).group("length"))  # type: ignore[missing-attribute]
         if length <= 0:
             debug("[WARNING] pandoc-latex-tip: size must be greater than 0; using 18")
             return "18"
@@ -778,18 +771,18 @@ def create_images(doc: Doc, icons: list[dict[str, Any]], size: str) -> list[str]
                 )
             )
         else:
-            image_path = path.join(doc.folder, icon["color"], icon["name"] + ".png")
+            image_path = path.join(doc.folder, icon["color"], icon["name"] + ".png")  # type: ignore[missing-attribute]
 
             # Create the image if not existing in the cache
             try:
                 if not path.isfile(image_path):
                     # Create the image in the cache
                     # noinspection PyUnresolvedReferences
-                    doc.icons[icon["name"]].export_icon(
+                    doc.icons[icon["name"]].export_icon(  # type: ignore[missing-attribute]
                         icon["name"],
                         512,
                         color=icon["color"],
-                        export_dir=path.join(doc.folder, icon["color"]),
+                        export_dir=path.join(doc.folder, icon["color"]),  # type: ignore[missing-attribute]
                     )
 
                 # Add the LaTeX image
@@ -843,7 +836,7 @@ def add_definition(doc: Doc, definition: dict[str, Any]) -> None:
         )
         if latex:
             # noinspection PyUnresolvedReferences
-            doc.defined.append({"classes": set(classes), "latex": latex})
+            doc.defined.append({"classes": set(classes), "latex": latex})  # type: ignore[missing-attribute]
 
 
 def prepare(doc: Doc) -> None:
@@ -856,29 +849,29 @@ def prepare(doc: Doc) -> None:
         The original document.
     """
     # Add getIconFont library to doc
-    doc.icons = load_icons()
+    doc.icons = load_icons()  # type: ignore[missing-attribute]
 
     # Prepare the definitions
-    doc.defined = []
+    doc.defined = []  # type: ignore[missing-attribute]
 
     # Prepare the folder
     try:
         # Use user cache dir if possible
-        doc.folder = platformdirs.AppDirs(
+        doc.folder = platformdirs.AppDirs(  # type: ignore[missing-attribute]
             "pandoc_latex_tip",
         ).user_cache_dir
-        if not pathlib.Path(doc.folder).exists():
-            pathlib.Path(doc.folder).mkdir(parents=True)
+        if not pathlib.Path(doc.folder).exists():  # type: ignore[missing-attribute]
+            pathlib.Path(doc.folder).mkdir(parents=True)  # type: ignore[missing-attribute]
     except PermissionError:
         # Fallback to a temporary dir
-        doc.folder = tempfile.mkdtemp(
+        doc.folder = tempfile.mkdtemp(  # type: ignore[missing-attribute]
             prefix="pandoc_latex_tip_",
             suffix="_cache",
         )
 
     # Get the meta data
     # noinspection PyUnresolvedReferences
-    meta = doc.get_metadata("pandoc-latex-tip")
+    meta = doc.get_metadata("pandoc-latex-tip")  # type: ignore[missing-attribute]
 
     if isinstance(meta, list):
         # Loop on all definitions

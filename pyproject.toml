@@ -7,11 +7,11 @@ dynamic = ["version"]
 name = "pandoc-latex-tip"
 description = "A pandoc filter for adding icons on specific elements"
 readme = "README.md"
-requires-python = ">=3.10,<3.14"
-license = {text = "BSD-3-Clause"}
-license-files = {paths = ["LICENSE"]}
-authors = [{name = "Christophe Demko", email = "chdemko@gmail.com"}]
-maintainers = [{name = "Christophe Demko", email = "chdemko@gmail.com"}]
+requires-python = ">=3.11,<3.16"
+license = { text = "BSD-3-Clause" }
+license-files = { paths = ["LICENSE"] }
+authors = [{ name = "Christophe Demko", email = "chdemko@gmail.com" }]
+maintainers = [{ name = "Christophe Demko", email = "chdemko@gmail.com" }]
 keywords = ["pandoc", "filters", "latex", "tip", "Font-Awesome", "icon"]
 classifiers = [
   # How mature is this project? Common values are
@@ -30,20 +30,21 @@ classifiers = [
   "Topic :: Text Processing :: Filters",
   # Specify the Python versions you support here. In particular, ensure
   # that you indicate whether you support Python 2, Python 3 or both.
-  "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   # Natural language used
   "Natural Language :: English"
 ]
 dependencies = [
   "panflute~=2.3",
-  "pillow~=11.1",
-  "fonttools~=4.56",
-  "platformdirs~=4.3",
+  "pillow~=13.0",
+  "fonttools~=4.57",
+  "platformdirs~=4.13",
   "PyYAML~=6.0",
-  "tinycss2~=1.4",
+  "tinycss2~=1.5",
   "cleo~=2.1"
 ]
 
@@ -78,38 +79,12 @@ dependencies = [
   # Types
   "types-PyYAML~=6.0",
   # Formatter
-  "black[jupyter]~=25.1",
+  "black[jupyter]~=26.10",
   # Style checkers
-  "doc8~=1.1",
-  "mypy~=1.15",
-  "flake8~=7.1",
-  "flake8-pyproject~=1.2",
-  "flake8-annotations-complexity~=0.0",
-  "flake8-black~=0.3",
-  "flake8-blind-except~=0.2",
-  "flake8-bugbear~=24.12",
-  "flake8-builtins~=2.5",
-  "flake8-cognitive-complexity~=0.1",
-  "flake8-comprehensions~=3.16",
-  "flake8-docstrings~=1.7",
-  "flake8-expression-complexity~=0.0",
-  "flake8-fixme~=1.1",
-  "flake8-functions~=0.0",
-  "flake8-import-order~=0.18",
-  "flake8-mypy~=17.8",
-  "flake8-pyi~=24.9",
-  "flake8-pydocstyle~=0.2",
-  "flake8-return~=1.2",
-  "flake8-simplify~=0.21",
-  "flake8-spellcheck~=0.28",
-  "flake8-use-fstring~=1.4",
-  "flake8-variables-names~=0.0",
-  "pep8-naming~=0.14",
-  "darglint~=1.8.1",
-  "pydoclint[flake8]~=0.6",
-  "teyit~=0.4",
-  "refurb~=2.0",
-  "ruff~=0.9"
+  "doc8~=2.0",
+  "mypy~=2.4",
+  "refurb~=2.2",
+  "ruff~=0.14"
 ]
 
 [tool.hatch.envs.hatch-static-analysis.scripts]
@@ -122,9 +97,7 @@ format-fix = [
 ]
 lint-check = [
   "refurb {args:src download.py docs}",
-  "ruff check {args:src download.py docs}",
-  "teyit --show-stats --fail-on-change {args:tests}",
-  "flake8 {args:src download.py docs}"
+  "ruff check {args:src download.py docs}"
 ]
 lint-fix = [
   "ruff check --fix {args:src download.py docs}"
@@ -133,7 +106,7 @@ lint-fix = [
 [tool.hatch.envs.lint]
 dependencies = [
   "slotscheck~=0.19",
-  "pylint~=3.3"
+  "pylint~=4.1"
 ]
 
 [tool.hatch.envs.lint.scripts]
@@ -144,9 +117,9 @@ check = [
 
 [tool.hatch.envs.docs]
 dependencies = [
-  "myst-parser~=4.0",
-  "Sphinx~=8.2",
-  "sphinx-rtd-theme~=3.0",
+  "myst-parser~=5.1",
+  "Sphinx~=9.2",
+  "sphinx-rtd-theme~=3.1",
   "sphinx-copybutton~=0.5"
 ]
 
@@ -157,63 +130,9 @@ build = "sphinx-build docs {args:build/sphinx/html}"
 # Allow lines to be as long as 88.
 line-length = 88
 
-[tool.flake8]
-# flake8-docstrings
-docstring-convention = "numpy"
-# darglint
-docstring_style = "numpy"
-exclude = "*.pyi"
-ignore = [
-  # class attribute is shadowing a Python builtin
-  "A003",
-  # Cognitive complexity is too high
-  "CCR001",
-  # Function "__init__" has ... arguments that exceeds max allowed 6
-  "CFQ002",
-  # Function attributes has length ... that exceeds max allowed length 100
-  "CFQ001",
-  # Function ... has ... returns that exceeds max allowed 3
-  "CFQ004",
-  # Missing docstring in public method
-  "D105",
-  # One-line docstring should fit on one line with quotes
-  "D200",
-  # The docstring parameter type doesn't match function.
-  "DAR103",
-  # Class docstring contains fewer class attributes than actual class attributes.
-  "DOC601",
-  # Class docstring attributes are different from actual class attributes.
-  "DOC603",
-  # whitespace before ":"
-  "E203",
-  # Expression is too complex
-  "ECE001",
-  # undefined name TODO: remove
-  "F821",
-  # Multi-line construct missing trailing comma
-  "S101",
-  # Spelling error in name (e.g. variable, function, class)
-  "SC200",
-  # SIM119 Use a dataclass for "class ..."
-  "SIM119",
-  # fixme found (TODO)
-  "T101",
-  # Returning Any from function declared to return "..."
-  "T484",
-  # Found ... errors in ... file (checked ... source file)
-  "T499",
-  # variable names that shadow builtins are not allowed
-  "VNE003",
-  # line break before binary operator
-  "W503"
-]
-max-line-length = 88
-statistics = true
-# pydoclint
-arg-type-hints-in-docstring = false
-
-[tool.pydoclint]
-style = "numpy"
+[tool.ruff.lint.per-file-ignores]
+"docs/conf.py" = ["INP001"]
+"tests/**/*.py" = ["T201"]
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -238,9 +157,6 @@ mypy_path = "src"
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
 module = "panflute.*"
-
-[tool.pydocstyle]
-convention = "numpy"
 
 [tool.coverage.run]
 source = ["src"]
