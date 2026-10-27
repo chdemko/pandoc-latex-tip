@@ -81,7 +81,7 @@ jobs:
         hatch run python download.py
     - name: Static check
       run: |
-        hatch fmt --check
+        hatch check
     - name: Dynamic check
       run: |
         hatch run lint:check
