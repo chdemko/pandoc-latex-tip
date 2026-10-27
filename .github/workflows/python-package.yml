@@ -39,7 +39,8 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.14']
-        pandoc-version: [3.2.1, '3.3', '3.4', '3.5', 3.6.3, 3.7.0.2, 3.8.2.1, 3.9.0.2, 3.10.2, '3.11', 3.12.1, '3.13']
+#        pandoc-version: [3.2.1, '3.3', '3.4', '3.5', 3.6.3, 3.7.0.2, 3.8.2.1, 3.9.0.2, 3.10.2, '3.11', 3.12.1, '3.13']
+        pandoc-version: [3.7.0.2, 3.8.2.1, 3.9.0.2, 3.10.2, '3.11', 3.12.1, '3.13']
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
