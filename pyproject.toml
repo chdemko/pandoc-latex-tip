@@ -72,7 +72,7 @@ packages = ["src/pandoc_latex_tip"]
 share = "share"
 
 [[tool.hatch.envs.hatch-test.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13"]
+python = ["3.11", "3.12", "3.13", "3.14", "3.15"]
 
 [tool.hatch.envs.hatch-static-analysis]
 dependencies = [
