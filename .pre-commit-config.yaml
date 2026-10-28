@@ -36,8 +36,3 @@ repos:
     entry: hatch test
     language: system
     pass_filenames: false
-  - id: lock
-    name: lock
-    entry: uv lock --upgrade
-    language: system
-    pass_filenames: false
