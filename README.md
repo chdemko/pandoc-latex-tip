@@ -7,7 +7,6 @@ Installation
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
 [![Coveralls](https://img.shields.io/coveralls/github/chdemko/pandoc-latex-tip/develop.svg?logo=Codecov&logoColor=white)](https://coveralls.io/github/chdemko/pandoc-latex-tip?branch=develop)
 [![Scrutinizer](https://img.shields.io/scrutinizer/g/chdemko/pandoc-latex-tip.svg?logo=scrutinizer)](https://scrutinizer-ci.com/g/chdemko/pandoc-latex-tip/)
-[![Code Climate](https://img.shields.io/codeclimate/maintainability/chdemko/pandoc-latex-tip?logo=codeclimate&barnch=develop)](https://codeclimate.com/github/chdemko/pandoc-latex-tip/)
 [![CodeFactor](https://img.shields.io/codefactor/grade/github/chdemko/pandoc-latex-tip/develop.svg?logo=codefactor)](https://www.codefactor.io/repository/github/chdemko/pandoc-latex-tip)
 [![Codacy](https://img.shields.io/codacy/grade/de425638e13b4ceab3bfad1c4557aa6c.svg?logo=codacy&logoColor=white)](https://app.codacy.com/gh/chdemko/pandoc-latex-tip/dashboard)
 [![PyPI version](https://img.shields.io/pypi/v/pandoc-latex-tip.svg?logo=pypi&logoColor=white)](https://pypi.org/project/pandoc-latex-tip/)
@@ -16,7 +15,7 @@ Installation
 [![Downloads](https://img.shields.io/pypi/dm/pandoc-latex-tip?logo=pypi&logoColor=white)](https://pepy.tech/project/pandoc-latex-tip)
 [![Development Status](https://img.shields.io/pypi/status/pandoc-latex-tip.svg?logo=pypi&logoColor=white)](https://pypi.org/project/pandoc-numbering/)
 [![Python version](https://img.shields.io/pypi/pyversions/pandoc-latex-tip.svg?logo=Python&logoColor=white)](https://pypi.org/project/pandoc-latex-tip/)
-[![Pandoc version](https://img.shields.io/badge/pandoc-3.2%20..%203.6-blue.svg?logo=markdown)](https://pandoc.org/)
+[![Pandoc version](https://img.shields.io/badge/pandoc-3.8%20..%203.13-blue.svg?logo=markdown)](https://pandoc.org/)
 [![Latest release](https://img.shields.io/github/release-date/chdemko/pandoc-latex-tip.svg?logo=github)](https://github.com/chdemko/pandoc-latex-tip/releases)
 [![Last commit](https://img.shields.io/github/last-commit/chdemko/pandoc-latex-tip/develop?logo=github)](https://github.com/chdemko/pandoc-latex-tip/commit/develop/)
 [![Repo Size](https://img.shields.io/github/repo-size/chdemko/pandoc-latex-tip.svg?logo=github)](http://pandoc-latex-tip.readthedocs.io/en/latest/)
@@ -112,7 +111,7 @@ When your changes are ready, run
 
 ~~~shell-session
 $ hatch test
-$ hatch fmt --check
+$ hatch check
 $ hatch run lint:check
 $ hatch run docs:build
 $ hatch build -t wheel

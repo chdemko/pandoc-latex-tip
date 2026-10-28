@@ -2,7 +2,6 @@
 Sphinx configuration.
 """
 
-# noqa: INP001
 # Configuration file for the Sphinx documentation builder.
 #
 # This file does only contain a selection of the most common options. For a
@@ -14,8 +13,6 @@ Sphinx configuration.
 import datetime
 import os
 import sys
-
-# noinspection PyCompatibility
 import tomllib
 
 sys.path.insert(0, os.path.abspath("../.."))

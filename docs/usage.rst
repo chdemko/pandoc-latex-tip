@@ -109,49 +109,36 @@ Introduction
 ------------
 
 ``pandoc-latex-tip`` can be extended by adding collections of
-``CSS`` and ``TTF`` files.
+``CSS`` and ``ICONS`` (``TTF`` or ``WOFF2``) files.
 
-Run ``pandoc-latex-tip`` for a complete explanation.
+Run ``pandoc-latex-tip --help`` for a complete explanation.
+Without any command, ``pandoc-latex-tip`` runs as a pandoc filter.
 
 .. code-block:: shell-session
 
-    $ pandoc-latex-tip
+    $ pandoc-latex-tip --help
 
 .. code-block:: console
 
-    pandoc-latex-tip filter (version number)
+    Usage: pandoc-latex-tip [OPTIONS] [COMMAND] [ARGS]...
 
-    Usage:
-      command [options] [arguments]
+      pandoc-latex-tip filter (run as a pandoc filter when no command is given)
 
     Options:
-      -h, --help            Display help for the given command. When no command
-    is given display help for the list command.
-      -q, --quiet           Do not output any message.
-      -V, --version         Display this application version.
-          --ansi            Force ANSI output.
-          --no-ansi         Disable ANSI output.
-      -n, --no-interaction  Do not ask any interactive question.
-      -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal ou
-    tput, 2 for more verbose output and 3 for debug.
+      --version  Show the version and exit.
+      --help     Show this message and exit.
 
-    Available commands:
-      beamer              Run pandoc filter for Beamer document
-      collections         List the collections
-      help                Displays help for a command.
-      icons               List the set of icons
-      info                Give information about pandoc-latex-tip
-      latex               Run pandoc filter for LaTeX document
-      list                Lists commands.
+    Commands:
+      collections  List the collections
+      icons        List the set of icons
+      info         Give information about pandoc-latex-tip
 
-     collections
-      collections add     Add a file to a collection
-      collections delete  Delete a collection
-      collections info    Display a collection
+The ``collections`` command has the sub-commands ``add`` (add a file to a
+collection), ``delete`` (delete a collection) and ``info`` (display a
+collection). The ``icons`` command has the sub-commands ``add`` (add a set of
+icons from a collection) and ``delete`` (delete a set of icons).
 
-     icons
-      icons add           Add a set of icons from a collection
-      icons delete        Delete a set of icons
+The ``ICONS`` file can be a ``TTF`` or a ``WOFF2`` file.
 
 Example
 -------
@@ -179,7 +166,7 @@ This command produces a PDF file with a warning since the icon named
     [WARNING] Could not fetch resource unexisting.png: replacing image with description
 
 It's possible to extend ``pandoc-latex-tip`` by defining a new collection
-containing ``CSS`` and ``TTF`` files:
+containing ``CSS`` and ``ICONS`` files:
 
 .. code-block:: shell-session
 
@@ -189,15 +176,15 @@ containing ``CSS`` and ``TTF`` files:
 
     - collection: fontawesome
       CSS: fontawesome.css
-      TTF: fa-solid-900.ttf
+      ICONS: fa-solid-900.woff2
       prefix: fa-
     - collection: fontawesome
       CSS: fontawesome.css
-      TTF: fa-regular-400.ttf
+      ICONS: fa-regular-400.woff2
       prefix: far-
     - collection: fontawesome
       CSS: brands.css
-      TTF: fa-brands-400.ttf
+      ICONS: fa-brands-400.woff2
       prefix: fab-
 
 .. code-block:: shell-session
@@ -223,14 +210,14 @@ containing ``CSS`` and ``TTF`` files:
 
     Add file 'materialdesignicons-webfont.ttf' to collection 'materialdesign'
 
-And by creating a new set of icons using a ``CSS`` file and a ``TTF`` file
+And by creating a new set of icons using a ``CSS`` file and an ``ICONS`` file
 from a collection and by setting a prefix:
 
 .. code-block:: shell-session
 
     $ pandoc-latex-tip icons add \
         --CSS materialdesignicons.css \
-        --TTF materialdesignicons-webfont.ttf \
+        --ICONS materialdesignicons-webfont.ttf \
         --prefix mdi- \
         materialdesign
 
@@ -242,19 +229,19 @@ from a collection and by setting a prefix:
 
     - collection: fontawesome
       CSS: fontawesome.css
-      TTF: fa-solid-900.ttf
+      ICONS: fa-solid-900.woff2
       prefix: fa-
     - collection: fontawesome
       CSS: fontawesome.css
-      TTF: fa-regular-400.ttf
+      ICONS: fa-regular-400.woff2
       prefix: far-
     - collection: fontawesome
       CSS: brands.css
-      TTF: fa-brands-400.ttf
+      ICONS: fa-brands-400.woff2
       prefix: fab-
     - collection: materialdesign
       CSS: materialdesignicons.css
-      TTF: materialdesignicons-webfont.ttf
+      ICONS: materialdesignicons-webfont.ttf
       prefix: mdi-
 
 The original ``mdi-account`` unknown icon is now recognized by
@@ -271,4 +258,4 @@ The original ``mdi-account`` unknown icon is now recognized by
     [WARNING] Could not fetch resource unexisting.png: replacing image with description
 
 The ``2 extra bytes in post.stringData array`` message is due to an error
-in the ``TTF`` file from *materialdesign*.
+in the ``ICONS`` file from *materialdesign*.

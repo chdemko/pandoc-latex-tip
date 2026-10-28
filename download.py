@@ -8,6 +8,8 @@ import sys
 import urllib.error
 import urllib.request
 
+FONTAWESOME = "7.3.1"
+
 
 def get_icons() -> None:
     """
@@ -21,36 +23,15 @@ def get_fontawesome() -> None:
     Get the fontawesome icons.
     """
     folder = get_folder("fontawesome")
-    download(
-        "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.6.0/"
-        "css/fontawesome.css",
-        folder,
-        "fontawesome.css",
-    )
-    download(
-        "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.6.0/"
-        "css/brands.css",
-        folder,
-        "brands.css",
-    )
-    download(
-        "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.6.0/"
-        "webfonts/fa-brands-400.ttf",
-        folder,
-        "fa-brands-400.ttf",
-    )
-    download(
-        "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.6.0/"
-        "webfonts/fa-regular-400.ttf",
-        folder,
-        "fa-regular-400.ttf",
-    )
-    download(
-        "https://raw.githubusercontent.com/FortAwesome/Font-Awesome/6.6.0/"
-        "webfonts/fa-solid-900.ttf",
-        folder,
-        "fa-solid-900.ttf",
-    )
+    base = f"https://raw.githubusercontent.com/FortAwesome/Font-Awesome/{FONTAWESOME}/"
+    for filename in ("fontawesome.css", "brands.css"):
+        download(f"{base}css/{filename}", folder, filename)
+    for filename in (
+        "fa-brands-400.woff2",
+        "fa-regular-400.woff2",
+        "fa-solid-900.woff2",
+    ):
+        download(f"{base}webfonts/{filename}", folder, filename)
 
 
 def download(url: str, folder: pathlib.Path, filename: str) -> None:
