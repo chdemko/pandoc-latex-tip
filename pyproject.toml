@@ -41,11 +41,11 @@ classifiers = [
 dependencies = [
   "panflute~=2.3",
   "pillow~=13.0",
-  "fonttools[woff]~=4.57",
-  "platformdirs~=4.13",
+  "fonttools[woff]~=4.68",
+  "platformdirs~=4.14",
   "PyYAML~=6.0",
   "tinycss2~=1.5",
-  "click~=8.3"
+  "click~=8.5"
 ]
 
 [project.urls]
@@ -83,8 +83,8 @@ dependencies = [
   # Style checkers
   "doc8~=2.0",
   "mypy~=2.4",
-  "refurb~=2.2",
-  "ruff~=0.14"
+  "refurb~=2.3",
+  "ruff~=0.17"
 ]
 
 [tool.hatch.envs.hatch-static-analysis.scripts]
