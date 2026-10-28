@@ -7,518 +7,401 @@ import shutil
 import sys
 from importlib.metadata import version
 
+import click
 import platformdirs
 import yaml
-from cleo.application import Application
-from cleo.commands.command import Command
-from cleo.helpers import argument, option
 
 from ._main import get_core_icons, main  # noqa: TID252
 
-name_arg = argument(
-    "name",
-    description="Collection name",
+
+def _share_path(*parts: str) -> pathlib.Path:
+    return pathlib.Path(sys.prefix, "share", "pandoc_latex_tip", *parts)
+
+
+def _config_path() -> pathlib.Path:
+    return _share_path("config.yml")
+
+
+def _info(text: str) -> str:
+    return click.style(text, fg="green")
+
+
+def _comment(text: str) -> str:
+    return click.style(text, fg="yellow")
+
+
+def _warning(text: str) -> str:
+    return click.style(text, fg="yellow", bold=True)
+
+
+def _error(text: str) -> str:
+    return click.style(text, fg="red")
+
+
+def _bold(text: str) -> str:
+    return click.style(text, bold=True)
+
+
+@click.group(
+    name="pandoc-latex-tip",
+    help="pandoc-latex-tip filter (run as a pandoc filter when no command is given)",
+    invoke_without_command=True,
 )
-file_arg = argument(
-    "file",
-    description="File name",
-)
-css_opt = option(
-    "CSS",
-    description="CSS filename from the collection",
-    flag=False,
-)
-ttf_opt = option(
-    "TTF",
-    description="TTF filename from the collection",
-    flag=False,
-)
-prefix_opt = option(
-    "prefix",
-    short_name="p",
-    description="Icon prefix used to replace the common prefix found in the css file",
-    flag=False,
-)
-
-
-class InfoCommand(Command):  # type: ignore[misc]
+@click.version_option(version=version("pandoc-latex-tip"), prog_name="pandoc-latex-tip")
+@click.pass_context
+def cli(ctx: click.Context) -> None:
     """
-    InfoCommand.
+    Root command group.
+
+    Parameters
+    ----------
+    ctx : click.Context
+        The click context.
     """
-
-    name = "info"
-    description = "Give information about pandoc-latex-tip"
-
-    def handle(self) -> int:
-        """
-        Handle info command.
-
-        Returns
-        -------
-        int
-            status code
-        """
-        self.line("<b>Installation</>")
-        self.line(f"<info>Version</>:        <comment>{version('pandoc-latex-tip')}")
-        self.line("")
-        self.line("<b>Environment</>")
-        self.line(
-            f"<info>Collection dir</>: <comment>"
-            f"{pathlib.Path(sys.prefix, 'share', 'pandoc_latex_tip')}</>"
-        )
-        self.line(
-            f"<info>Config file</>:    <comment>"
-            f"{pathlib.Path(sys.prefix, 'share', 'pandoc_latex_tip', 'config.yml')}</>"
-        )
-        self.line("")
-        self.line("<b>Cache</>")
-        self.line(
-            f"<info>Cache dir</>:      <comment>"
-            f"{platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir}</>"
-        )
-        return 0
-
-
-class CollectionsAddCommand(Command):  # type: ignore[misc]
-    """
-    CollectionsAddCommand.
-    """
-
-    name = "collections add"
-    description = "Add a file to a collection"
-    arguments = (name_arg, file_arg)  # type: ignore[bad-assignment]
-    help = (
-        "A collection is a space used to store all the CSS and TTF files "
-        "related to one or more sets of icons."
-    )
-
-    def handle(self) -> int:
-        """
-        Handle collections add command.
-
-        Returns
-        -------
-        int
-            status code
-
-        Raises
-        ------
-        ValueError
-            If an error occurs.
-        """
-        self.add_style("warning", fg="yellow", options=["bold"])
-        if self.argument("name") == "fontawesome":
-            message = "You cannot modify core collection"
-            raise ValueError(message)
-        dir_path = pathlib.Path(
-            sys.prefix, "share", "pandoc_latex_tip", self.argument("name")
-        )
-        if not dir_path.exists():
-            dir_path.mkdir(parents=True)
-        file_path = pathlib.Path(self.argument("file"))
-        if file_path.suffix not in (".css", ".ttf"):
-            message = "The added file must be a CSS or TTF file"
-            raise ValueError(message)
-        dest_path = pathlib.Path(dir_path, file_path.parts[-1])
-        shutil.copy(file_path, dest_path)
-
-        self.line(
-            f"Add file <comment>'{self.argument('file')}'</> to "
-            f"collection <warning>'{self.argument('name')}'</>"
-        )
-        return 0
-
-
-class CollectionsDeleteCommand(Command):  # type: ignore[misc]
-    """
-    CollectionDeleteCommand.
-    """
-
-    name = "collections delete"
-    description = "Delete a collection"
-    arguments = (name_arg,)  # type: ignore[bad-assignment]
-    help = (
-        "Deleting a collection will erase the folder containing its files. "
-        "The operation cannot proceed if the collection is used by a set of icons."
-    )
-
-    def handle(self) -> int:
-        """
-        Handle collections delete command.
-
-        Returns
-        -------
-        int
-            status code
-
-        Raises
-        ------
-        ValueError
-            If an error occurs.
-        """
-        self.add_style("warning", fg="yellow", options=["bold"])
-        name = self.argument("name")
-        if name == "fontawesome":
-            message = "You cannot modify core collection"
-            raise ValueError(message)
-        dir_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip", name)
-        config_path = pathlib.Path(
-            sys.prefix,
-            "share",
-            "pandoc_latex_tip",
-            "config.yml",
-        )
-        if config_path.exists():
-            with config_path.open(encoding="utf-8") as stream:
-                icons = yaml.safe_load(stream)
-                for definition in icons:
-                    if definition["collection"] == name:
-                        message = f"Collection '{name}' is in use"
-                        raise ValueError(message)
-
-        if not dir_path.exists():
-            message = f"Collection '{name}' does not exist"
-            raise ValueError(message)
-
-        shutil.rmtree(dir_path)
-        self.line(f"Delete collection <warning>'{name}'</>")
-        return 0
-
-
-class CollectionsListCommand(Command):  # type: ignore[misc]
-    """
-    CollectionsListCommand.
-    """
-
-    name = "collections"
-    description = "List the collections"
-
-    def handle(self) -> int:
-        """
-        Handle collections command.
-
-        Returns
-        -------
-        int
-            status code
-        """
-        self.add_style("warning", fg="yellow", options=["bold"])
-        dir_path = pathlib.Path(sys.prefix, "share", "pandoc_latex_tip")
-        self.line("<b>Collections</>")
-        for folder in dir_path.iterdir():
-            if folder.parts[-1] == "fontawesome":
-                self.line("<error>fontawesome</>")
-            elif folder.is_dir():
-                self.line(f"<warning>{folder.parts[-1]}</>")
-        return 0
-
-
-class CollectionsInfoCommand(Command):  # type: ignore[misc]
-    """
-    CollectionsInfoCommand.
-    """
-
-    name = "collections info"
-    description = "Display a collection"
-    arguments = (name_arg,)  # type: ignore[bad-assignment]
-    help = (
-        "Displaying a collection allows listing all the CSS and TTF files it contains."
-    )
-
-    def handle(self) -> int:
-        """
-        Handle collections info command.
-
-        Returns
-        -------
-        int
-            status code
-
-        Raises
-        ------
-        ValueError
-            If an error occurs.
-        """
-        self.add_style("warning", fg="yellow", options=["bold"])
-        name = self.argument("name")
-        dir_path = pathlib.Path(
-            sys.prefix,
-            "share",
-            "pandoc_latex_tip",
-            name,
-        )
-        if not dir_path.exists():
-            message = f"Collection '{name}' does not exist"
-            raise ValueError(message)
-
-        self.line("<b>Information</>")
-        if name == "fontawesome":
-            self.line(f"<info>Name</>: <error>{name}</>")
-            self.line("<info>Type</>: <error>core</>")
-        else:
-            self.line(f"<info>Name</>: <warning>{name}</>")
-            self.line("<info>Type</>: <warning>additional</>")
-
-        self.line("")
-        self.line("<b>CSS files</>")
-        for filename in dir_path.iterdir():
-            if filename.suffix == ".css":
-                self.line(f"- <comment>{filename.parts[-1]}</>")
-
-        self.line("")
-        self.line("<b>TTF files</>")
-        for filename in dir_path.iterdir():
-            if filename.suffix == ".ttf":
-                self.line(f"- <comment>{filename.parts[-1]}</>")
-
-        return 0
-
-
-class IconsAddCommand(Command):  # type: ignore[misc]
-    """
-    IconsAddCommand.
-    """
-
-    name = "icons add"
-    description = "Add a set of icons from a collection"
-    arguments = (name_arg,)  # type: ignore[bad-assignment]
-    options = (css_opt, ttf_opt, prefix_opt)  # type: ignore[bad-assignment]
-    help = (
-        "A set of icons is created from a CSS file and a TTF file from a collection. "
-        "The prefix ensures that the icons are unique. "
-        "It replaces the common prefix detected in the CSS file."
-    )
-
-    # pylint: disable=too-many-return-statements, too-many-branches
-    def handle(self) -> int:
-        """
-        Handle icons add command.
-
-        Returns
-        -------
-        int
-            status code
-
-        Raises
-        ------
-        ValueError
-            If an error occurs.
-        """
-        name = self.argument("name")
-        if name == "fontawesome":
-            message = "You cannot modify core collection"
-            raise ValueError(message)
-        dir_path = pathlib.Path(
-            sys.prefix,
-            "share",
-            "pandoc_latex_tip",
-            self.argument("name"),
-        )
-        if dir_path.exists():
-            if not self.option("CSS"):
-                message = "CSS option is mandatory"
-                raise ValueError(message)
-            css = self.option("CSS")
-            css_file = pathlib.Path(dir_path, css)
-            if not css_file.exists():
-                message = f"Collection '{name}' does not contain '{css}'"
-                raise ValueError(message)
-            if not self.option("TTF"):
-                message = "TTF option is mandatory"
-                raise ValueError(message)
-            ttf = self.option("TTF")
-            ttf_file = pathlib.Path(dir_path, ttf)
-            if not ttf_file.exists():
-                message = f"Collection '{name}' does not contain '{ttf}'"
-                raise ValueError(message)
-            if not self.option("prefix"):
-                message = "prefix option is mandatory"
-                raise ValueError(message)
-            prefix = self.option("prefix")
-            config_path = pathlib.Path(
-                sys.prefix,
-                "share",
-                "pandoc_latex_tip",
-                "config.yml",
-            )
-            if config_path.exists():
-                with config_path.open(encoding="utf-8") as stream:
-                    icons = yaml.safe_load(stream)
-                    for definition in icons:
-                        if definition["prefix"] == prefix:
-                            message = f"Prefix '{prefix}' is already used"
-                            raise ValueError(message)
-            else:
-                icons = []
-            icons.append(
-                {
-                    "collection": name,
-                    "CSS": css,
-                    "TTF": ttf,
-                    "prefix": prefix,
-                },
-            )
-            with config_path.open(mode="w", encoding="utf-8") as stream:
-                stream.write(yaml.dump(icons, sort_keys=False))
-
-        else:
-            message = f"Collection '{name}' does not exist"
-            raise ValueError(message)
-        return 0
-
-
-class IconsDeleteCommand(Command):  # type: ignore[misc]
-    """
-    IconsDeleteCommand.
-    """
-
-    name = "icons delete"
-    description = "Delete a set of icons"
-    options = (prefix_opt,)  # type: ignore[bad-assignment]
-
-    def handle(self) -> int:
-        """
-        Handle icons delete command.
-
-        Returns
-        -------
-        int
-            status code
-
-        Raises
-        ------
-        ValueError
-            If an error occurs.
-        """
-        if not self.option("prefix"):
-            message = "prefix option is mandatory"
-            raise ValueError(message)
-        prefix = self.option("prefix")
-        if prefix in ("fa-", "far-", "fab-"):
-            message = "You cannot modify core icons"
-            raise ValueError(message)
-        config_path = pathlib.Path(
-            sys.prefix,
-            "share",
-            "pandoc_latex_tip",
-            "config.yml",
-        )
-        if config_path.exists():
-            with config_path.open(encoding="utf-8") as stream:
-                icons = yaml.safe_load(stream)
-            keep = [
-                definition for definition in icons if definition["prefix"] != prefix
-            ]
-            if keep != icons:
-                with config_path.open(mode="w", encoding="utf-8") as stream:
-                    stream.write(yaml.dump(keep, sort_keys=False))
-            else:
-                message = "Unexisting prefix"
-                raise ValueError(message)
-        else:
-            message = "Unexisting config file"
-            raise ValueError(message)
-        return 0
-
-
-class IconsListCommand(Command):  # type: ignore[misc]
-    """
-    IconsListCommand.
-    """
-
-    name = "icons"
-    description = "List the set of icons"
-
-    def handle(self) -> int:
-        """
-        Handle icons command.
-
-        Returns
-        -------
-        int
-            status code
-        """
-        self.add_style("warning", fg="yellow", options=["bold"])
-        icons = get_core_icons()
-        config_path = pathlib.Path(
-            sys.prefix,
-            "share",
-            "pandoc_latex_tip",
-            "config.yml",
-        )
-        if config_path.exists():
-            with config_path.open(encoding="utf-8") as stream:
-                icons.extend(yaml.safe_load(stream))
-        for element in icons:
-            if element["collection"] == "fontawesome":
-                self.line("- <info>collection</>: <error>fontawesome</>")
-            else:
-                self.line(f"- <info>collection</>: <warning>{element['collection']}</>")
-            self.line(f"  <info>CSS</>: <comment>{element['CSS']}</>")
-            self.line(f"  <info>TTF</>: <comment>{element['TTF']}</>")
-            self.line(f"  <info>prefix</>: <comment>{element['prefix']}</>")
-        return 0
-
-
-class PandocLaTeXFilterCommand(Command):  # type: ignore[misc]
-    """
-    PandocLaTeXFilterCommand.
-    """
-
-    name = "latex"
-    description = "Run pandoc filter for LaTeX document"
-
-    def handle(self) -> int:
-        """
-        Handle latex command.
-
-        Returns
-        -------
-        int
-            status code
-        """
+    if ctx.invoked_subcommand is None:
         main()
-        return 0
 
 
-class PandocBeamerFilterCommand(Command):  # type: ignore[misc]
+@cli.command(name="info", help="Give information about pandoc-latex-tip")
+def info_command() -> None:
     """
-    PandocBeamerFilterCommand.
+    Handle info command.
     """
+    click.echo(_bold("Installation"))
+    click.echo(f"{_info('Version')}:        {_comment(version('pandoc-latex-tip'))}")
+    click.echo("")
+    click.echo(_bold("Environment"))
+    click.echo(f"{_info('Collection dir')}: {_comment(str(_share_path()))}")
+    click.echo(f"{_info('Config file')}:    {_comment(str(_config_path()))}")
+    click.echo("")
+    click.echo(_bold("Cache"))
+    click.echo(
+        f"{_info('Cache dir')}:      "
+        f"{_comment(platformdirs.AppDirs('pandoc_latex_tip').user_cache_dir)}"
+    )
 
-    name = "beamer"
-    description = "Run pandoc filter for Beamer document"
 
-    def handle(self) -> int:
-        """
-        Handle beamer command.
+@cli.group(
+    name="collections",
+    help="List the collections",
+    invoke_without_command=True,
+)
+@click.pass_context
+def collections_group(ctx: click.Context) -> None:
+    """
+    Handle collections command.
 
-        Returns
-        -------
-        int
-            status code
-        """
-        main()
-        return 0
+    Parameters
+    ----------
+    ctx : click.Context
+        The click context.
+    """
+    if ctx.invoked_subcommand is not None:
+        return
+    click.echo(_bold("Collections"))
+    for folder in _share_path().iterdir():
+        if folder.parts[-1] == "fontawesome":
+            click.echo(_error("fontawesome"))
+        elif folder.is_dir():
+            click.echo(_warning(folder.parts[-1]))
+
+
+@collections_group.command(
+    name="add",
+    help=(
+        "Add a file to a collection. A collection is a space used to store all "
+        "the CSS, TTF and WOFF2 files related to one or more sets of icons."
+    ),
+)
+@click.argument("name")
+@click.argument("file")
+def collections_add(name: str, file: str) -> None:
+    """
+    Handle collections add command.
+
+    Parameters
+    ----------
+    name : str
+        Collection name.
+    file : str
+        File name.
+
+    Raises
+    ------
+    click.ClickException
+        If an error occurs.
+    """
+    if name == "fontawesome":
+        message = "You cannot modify core collection"
+        raise click.ClickException(message)
+    dir_path = _share_path(name)
+    if not dir_path.exists():
+        dir_path.mkdir(parents=True)
+    file_path = pathlib.Path(file)
+    if file_path.suffix not in (".css", ".ttf", ".woff2"):
+        message = "The added file must be a CSS, TTF or WOFF2 file"
+        raise click.ClickException(message)
+    dest_path = pathlib.Path(dir_path, file_path.parts[-1])
+    shutil.copy(file_path, dest_path)
+
+    click.echo(f"Add file {_comment(repr(file))} to collection {_warning(repr(name))}")
+
+
+@collections_group.command(
+    name="delete",
+    help=(
+        "Delete a collection. Deleting a collection will erase the folder "
+        "containing its files. The operation cannot proceed if the collection "
+        "is used by a set of icons."
+    ),
+)
+@click.argument("name")
+def collections_delete(name: str) -> None:
+    """
+    Handle collections delete command.
+
+    Parameters
+    ----------
+    name : str
+        Collection name.
+
+    Raises
+    ------
+    click.ClickException
+        If an error occurs.
+    """
+    if name == "fontawesome":
+        message = "You cannot modify core collection"
+        raise click.ClickException(message)
+    dir_path = _share_path(name)
+    config_path = _config_path()
+    if config_path.exists():
+        with config_path.open(encoding="utf-8") as stream:
+            icons = yaml.safe_load(stream)
+            for definition in icons:
+                if definition["collection"] == name:
+                    message = f"Collection '{name}' is in use"
+                    raise click.ClickException(message)
+
+    if not dir_path.exists():
+        message = f"Collection '{name}' does not exist"
+        raise click.ClickException(message)
+
+    shutil.rmtree(dir_path)
+    click.echo(f"Delete collection {_warning(repr(name))}")
+
+
+@collections_group.command(
+    name="info",
+    help=(
+        "Display a collection. Displaying a collection allows listing all "
+        "the CSS, TTF and WOFF2 files it contains."
+    ),
+)
+@click.argument("name")
+def collections_info(name: str) -> None:
+    """
+    Handle collections info command.
+
+    Parameters
+    ----------
+    name : str
+        Collection name.
+
+    Raises
+    ------
+    click.ClickException
+        If an error occurs.
+    """
+    dir_path = _share_path(name)
+    if not dir_path.exists():
+        message = f"Collection '{name}' does not exist"
+        raise click.ClickException(message)
+
+    click.echo(_bold("Information"))
+    if name == "fontawesome":
+        click.echo(f"{_info('Name')}: {_error(name)}")
+        click.echo(f"{_info('Type')}: {_error('core')}")
+    else:
+        click.echo(f"{_info('Name')}: {_warning(name)}")
+        click.echo(f"{_info('Type')}: {_warning('additional')}")
+
+    click.echo("")
+    click.echo(_bold("CSS files"))
+    for filename in dir_path.iterdir():
+        if filename.suffix == ".css":
+            click.echo(f"- {_comment(filename.parts[-1])}")
+
+    click.echo("")
+    click.echo(_bold("TTF/WOFF2 files"))
+    for filename in dir_path.iterdir():
+        if filename.suffix in (".ttf", ".woff2"):
+            click.echo(f"- {_comment(filename.parts[-1])}")
+
+
+@cli.group(
+    name="icons",
+    help="List the set of icons",
+    invoke_without_command=True,
+)
+@click.pass_context
+def icons_group(ctx: click.Context) -> None:
+    """
+    Handle icons command.
+
+    Parameters
+    ----------
+    ctx : click.Context
+        The click context.
+    """
+    if ctx.invoked_subcommand is not None:
+        return
+    icons = get_core_icons()
+    config_path = _config_path()
+    if config_path.exists():
+        with config_path.open(encoding="utf-8") as stream:
+            icons.extend(yaml.safe_load(stream))
+    for element in icons:
+        if element["collection"] == "fontawesome":
+            click.echo(f"- {_info('collection')}: {_error('fontawesome')}")
+        else:
+            click.echo(f"- {_info('collection')}: {_warning(element['collection'])}")
+        click.echo(f"  {_info('CSS')}: {_comment(element['CSS'])}")
+        click.echo(
+            f"  {_info('ICONS')}: {_comment(element.get('ICONS', element.get('TTF', '')))}"
+        )
+        click.echo(f"  {_info('prefix')}: {_comment(element['prefix'])}")
+
+
+@icons_group.command(
+    name="add",
+    help=(
+        "Add a set of icons from a collection. A set of icons is created from "
+        "a CSS file and a TTF or WOFF2 file from a collection. The prefix ensures that "
+        "the icons are unique. It replaces the common prefix detected in the "
+        "CSS file."
+    ),
+)
+@click.argument("name")
+@click.option("--CSS", "css", help="CSS filename from the collection")
+@click.option("--ICONS", "icons_file", help="TTF or WOFF2 filename from the collection")
+@click.option(
+    "-p",
+    "--prefix",
+    help="Icon prefix used to replace the common prefix found in the css file",
+)
+def icons_add(
+    name: str, css: str | None, icons_file: str | None, prefix: str | None
+) -> None:
+    """
+    Handle icons add command.
+
+    Parameters
+    ----------
+    name : str
+        Collection name.
+    css : str | None
+        CSS filename from the collection.
+    icons_file : str | None
+        TTF or WOFF2 filename from the collection.
+    prefix : str | None
+        Icon prefix.
+
+    Raises
+    ------
+    click.ClickException
+        If an error occurs.
+    """
+    if name == "fontawesome":
+        message = "You cannot modify core collection"
+        raise click.ClickException(message)
+    dir_path = _share_path(name)
+    if not dir_path.exists():
+        message = f"Collection '{name}' does not exist"
+        raise click.ClickException(message)
+    if not css:
+        message = "CSS option is mandatory"
+        raise click.ClickException(message)
+    if not pathlib.Path(dir_path, css).exists():
+        message = f"Collection '{name}' does not contain '{css}'"
+        raise click.ClickException(message)
+    if not icons_file:
+        message = "ICONS option is mandatory"
+        raise click.ClickException(message)
+    if not pathlib.Path(dir_path, icons_file).exists():
+        message = f"Collection '{name}' does not contain '{icons_file}'"
+        raise click.ClickException(message)
+    if not prefix:
+        message = "prefix option is mandatory"
+        raise click.ClickException(message)
+    config_path = _config_path()
+    if config_path.exists():
+        with config_path.open(encoding="utf-8") as stream:
+            icons = yaml.safe_load(stream)
+            for definition in icons:
+                if definition["prefix"] == prefix:
+                    message = f"Prefix '{prefix}' is already used"
+                    raise click.ClickException(message)
+    else:
+        icons = []
+    icons.append(
+        {
+            "collection": name,
+            "CSS": css,
+            "ICONS": icons_file,
+            "prefix": prefix,
+        },
+    )
+    with config_path.open(mode="w", encoding="utf-8") as stream:
+        stream.write(yaml.dump(icons, sort_keys=False))
+
+
+@icons_group.command(name="delete", help="Delete a set of icons")
+@click.option(
+    "-p",
+    "--prefix",
+    help="Icon prefix used to replace the common prefix found in the css file",
+)
+def icons_delete(prefix: str | None) -> None:
+    """
+    Handle icons delete command.
+
+    Parameters
+    ----------
+    prefix : str | None
+        Icon prefix.
+
+    Raises
+    ------
+    click.ClickException
+        If an error occurs.
+    """
+    if not prefix:
+        message = "prefix option is mandatory"
+        raise click.ClickException(message)
+    if prefix in ("fa-", "far-", "fab-"):
+        message = "You cannot modify core icons"
+        raise click.ClickException(message)
+    config_path = _config_path()
+    if not config_path.exists():
+        message = "Unexisting config file"
+        raise click.ClickException(message)
+    with config_path.open(encoding="utf-8") as stream:
+        icons = yaml.safe_load(stream)
+    keep = [definition for definition in icons if definition["prefix"] != prefix]
+    if keep == icons:
+        message = "Unexisting prefix"
+        raise click.ClickException(message)
+    with config_path.open(mode="w", encoding="utf-8") as stream:
+        stream.write(yaml.dump(keep, sort_keys=False))
 
 
 def app() -> None:
     """
-    Create a cleo application.
+    Run the click application.
     """
-    application = Application(
-        name="pandoc-latex-tip filter",
-        version=version("pandoc-latex-tip"),
-    )
-    application.set_display_name("pandoc-latex-tip filter")
-    application.add(InfoCommand())
-    application.add(CollectionsAddCommand())
-    application.add(CollectionsDeleteCommand())
-    application.add(CollectionsListCommand())
-    application.add(CollectionsInfoCommand())
-    application.add(IconsAddCommand())
-    application.add(IconsDeleteCommand())
-    application.add(IconsListCommand())
-    application.add(PandocLaTeXFilterCommand())
-    application.add(PandocBeamerFilterCommand())
-    application.run()
+    # Pandoc calls filters with the output format as first argument
+    if len(sys.argv) > 1 and sys.argv[1] not in cli.commands and sys.argv[1][0] != "-":
+        main()
+    else:
+        cli()  # pylint: disable=no-value-for-parameter

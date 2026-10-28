@@ -41,11 +41,11 @@ classifiers = [
 dependencies = [
   "panflute~=2.3",
   "pillow~=13.0",
-  "fonttools~=4.57",
+  "fonttools[woff]~=4.57",
   "platformdirs~=4.13",
   "PyYAML~=6.0",
   "tinycss2~=1.5",
-  "cleo~=2.1"
+  "click~=8.3"
 ]
 
 [project.urls]

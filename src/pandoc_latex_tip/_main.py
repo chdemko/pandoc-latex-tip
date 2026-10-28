@@ -6,6 +6,7 @@ Pandoc filter for adding tip in LaTeX.
 
 from __future__ import annotations
 
+import io
 import operator
 import pathlib
 import re
@@ -60,8 +61,8 @@ class IconFont:
     ---------
     css_file
         path to icon font CSS file
-    ttf_file
-        path to icon font TTF file
+    icons_file
+        path to icon font file (TTF or WOFF2)
     prefix
         new prefix if any
     """
@@ -69,12 +70,32 @@ class IconFont:
     def __init__(
         self,
         css_file: pathlib.Path,
-        ttf_file: pathlib.Path,
+        icons_file: pathlib.Path,
         prefix: str | None = None,
     ) -> None:
         self.css_file = css_file
-        self.ttf_file = ttf_file
+        self.icons_file = icons_file
+        self.font = fontTools.ttLib.TTFont(icons_file)
+        self._font_data: bytes | None = None
         self.css_icons = self.load_css(prefix)
+
+    def font_stream(self) -> io.BytesIO:
+        """
+        Get the font as an uncompressed stream readable by Pillow.
+
+        This allows using any format supported by fontTools (TTF, WOFF2, ...).
+
+        Returns
+        -------
+        io.BytesIO
+            the font stream
+        """
+        if self._font_data is None:
+            stream = io.BytesIO()
+            self.font.flavor = None
+            self.font.save(stream)
+            self._font_data = stream.getvalue()
+        return io.BytesIO(self._font_data)
 
     def load_css(self, prefix: str | None) -> dict[str, str]:
         """
@@ -95,9 +116,9 @@ class IconFont:
         common = None
         with self.css_file.open() as stream:
             rules = tinycss2.parse_stylesheet(stream.read())
-        font = fontTools.ttLib.TTFont(self.ttf_file)
-        prelude_regex = re.compile("\\.([^:]*):?:before,?")
-        content_regex = re.compile("\\s*content:\\s*([^;]+);")
+        font = self.font
+        prelude_regex = re.compile("\\.([^:\\s,]+)(?::?:before)?,?\\s*$")
+        content_regex = re.compile("\\s*(?:content|--fa):\\s*([^;]+);")
 
         # pylint: disable=too-many-nested-blocks
         for rule in rules:
@@ -170,7 +191,7 @@ class IconFont:
         scale_factor = 1.0 if scale == "auto" else float(scale)
 
         font_size = int(size * scale_factor)
-        font = PIL.ImageFont.truetype(self.ttf_file, font_size)
+        font = PIL.ImageFont.truetype(self.font_stream(), font_size)
         width = draw.textlength(self.css_icons[icon], font=font)
         height = font_size  # always, as long as single-line of text
 
@@ -190,7 +211,7 @@ class IconFont:
                 dim = max(width, height)
                 if dim > size:
                     font = PIL.ImageFont.truetype(
-                        self.ttf_file,
+                        self.font_stream(),
                         int(size * size / dim * factor),
                     )
                 else:
@@ -271,19 +292,19 @@ def get_core_icons() -> list[dict[str, str]]:
         {
             "collection": "fontawesome",
             "CSS": "fontawesome.css",
-            "TTF": "fa-solid-900.ttf",
+            "ICONS": "fa-solid-900.woff2",
             "prefix": "fa-",
         },
         {
             "collection": "fontawesome",
             "CSS": "fontawesome.css",
-            "TTF": "fa-regular-400.ttf",
+            "ICONS": "fa-regular-400.woff2",
             "prefix": "far-",
         },
         {
             "collection": "fontawesome",
             "CSS": "brands.css",
-            "TTF": "fa-brands-400.ttf",
+            "ICONS": "fa-brands-400.woff2",
             "prefix": "fab-",
         },
     ]
@@ -308,12 +329,12 @@ def load_icons() -> dict[str, IconFont]:
                 definition["collection"],
                 definition["CSS"],
             ),
-            ttf_file=pathlib.Path(
+            icons_file=pathlib.Path(
                 sys.prefix,
                 "share",
                 "pandoc_latex_tip",
                 definition["collection"],
-                definition["TTF"],
+                definition["ICONS"],
             ),
             prefix=definition["prefix"],
         )
@@ -330,9 +351,10 @@ def load_icons() -> dict[str, IconFont]:
                 if "CSS" not in definition:
                     break
                 css_file = definition["CSS"]
-                if "TTF" not in definition:
+                # "ICONS" is the new key, "TTF" is the legacy key
+                icons_file = definition.get("ICONS", definition.get("TTF"))
+                if icons_file is None:
                     break
-                ttf_file = definition["TTF"]
                 if "prefix" not in definition:
                     break
                 prefix = definition["prefix"]
@@ -344,12 +366,12 @@ def load_icons() -> dict[str, IconFont]:
                         collection,
                         css_file,
                     ),
-                    ttf_file=pathlib.Path(
+                    icons_file=pathlib.Path(
                         sys.prefix,
                         "share",
                         "pandoc_latex_tip",
                         collection,
-                        ttf_file,
+                        icons_file,
                     ),
                     prefix=prefix,
                 )
